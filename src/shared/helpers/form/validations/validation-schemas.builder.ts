@@ -1,5 +1,5 @@
 import * as Yup from 'yup'
-import { ForgetPasswordRequest, UserLoginRequest } from '../../../modules/auth/models/authentication.model'
+import { ForgetPasswordRequest, UserLoginRequest } from '../../../../modules/auth/models/authentication.model'
 import { createEmailValidation, createPasswordValidation } from './field-validation.builder'
 
 function createValidationSchema<T>(fields: Record<keyof T, any>) {

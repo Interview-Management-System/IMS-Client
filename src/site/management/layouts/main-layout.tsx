@@ -1,12 +1,27 @@
-import { Link } from 'react-router-dom'
+import { Navigate, Outlet, Route, Routes } from 'react-router-dom'
+import HeaderComponent from '../../../shared/components/header/header.component'
+import SideBarComponent from '../../../shared/components/sidebar/sidebar.component'
 
 function MainLayout() {
     return (
-        <div>
-            <Link to={'/auth/login'}>to page</Link>
-            <br />
-            asas
-            <Link to={'/check'}>to check</Link>
+        <div id='wrapper'>
+            <SideBarComponent />
+
+            <div id='content-wrapper' className='d-flex flex-column'>
+                <div id='content'>
+                    <HeaderComponent />
+
+                    <div className='container-fluid'>
+                        <div id='contentPage'>
+                            <Routes>
+                                <Route path='/' element={<Navigate replace to='/candidate/list' />} />
+                            </Routes>
+
+                            <Outlet />
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     )
 }

@@ -1,0 +1,11 @@
+$active-color: #4975f8 !important;
+
+.active {
+    background-color: white;
+
+    span,
+    svg {
+        font-weight: bolder !important;
+        color: $active-color;
+    }
+}

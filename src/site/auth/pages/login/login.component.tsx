@@ -2,9 +2,9 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { Button } from 'react-bootstrap'
 import { useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
-import ControlledInput from '../../../../components/form/form-input.component'
-import { loginValidationSchema } from '../../../../helpers/form/validation/validation-schemas.builder'
 import { UserLoginRequest } from '../../../../modules/auth/models/authentication.model'
+import ControlledInput from '../../../../shared/components/form/form-input.component'
+import { loginValidationSchema } from '../../../../shared/helpers/form/validations/validation-schemas.builder'
 import './login.style.scss'
 
 function onSubmit(formData: UserLoginRequest) {

@@ -1,8 +1,8 @@
+import { Outlet } from 'react-router-dom'
 import './App.scss'
-import MainLayout from './site/management/layouts/main-layout'
 
 function App() {
-    return <MainLayout />
+    return <Outlet />
 }
 
 export default App
