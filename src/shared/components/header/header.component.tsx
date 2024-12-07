@@ -11,18 +11,6 @@ function HeaderComponent() {
                     <i className='fa fa-bars'></i>
                 </button>
 
-                {/* <!-- Home page and Search links --> */}
-                <span>
-                    <a href='/public/home' className='ms-lg-5 nav-link' style={{ color: '#5858ec' }}>
-                        Home page
-                    </a>
-                </span>
-                <span>
-                    <a href='school/list-school' className='ms-lg-5 nav-link' style={{ color: '#5858ec' }}>
-                        Search for school
-                    </a>
-                </span>
-
                 {/* <!-- Topbar Navbar --> */}
                 <ul className='navbar-nav ml-auto'>
                     {/* <!-- Login Link --> */}
@@ -35,6 +23,7 @@ function HeaderComponent() {
                     {/* <!-- Notification Bell --> */}
                     <li className='nav-item dropdown no-arrow mx-1'>
                         <a
+                            href='/'
                             className='nav-link dropdown-toggle'
                             id='alertsDropdown'
                             role='button'
@@ -116,16 +105,19 @@ function HeaderComponent() {
                     {/* <!-- User Information --> */}
                     <li className='nav-item dropdown no-arrow'>
                         <a
+                            href='/'
                             className='nav-link dropdown-toggle'
                             id='userDropdown'
                             role='button'
                             data-bs-toggle='dropdown'
                         >
                             <span className='mr-2 d-none d-lg-inline text-gray-600'>User Name</span>
+
                             <img
                                 id='headerImage'
                                 className='img-profile rounded-circle'
                                 src='profile_image_url.jpg'
+                                alt=''
                             />
                         </a>
                         {/* <!-- Dropdown - User Information --> */}

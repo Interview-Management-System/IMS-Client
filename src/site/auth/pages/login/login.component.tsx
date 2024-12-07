@@ -26,23 +26,35 @@ function LoginComponent() {
 
             <form className='user' onSubmit={loginForm.handleSubmit(onSubmit)}>
                 {/* Email */}
-                <ControlledInput<UserLoginRequest>
-                    name='email'
-                    type='email'
-                    form={loginForm}
-                    label='Email Address'
-                    placeholder='Enter Email Address...'
-                />
+                <div className='form-group'>
+                    <label htmlFor='email' className='form-label'>
+                        Email Address
+                    </label>
+
+                    <ControlledInput<UserLoginRequest>
+                        name='email'
+                        type='email'
+                        form={loginForm}
+                        className='form-control form-control-lg'
+                        placeholder='Enter Email Address...'
+                    />
+                </div>
 
                 {/* Password */}
-                <ControlledInput<UserLoginRequest>
-                    name='password'
-                    type='password'
-                    form={loginForm}
-                    label='Password'
-                    autoComplete='on'
-                    placeholder='Enter Password ...'
-                />
+                <div className='form-group'>
+                    <label htmlFor='password' className='form-label'>
+                        Password
+                    </label>
+
+                    <ControlledInput<UserLoginRequest>
+                        name='password'
+                        type='password'
+                        form={loginForm}
+                        autoComplete='on'
+                        className='form-control form-control-lg'
+                        placeholder='Enter Password ...'
+                    />
+                </div>
 
                 <div className='text-end'>
                     <Link to='/auth/forgot-password'>Forgot Password?</Link>

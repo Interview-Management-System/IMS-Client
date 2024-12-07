@@ -2,11 +2,28 @@ import { faAdd, faEye, faPenToSquare, faSearch, faTrash } from '@fortawesome/fre
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useState } from 'react'
 import { Button } from 'react-bootstrap'
+import { useForm } from 'react-hook-form'
+import { useNavigate } from 'react-router-dom'
 import PaginationComponent from '../../../../../shared/components/pagination/pagination.component'
+import { EnumList } from '../../../../../shared/helpers/enums/enum-list.helper'
 import { PaginationResult } from '../../../../../shared/models/pagination'
 import './candidate-list.scss'
 
+interface CandidateSearch {
+    status: number
+    searchText?: string
+}
+
+function handleSubmitForm(formData: CandidateSearch) {
+    if (formData.status > 0 || formData.searchText !== '') {
+        // call api
+        console.log(formData)
+    }
+}
+
 function CandidateListComponent() {
+    const navigate = useNavigate()
+
     const a = {
         items: ['asdf', 'asdf', 'adsafs', 'asdf', 'asdf'],
         pageSize: 5,
@@ -15,7 +32,6 @@ function CandidateListComponent() {
     } as PaginationResult<string>
 
     const [pageResult, setPageResult] = useState<PaginationResult<string>>(a)
-
     const handlePageChange = (pageIndex: number) => {
         setPageResult(prev => ({
             ...prev,
@@ -23,50 +39,83 @@ function CandidateListComponent() {
         }))
     }
 
+    const { register, handleSubmit, reset } = useForm<CandidateSearch>({
+        defaultValues: {
+            status: 0,
+            searchText: ''
+        }
+    })
+
     return (
         <div className='card shadow mb-4'>
             <div className='card-header py-3'>
-                <h6 className='m-0 font-weight-bold text-primary'>List Candidate</h6>
+                <h6 className='m-0 font-weight-bold text-primary'>Candidate List</h6>
             </div>
 
             <div className='card-body'>
                 <div className='table-responsive'>
                     <div id='dataTable_wrapper' className='dataTables_wrapper pt-1 px-1'>
                         <div className='row my-2'>
-                            <div className='col-sm-12 col-md-6'>
+                            <div className='col-sm-2 col-md-5'>
                                 <div className='dataTables_length'>
-                                    <button className='btn btn-primary btn-icon-split'>
+                                    <Button
+                                        className='btn-icon-split'
+                                        onClick={() => navigate('/candidate/create')}
+                                    >
                                         <span className='icon text-white-50'>
                                             <FontAwesomeIcon icon={faAdd} size='1x' />
                                         </span>
-
                                         <span className='text'>Create</span>
-                                    </button>
+                                    </Button>
                                 </div>
                             </div>
 
                             {/* Search */}
-                            <div className='col-sm-12 col-md-6'>
+                            <div className='col-sm-10 col-md-7'>
                                 <div id='dataTable_filter' className='dataTables_filter text-right'>
-                                    <div className='row'>
-                                        <select className='form-control col-md-4'>
-                                            <option value='0'>-- Select role --</option>
-                                        </select>
+                                    <form className='user' onSubmit={handleSubmit(handleSubmitForm)}>
+                                        <div className='row'>
+                                            {/* Status dropdown */}
+                                            <select
+                                                className='form-control col-md-5 '
+                                                {...register('status')}
+                                            >
+                                                <option value={0}>Select status to filter</option>
 
-                                        <div className='input-group col-md-8'>
-                                            <input
-                                                id='searchInput'
-                                                type='text'
-                                                className='form-control bg-light border-0 small'
-                                                placeholder='Search for...'
-                                            />
-                                            <div className='input-group-append'>
-                                                <Button className='btn-info' type='button'>
-                                                    <FontAwesomeIcon icon={faSearch} size='1x' />
+                                                {EnumList.candidateStatusList.map(candidateStatus => (
+                                                    <option
+                                                        key={candidateStatus.id}
+                                                        value={candidateStatus.id}
+                                                    >
+                                                        {candidateStatus.name}
+                                                    </option>
+                                                ))}
+                                            </select>
+
+                                            {/* Search field */}
+                                            <div className='input-group col-md-5'>
+                                                <input
+                                                    type='text'
+                                                    id='searchInput'
+                                                    placeholder='Search for...'
+                                                    {...register('searchText')}
+                                                    className='form-control bg-light border-0 small'
+                                                />
+
+                                                <div className='input-group-append'>
+                                                    <Button className='btn-info' type='submit'>
+                                                        <FontAwesomeIcon icon={faSearch} size='1x' />
+                                                    </Button>
+                                                </div>
+                                            </div>
+
+                                            <div className='col-md-1'>
+                                                <Button className='btn-secondary' onClick={() => reset()}>
+                                                    Reset
                                                 </Button>
                                             </div>
                                         </div>
-                                    </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -97,7 +146,11 @@ function CandidateListComponent() {
                                         <td className='badge badge-success'></td>
 
                                         <td className='text-center' style={{ width: '10%' }}>
-                                            <Button variant='primary' className='m-1 btn-sm'>
+                                            <Button
+                                                variant='primary'
+                                                className='m-1 btn-sm'
+                                                onClick={() => navigate('/candidate/detail')}
+                                            >
                                                 <FontAwesomeIcon icon={faEye} />
                                             </Button>
 

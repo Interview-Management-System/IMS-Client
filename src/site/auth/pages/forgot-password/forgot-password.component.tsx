@@ -27,13 +27,14 @@ function ForgotPasswordComponent() {
             </div>
 
             <form className='user' onSubmit={forgotPasswordForm.handleSubmit(onSubmit)}>
-                <ControlledInput<ForgetPasswordRequest>
-                    name='email'
-                    type='email'
-                    form={forgotPasswordForm}
-                    label='Email Address'
-                    placeholder='Enter Email Address...'
-                />
+                <div className='form-group'>
+                    <ControlledInput<ForgetPasswordRequest>
+                        name='email'
+                        type='email'
+                        form={forgotPasswordForm}
+                        placeholder='Enter Email Address...'
+                    />
+                </div>
 
                 <Button className='btn-user btn-block' variant='primary' type='submit'>
                     Reset Password
