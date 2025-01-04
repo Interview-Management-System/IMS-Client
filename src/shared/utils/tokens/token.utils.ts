@@ -1,4 +1,6 @@
-class TokenUtils {
+import { Cookies } from 'react-cookie'
+
+export default class TokenUtils {
     private expiration = 0
     private readonly domain = '/'
 
@@ -6,14 +8,18 @@ class TokenUtils {
     private readonly decodedTokenToIdURL =
         'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'
 
+    private static cookies = new Cookies()
+
     /************************************************* JWT Token *************************************/
-    getTokenFromCookie() {}
+    static getTokenFromCookie() {
+        return TokenUtils.cookies.get('token')
+    }
 
     setTokenToCookie(token: string) {}
 
     /************************************************* User Id *************************************/
-    getCurrentUserIdFromCookie() {
-        return ''
+    static getCurrentUserIdFromCookie() {
+        return 'testUserId'
     }
 
     setUserIdToCookie(userId: string) {}
@@ -32,6 +38,3 @@ class TokenUtils {
 
     checkTokenIsExpired() {}
 }
-
-const tokenUtils = new TokenUtils()
-export default tokenUtils

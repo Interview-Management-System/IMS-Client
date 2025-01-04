@@ -1,28 +1,64 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import usePagination from '../../hooks/usePagination'
 import { PaginationResult } from '../../models/pagination'
 
 interface PaginationProps<T> {
     paginationResult?: PaginationResult<T>
-    onPageChange: (pageIndex: number) => void
+    onPageIndexChange: (pageIndex: number) => void
+    onPageSizeChange: (pageSize: number) => void
 }
 
 function createRange(finish: number) {
     return Array.from({ length: finish }, (_, i) => i + 1)
 }
 
-function PaginationComponent<T>({ paginationResult, onPageChange }: PaginationProps<T>) {
-    const totalRecords = paginationResult?.totalRecords
-    const showNumber = (paginationResult?.pageIndex! - 1) * paginationResult?.pageSize! + 1
-    const toNumber = showNumber + paginationResult?.items?.length! - 1
+function PaginationComponent<T>({
+    paginationResult,
+    onPageIndexChange,
+    onPageSizeChange
+}: PaginationProps<T>) {
+    const pageResult = usePagination(paginationResult!)
 
     const startIndex = 1
-    const finishIndex = totalRecords ? Math.ceil(totalRecords / (paginationResult?.pageSize || 1)) : 1
+    const pageSize = pageResult?.pageSize ?? 0
+    const totalRecords = pageResult?.totalRecords || 0
+    const showNumber = (pageResult?.pageIndex! - 1) * pageSize + 1
+    const toNumber = Math.min(showNumber + (pageResult?.items?.length || 0) - 1, totalRecords)
+
+    const [finishIndex, setFinishIndex] = useState<number>(
+        totalRecords ? Math.max(1, Math.ceil(totalRecords / (pageSize || 1))) : 1
+    )
+
+    const handlePageSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const newPageSize = parseInt(e.target.value, 10)
+
+        onPageSizeChange(newPageSize)
+        onPageIndexChange(1)
+
+        const newFinishIndex = totalRecords ? Math.max(1, Math.ceil(totalRecords / newPageSize)) : 1
+        setFinishIndex(newFinishIndex)
+    }
 
     return (
         <div className='row justify-content-between'>
             {/* Show entries */}
-            <div className='col-sm-12 col-md-5'>
-                <div className='dataTables_info' role='status' aria-live='polite'>
+            <div className='col-sm-12 col-md-6 d-flex'>
+                <div className='dataTables_length' id='dataTable_length'>
+                    <select
+                        name='dataTable_length'
+                        aria-controls='dataTable'
+                        onChange={handlePageSizeChange}
+                        className='custom-select custom-select-sm form-control form-control-sm'
+                    >
+                        <option value={5}>5</option>
+                        <option value={10}>10</option>
+                        <option value={15}>15</option>
+                        <option value={20}>20</option>
+                    </select>
+                </div>
+
+                <div className='dataTables_info ms-2' role='status' aria-live='polite'>
                     <span>
                         Showing {showNumber} to {toNumber} of {totalRecords} entries
                     </span>
@@ -30,20 +66,20 @@ function PaginationComponent<T>({ paginationResult, onPageChange }: PaginationPr
             </div>
 
             {/* Paging */}
-            <div className='col-sm-12 col-md-7'>
+            <div className='col-sm-12 col-md-6'>
                 <div className='dataTables_paginate paging_simple_numbers'>
                     <ul className='pagination justify-content-end'>
                         {paginationResult?.pageIndex !== startIndex && (
                             <>
-                                <li className='page-item pe-auto' onClick={() => onPageChange(1)}>
-                                    <Link className='page-link' title='1' to=''>
+                                <li className='page-item' onClick={() => onPageIndexChange(1)}>
+                                    <Link className='page-link' to=''>
                                         First
                                     </Link>
                                 </li>
 
                                 <li
-                                    className='page-item pe-auto'
-                                    onClick={() => onPageChange((paginationResult?.pageIndex || 1) - 1)}
+                                    className='page-item'
+                                    onClick={() => onPageIndexChange((paginationResult?.pageIndex || 1) - 1)}
                                 >
                                     <Link className='page-link' to=''>
                                         Previous
@@ -52,15 +88,15 @@ function PaginationComponent<T>({ paginationResult, onPageChange }: PaginationPr
                             </>
                         )}
 
-                        {createRange(finishIndex).map((item, index) => (
+                        {createRange(finishIndex).map(item => (
                             <li
-                                key={index}
+                                key={item}
                                 className={`page-item ${
                                     paginationResult?.pageIndex === item ? 'active' : ''
                                 }`}
                             >
-                                <Link className='page-link' onClick={() => onPageChange(item)} to=''>
-                                    {item}{' '}
+                                <Link className='page-link' onClick={() => onPageIndexChange(item)} to=''>
+                                    {item}
                                     {paginationResult?.pageIndex === item && (
                                         <span className='sr-only'>(current)</span>
                                     )}
@@ -72,14 +108,14 @@ function PaginationComponent<T>({ paginationResult, onPageChange }: PaginationPr
                             <>
                                 <li
                                     className='page-item'
-                                    onClick={() => onPageChange((paginationResult?.pageIndex || 1) + 1)}
+                                    onClick={() => onPageIndexChange((paginationResult?.pageIndex || 1) + 1)}
                                 >
                                     <Link className='page-link' to=''>
                                         Next
                                     </Link>
                                 </li>
 
-                                <li className='page-item' onClick={() => onPageChange(finishIndex)}>
+                                <li className='page-item' onClick={() => onPageIndexChange(finishIndex)}>
                                     <Link className='page-link' to=''>
                                         End
                                     </Link>

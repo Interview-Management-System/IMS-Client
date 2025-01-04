@@ -1,11 +1,15 @@
-import { faAdd, faEye, faPenToSquare, faSearch, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faAdd, faSearch } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useState } from 'react'
 import { Button } from 'react-bootstrap'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
+import { candidateListTestData } from '../../../../../data/test/user-data.test'
+import { CandidateForRetrieveDTO } from '../../../../../modules/user/models/candidate.model'
+import ActionButtonComponent from '../../../../../shared/components/buttons/action-button.component'
 import PaginationComponent from '../../../../../shared/components/pagination/pagination.component'
 import { EnumList } from '../../../../../shared/helpers/enums/enum-list.helper'
+
+import usePagination from '../../../../../shared/hooks/usePagination'
 import { PaginationResult } from '../../../../../shared/models/pagination'
 import './candidate-list.scss'
 
@@ -24,20 +28,14 @@ function handleSubmitForm(formData: CandidateSearch) {
 function CandidateListComponent() {
     const navigate = useNavigate()
 
-    const a = {
-        items: ['asdf', 'asdf', 'adsafs', 'asdf', 'asdf'],
-        pageSize: 5,
+    const paginationResult = {
+        items: candidateListTestData,
+        pageSize: 4,
         pageIndex: 1,
-        totalRecords: 15
-    } as PaginationResult<string>
+        totalRecords: candidateListTestData.length
+    } as PaginationResult<CandidateForRetrieveDTO>
 
-    const [pageResult, setPageResult] = useState<PaginationResult<string>>(a)
-    const handlePageChange = (pageIndex: number) => {
-        setPageResult(prev => ({
-            ...prev,
-            pageIndex
-        }))
-    }
+    const pageResult = usePagination(paginationResult)
 
     const { register, handleSubmit, reset } = useForm<CandidateSearch>({
         defaultValues: {
@@ -136,42 +134,34 @@ function CandidateListComponent() {
                                 </thead>
 
                                 <tbody>
-                                    <tr>
-                                        <td>y</td>
-                                        <td>r</td>
-                                        <td>r</td>
-                                        <td>r</td>
-                                        <td>r</td>
-                                        <td>r</td>
-                                        <td className='badge badge-success'></td>
+                                    {pageResult.items?.map(candidate => (
+                                        <tr key={candidate.id}>
+                                            <td>{candidate.username}</td>
+                                            <td>{candidate.email}</td>
+                                            <td>{candidate.phoneNumber}</td>
+                                            <td>{candidate.position}</td>
+                                            <td>{candidate.recruiterName}</td>
+                                            <td>{candidate.status}</td>
+                                            <td className='badge badge-success'></td>
 
-                                        <td className='text-center' style={{ width: '10%' }}>
-                                            <Button
-                                                variant='primary'
-                                                className='m-1 btn-sm'
-                                                onClick={() => navigate('/candidate/detail')}
-                                            >
-                                                <FontAwesomeIcon icon={faEye} />
-                                            </Button>
-
-                                            <Button variant='info' className='m-1 btn-sm'>
-                                                <FontAwesomeIcon icon={faPenToSquare} />
-                                            </Button>
-
-                                            <Button variant='danger' className='m-1 btn-sm'>
-                                                <FontAwesomeIcon icon={faTrash} />
-                                            </Button>
-
-                                            <Button variant='danger' className='m-1 btn-sm'>
-                                                <FontAwesomeIcon icon={faTrash} />
-                                            </Button>
-                                        </td>
-                                    </tr>
+                                            <td className='text-center' style={{ width: '10%' }}>
+                                                <ActionButtonComponent
+                                                    detailRoute={`/candidate/detail/${candidate.id}`}
+                                                    editRoute={`/candidate/edit?id=${candidate.id}`}
+                                                    deleteAction={() => {}}
+                                                />
+                                            </td>
+                                        </tr>
+                                    ))}
                                 </tbody>
                             </table>
                         </div>
 
-                        <PaginationComponent paginationResult={pageResult} onPageChange={handlePageChange} />
+                        <PaginationComponent
+                            paginationResult={pageResult}
+                            onPageSizeChange={pageResult.handlePageSizeChange}
+                            onPageIndexChange={pageResult.handlePageIndexChange}
+                        />
                     </div>
                 </div>
             </div>

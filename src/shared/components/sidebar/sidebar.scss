@@ -9,3 +9,52 @@ $active-color: #4975f8 !important;
         color: $active-color;
     }
 }
+
+/* Sidebar collapse styles */
+.sidebar {
+    transition: width 0.3s ease;
+    width: 250px; /* Default sidebar width */
+}
+
+.sidebar .toggled {
+    width: 80px; /* Collapsed sidebar width */
+}
+
+.sidebar .nav-item span {
+    display: inline; /* Show text by default */
+    transition: opacity 0.3s ease;
+}
+
+.sidebar.toggled .nav-item span {
+    opacity: 0;
+    visibility: hidden; /* Hide text when collapsed */
+}
+
+/* Adjust content wrapper */
+.content-wrapper {
+    margin-left: 250px; /* Default sidebar width */
+    transition: margin-left 0.3s ease;
+}
+
+.sidebar.toggled + .content-wrapper {
+    margin-left: 80px; /* Adjust to match collapsed sidebar width */
+}
+
+/* Hide sidebar brand text on collapse */
+.sidebar .sidebar-brand-text {
+    transition: opacity 0.3s ease;
+}
+
+.sidebar.toggled .sidebar-brand-text {
+    opacity: 0;
+    visibility: hidden;
+}
+
+#sidebarToggle::after {
+    content: none !important; /* Remove the default arrow */
+}
+
+.sidebar.toggled .nav-link {
+    padding-left: 0; /* Remove padding to center icons */
+    justify-content: center; /* Center the icon horizontally */
+}

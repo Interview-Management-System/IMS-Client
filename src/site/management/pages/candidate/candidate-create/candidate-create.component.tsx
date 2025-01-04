@@ -1,35 +1,31 @@
 import { yupResolver } from '@hookform/resolvers/yup'
-import { useState } from 'react'
 import { Button } from 'react-bootstrap'
 import { useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
+import { CreateCandidateRequest } from '../../../../../modules/user/models/candidate.model'
 import ControlledInput from '../../../../../shared/components/form/form-input.component'
 import ControlledMultiSelection from '../../../../../shared/components/form/form-multi-selection.component'
 import ControlledSelection from '../../../../../shared/components/form/form-selection.component'
 import ControlledTextArea from '../../../../../shared/components/form/form-text-area.component'
 import ModalConfirmComponent from '../../../../../shared/components/modals/modal-confirm/modal-confirm.component'
-import { HighestLevelEnum, PositionEnum, RoleIdEnum } from '../../../../../shared/enums/master-data.enum'
+import { ButtonVariant } from '../../../../../shared/enums/button-variant.enum'
+import { RoleIdEnum } from '../../../../../shared/enums/entity-enums/master-data.enum'
 import { EnumList } from '../../../../../shared/helpers/enums/enum-list.helper'
-import { createCandidateValidationSchema } from '../../../../../shared/helpers/form/validations/validation-schemas.builder'
-import { CreateCandidateRequest } from '../../../../../shared/models/candidate.model'
-import tokenUtils from '../../../../../shared/utils/tokens/token.utils'
+import { createCandidateValidationSchema } from '../../../../../shared/helpers/form/validations/schemas/candidate-schemas.validation'
+import useModal from '../../../../../shared/hooks/useModal'
+import TokenUtils from '../../../../../shared/utils/tokens/token.utils'
 
 function onSubmit(formData: CreateCandidateRequest) {
     // service here
     formData.roleId = RoleIdEnum.Candidate
-    formData.createdBy = tokenUtils.getCurrentUserIdFromCookie() // get guid from jwt
-    formData.positionId = +(formData.positionId as PositionEnum)
-    formData.highestLevelId = +(formData.highestLevelId as HighestLevelEnum)
-
-    if (typeof formData.gender === 'string') {
-        formData.gender = (formData.gender as string) === '1'
-    }
+    formData.createdBy = TokenUtils.getCurrentUserIdFromCookie() // get guid from jwt
 
     console.log(formData)
 }
 
 function CandidateCreateComponent() {
     const navigate = useNavigate()
+    const modal = useModal()
 
     const recruiterList = [
         { id: 'adsfdasf', name: 'ssss' },
@@ -43,22 +39,28 @@ function CandidateCreateComponent() {
 
     const assignToMe = () => {
         // get user guid from jwt here
-        createCandidateForm.setValue('recruiterId', '65t4r3')
+        const currentUserId = '65t4r3'
+        createCandidateForm.setValue('recruiterId', currentUserId)
     }
 
-    // For modal
-    const [show, setShow] = useState(false)
-    const handleClose = () => setShow(false)
+    // Check for validation errors before showing the modal
+    const handleSubmitWithModal = async () => {
+        const isValid = await createCandidateForm.trigger()
+
+        if (isValid) {
+            modal.setShow(true)
+        }
+    }
 
     return (
         <>
             <ModalConfirmComponent
-                show={show}
-                handleConfirm={createCandidateForm.handleSubmit(onSubmit)}
-                handleClose={handleClose}
-                buttonText='Create'
+                show={modal.show}
                 modalTitle='Create confirm'
+                buttonVariant={ButtonVariant.Primary}
+                handleClose={modal.handleClose}
                 modalConfirmQuestion='Do you want to create candidate ?'
+                handleConfirm={createCandidateForm.handleSubmit(onSubmit)}
             />
 
             <div className='card shadow mb-3'>
@@ -114,7 +116,7 @@ function CandidateCreateComponent() {
                                     <div className='col-lg-6'>
                                         <ControlledInput<CreateCandidateRequest>
                                             name='phoneNumber'
-                                            type='number'
+                                            type='tel'
                                             form={createCandidateForm}
                                             placeholder='Type a number'
                                         />
@@ -139,7 +141,7 @@ function CandidateCreateComponent() {
                                     </div>
                                 </div>
 
-                                {/* DOB */}
+                                {/* Address */}
                                 <div className='form-group row'>
                                     <label className='col-lg-4 col-form-label '>
                                         Address <span className='text-danger'>*</span>
@@ -154,6 +156,7 @@ function CandidateCreateComponent() {
                                     </div>
                                 </div>
 
+                                {/* Gender */}
                                 <div className='form-group row'>
                                     <label className='col-lg-4 col-form-label '>
                                         Gender <span className='text-danger'>*</span>
@@ -223,7 +226,7 @@ function CandidateCreateComponent() {
                                     </div>
                                 </div>
 
-                                {/* Skills */}
+                                {/* Recruiter */}
                                 <div className='form-group row'>
                                     <label className='col-lg-4 col-form-label '>
                                         Recruiter <span className='text-danger'>*</span>
@@ -293,33 +296,27 @@ function CandidateCreateComponent() {
 
                         <div className='form-group row'>
                             <div className='col-lg-12 d-flex justify-content-center'>
-                                <Button className='me-2' variant='primary' type='submit'>
+                                <Button
+                                    className='me-2'
+                                    variant='primary'
+                                    type='button'
+                                    onClick={handleSubmitWithModal}
+                                >
                                     Submit
                                 </Button>
 
-                                <button
-                                    type='button'
-                                    className='btn btn-secondary'
-                                    onClick={() => navigate(-1)}
-                                >
+                                <Button variant='secondary' type='button' onClick={() => navigate(-1)}>
                                     Cancel
-                                </button>
+                                </Button>
 
-                                <button
+                                <Button
+                                    className='ms-2'
+                                    variant='info'
                                     type='button'
-                                    className='btn btn-secondary'
-                                    onClick={() => setShow(true)}
-                                >
-                                    test
-                                </button>
-
-                                <button
-                                    type='reset'
-                                    className='btn btn-info ms-2'
                                     onClick={() => createCandidateForm.reset()}
                                 >
                                     Reset
-                                </button>
+                                </Button>
                             </div>
                         </div>
                     </form>

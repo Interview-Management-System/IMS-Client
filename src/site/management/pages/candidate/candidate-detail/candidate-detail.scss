@@ -1,0 +1,16 @@
+.skills-container {
+    display: flex;
+    flex-wrap: wrap; /* Allow tags to wrap to the next line */
+    gap: 8px; /* Adjust spacing between tags */
+}
+
+.skill-tag {
+    background-color: #6c757d; /* Example background color */
+    color: #fff; /* White text */
+    padding: 5px 12px;
+    font-size: 14px;
+    white-space: nowrap; /* Prevent the text from wrapping inside the tag */
+    overflow: hidden; /* Hide overflowing text */
+    text-overflow: ellipsis; /* Show ellipsis for long text */
+    font-weight: normal;
+}

@@ -1,21 +1,27 @@
 import { RouteObject } from 'react-router-dom'
-import AuthLayout from '../../site/auth/layouts/auth-layout'
 import CandidateCreateComponent from '../../site/management/pages/candidate/candidate-create/candidate-create.component'
-import CandidateDetailComponent from '../../site/management/pages/candidate/candidate-detail/candidate-detail'
+import CandidateDetailComponent from '../../site/management/pages/candidate/candidate-detail/candidate-detail.component'
 import CandidateListComponent from '../../site/management/pages/candidate/candidate-list/candidate-list.component'
+import UserListComponent from '../../site/management/pages/user/user-list/user-list.component'
 
 const userRouters: RouteObject[] = [
     {
         path: '/candidate',
         children: [
             { path: 'list', element: <CandidateListComponent /> },
-            { path: 'detail', element: <CandidateDetailComponent /> },
-            { path: 'create', element: <CandidateCreateComponent /> }
+            { path: 'detail/:id', element: <CandidateDetailComponent /> },
+            { path: 'create', element: <CandidateCreateComponent /> },
+            { path: 'edit/:id', element: <CandidateCreateComponent /> }
         ]
     },
     {
         path: '/user',
-        element: <AuthLayout />
+        children: [
+            { path: 'list', element: <UserListComponent /> },
+            { path: 'detail/:id', element: <CandidateDetailComponent /> },
+            { path: 'create', element: <CandidateCreateComponent /> },
+            { path: 'edit/:id', element: <CandidateCreateComponent /> }
+        ]
     }
 ]
 

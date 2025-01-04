@@ -1,5 +1,7 @@
 import {
     faBriefcase,
+    faChevronLeft,
+    faChevronRight,
     faFile,
     faLaughWink,
     faPeopleGroup,
@@ -8,80 +10,76 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import 'font-awesome/css/font-awesome.min.css'
+import { useState } from 'react'
+import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { NavLink, useLocation } from 'react-router-dom'
 import './sidebar.scss'
 
 function SideBarComponent() {
     const location = useLocation()
 
-    const isRouteCandidateMatched = location.pathname.startsWith('/candidate')
-    const isRouteJobMatched = location.pathname.startsWith('/job')
-    const isRouteInterviewMatched = location.pathname.startsWith('/interview')
-    const isRouteOfferMatched = location.pathname.startsWith('/offer')
-    const isRouteUserMatched = location.pathname.startsWith('/user')
+    const isRouteMatched = (route: string) => location.pathname.startsWith(route)
 
-    const navLinkClasses = 'nav-link d-flex align-items-center gap-3'
+    // Define navigation links
+    const navLinks = [
+        { to: 'candidate/list', icon: faPeopleGroup, label: 'Candidate Management', route: '/candidate' },
+        { to: 'job/list', icon: faBriefcase, label: 'Job Management', route: '/job' },
+        { to: 'interview/list', icon: faRocket, label: 'Interview Management', route: '/interview' },
+        { to: 'offer/list', icon: faFile, label: 'Offer Management', route: '/offer' },
+        { to: 'user/list', icon: faUser, label: 'User Management', route: '/user' }
+    ]
 
-    const candidateNavLinkStyle = isRouteCandidateMatched ? `${navLinkClasses} active` : `${navLinkClasses}`
-    const jobNavLinkStyle = isRouteJobMatched ? `${navLinkClasses} active` : `${navLinkClasses}`
-    const interviewNavLinkStyle = isRouteInterviewMatched ? `${navLinkClasses} active` : `${navLinkClasses}`
-    const offerNavLinkStyle = isRouteOfferMatched ? `${navLinkClasses} active` : `${navLinkClasses}`
-    const userNavLinkStyle = isRouteUserMatched ? `${navLinkClasses} active` : `${navLinkClasses}`
+    // Side bar toggle
+    const [isCollapsed, setIsCollapsed] = useState(false)
+    const toggleSidebar = () => setIsCollapsed(!isCollapsed)
 
     return (
         <ul
             id='accordionSidebar'
-            className='navbar-nav bg-gradient-primary sidebar sidebar-dark accordion h-100'
+            className={`navbar-nav bg-gradient-primary sidebar sidebar-dark accordion ${
+                isCollapsed ? 'toggled' : ''
+            }`}
         >
             <div className='sidebar-brand d-flex align-items-center justify-content-center'>
                 <div className='sidebar-brand-icon rotate-n-15'>
                     <FontAwesomeIcon size='2xl' icon={faLaughWink} />
                 </div>
-
                 <div className='sidebar-brand-text mx-3'>IMS Dashboard</div>
             </div>
 
             <hr className='sidebar-divider my-0' />
 
-            <li className='nav-item'>
-                <NavLink to='candidate/list' className={candidateNavLinkStyle}>
-                    <FontAwesomeIcon size='lg' icon={faPeopleGroup} />
-                    <span className='text-white'>Candidate Management </span>
-                </NavLink>
-            </li>
+            {/* Map through navLinks */}
+            {navLinks.map(link => {
+                const isActive = isRouteMatched(link.route)
+                const navLinkClasses = `nav-link d-flex align-items-center gap-3 ${isActive ? 'active' : ''}`
 
-            <li className='nav-item'>
-                <NavLink to='main' className={jobNavLinkStyle}>
-                    <FontAwesomeIcon size='lg' icon={faBriefcase} />
-                    <span className='text-white'> Job Management </span>
-                </NavLink>
-            </li>
+                const tooltip = <Tooltip id={`tooltip-${link.label}`}>{link.label}</Tooltip>
 
-            <li className='nav-item'>
-                <NavLink to='sub' className={interviewNavLinkStyle}>
-                    <FontAwesomeIcon size='lg' icon={faRocket} />
-                    <span className='text-white'> Interview Management </span>
-                </NavLink>
-            </li>
-
-            <li className='nav-item'>
-                <NavLink to='/' className={offerNavLinkStyle}>
-                    <FontAwesomeIcon size='lg' icon={faFile} />
-                    <span className='text-white'>Offer Management</span>
-                </NavLink>
-            </li>
-
-            <li className='nav-item'>
-                <NavLink to='/' className={userNavLinkStyle}>
-                    <FontAwesomeIcon size='lg' icon={faUser} />
-                    <span className='text-white'>User Management</span>
-                </NavLink>
-            </li>
+                return (
+                    <li className='nav-item' key={link.to}>
+                        {isCollapsed ? (
+                            <OverlayTrigger placement='right' overlay={tooltip}>
+                                <NavLink to={link.to} className={navLinkClasses}>
+                                    <FontAwesomeIcon size='lg' icon={link.icon} />
+                                </NavLink>
+                            </OverlayTrigger>
+                        ) : (
+                            <NavLink to={link.to} className={navLinkClasses}>
+                                <FontAwesomeIcon size='lg' icon={link.icon} />
+                                <span className='text-white'>{link.label}</span>
+                            </NavLink>
+                        )}
+                    </li>
+                )
+            })}
 
             <hr className='sidebar-divider d-none d-md-block' />
 
             <div className='text-center d-none d-md-inline'>
-                <button className='rounded-circle border-0' id='sidebarToggle'></button>
+                <Button className='rounded-circle border-0' id='sidebarToggle' onClick={toggleSidebar}>
+                    <FontAwesomeIcon color='white' icon={isCollapsed ? faChevronRight : faChevronLeft} />
+                </Button>
             </div>
         </ul>
     )

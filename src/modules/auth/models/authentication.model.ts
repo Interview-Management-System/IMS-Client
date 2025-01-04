@@ -13,3 +13,8 @@ export interface ResetPasswordRequest {
     newPassword?: string
     confirmPassword?: string
 }
+
+export interface UserLoginResponse {
+    username?: string | undefined
+    token?: string | undefined
+}

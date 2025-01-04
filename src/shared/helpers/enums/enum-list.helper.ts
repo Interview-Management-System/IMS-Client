@@ -1,5 +1,6 @@
-import { CandidateStatusEnum } from '../../enums/candidate.enum'
-import { JobStatusEnum } from '../../enums/job.enum'
+import { CandidateStatusEnum } from '../../enums/entity-enums/candidate.enum'
+import { InterviewResultEnum, InterviewStatusEnum } from '../../enums/entity-enums/interview.enum'
+import { JobStatusEnum } from '../../enums/entity-enums/job.enum'
 import {
     BenefitEnum,
     ContractTypeEnum,
@@ -9,10 +10,9 @@ import {
     PositionEnum,
     RoleEnum,
     SkillEnum
-} from '../../enums/master-data.enum'
-import { OfferStatusEnum } from '../../enums/offer.enum'
+} from '../../enums/entity-enums/master-data.enum'
+import { OfferStatusEnum } from '../../enums/entity-enums/offer.enum'
 import { EnumBuilder } from '../../utils/enums/enum-builder.utils'
-import { InterviewResultEnum, InterviewStatusEnum } from './../../enums/interview.enum'
 
 export class EnumList {
     static get candidateStatusList() {

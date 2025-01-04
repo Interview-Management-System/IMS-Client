@@ -40,6 +40,7 @@ export enum PositionEnum {
 }
 
 export enum RoleEnum {
+    Default = 0,
     Admin = 1,
     Manager,
     Candidate,
