@@ -2,7 +2,9 @@ import { useState } from 'react'
 
 export default function useModal() {
     const [show, setShow] = useState(false)
-    const handleClose = () => setShow(false)
 
-    return { show, handleClose, setShow }
+    const showModal = () => setShow(true)
+    const closeModal = () => setShow(false)
+
+    return { show, showModal, closeModal }
 }

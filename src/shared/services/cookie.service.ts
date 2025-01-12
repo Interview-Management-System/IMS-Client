@@ -1,19 +1,17 @@
+import { jwtDecode } from 'jwt-decode'
 import { Cookies } from 'react-cookie'
 import { CookieSetOptions } from 'universal-cookie'
 
 export default class CookieService {
-    private static cookies = new Cookies()
+    private static readonly cookies = new Cookies()
+    private static readonly cookieOptions = {
+        path: '/',
+        expires: new Date()
+    } as CookieSetOptions
 
-    private static readonly cookieSetOptions: CookieSetOptions = {
-        secure: true,
-        sameSite: 'strict',
-        domain: '/',
-        expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-    }
-
-    private static readonly decodedTokenToRoleURL =
-        'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'
-    private static readonly decodedTokenToIdURL =
+    private static readonly roleDecoderURL = 'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'
+    private static readonly userNameDecoderURL = 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'
+    private static readonly userIdDecoderURL =
         'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'
 
     /************************************************* JWT Token *************************************/
@@ -21,36 +19,58 @@ export default class CookieService {
         return CookieService.cookies.get('token')
     }
 
-    static setTokenToCookie(token: string) {
-        CookieService.cookies.set('token', token, CookieService.cookieSetOptions)
+    static setTokenToCookie(token?: string) {
+        if (token) {
+            const decodedToken = jwtDecode(token)
+
+            CookieService.cookieOptions.expires = new Date(decodedToken.exp!)
+            CookieService.cookies.set('token', token, CookieService.cookieOptions)
+        }
     }
 
-    static checkTokenIsExpired() {}
+    static getCurrentUserIdFromCookie(): string {
+        const token = CookieService.getTokenFromCookie()
 
-    /************************************************* User Id *************************************/
-    static getCurrentUserIdFromCookie() {
-        return CookieService.cookies.get('userId')
+        if (token) {
+            const decodedToken: any = jwtDecode(token)
+            return decodedToken[CookieService.userIdDecoderURL]
+        }
+        return ''
     }
 
-    static setUserIdToCookie(userId: string) {
-        CookieService.cookies.set('userId', userId, CookieService.cookieSetOptions)
+    static getRoleFromCookie() {
+        const token = CookieService.getTokenFromCookie()
+        const decodedToken = jwtDecode(token) as any
+
+        return decodedToken[CookieService.roleDecoderURL]
     }
 
-    /************************************************* Role *************************************/
-    getRoleFromCookie() {}
+    static getFullNameFromCookie() {
+        const token = CookieService.getTokenFromCookie()
+        const decodedToken = jwtDecode(token) as any
 
-    setRoleToCookie(role: string) {}
+        return decodedToken[CookieService.userNameDecoderURL]
+    }
 
-    /************************************************* Full name *************************************/
-    getFullNameFromCookie() {}
+    static checkTokenIsExpired() {
+        const token = this.getTokenFromCookie()
+        if (token) {
+            const decoded = jwtDecode(token)
 
-    setFullNameToCookie(fullName: string) {}
+            const expirationDate = new Date(0)
+            expirationDate.setUTCHours(decoded.exp ?? 0)
+
+            return expirationDate === null ? true : expirationDate < new Date()
+        }
+        return false
+    }
 
     static removeAllCookie() {
         const allCookies = CookieService.cookies.getAll()
+        const cookieArray = Object.keys(allCookies)
 
-        for (const cookieName in allCookies) {
+        cookieArray.forEach(cookieName => {
             CookieService.cookies.remove(cookieName, { path: '/' })
-        }
+        })
     }
 }

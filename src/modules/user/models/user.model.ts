@@ -38,8 +38,8 @@ export interface UserForCreateDTO {
     address?: string
     phoneNumber?: string
     gender: boolean
-    roleId: string // Assuming Guid is represented as string in TypeScript
-    createdBy: string // Assuming Guid is represented as string in TypeScript
+    roleId: string
+    createdBy: string
     departmentId: DepartmentEnum
     isActive: boolean
     note?: string
@@ -51,4 +51,5 @@ export interface UserForUpdateDTO extends UserForCreateDTO {
 
 export interface UserPaginatedSearchRequest extends PaginatedSearchRequest {
     roleId?: RoleEnum
+    isLoadInActive?: boolean
 }

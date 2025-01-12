@@ -1,6 +1,6 @@
 import axios, { AxiosError } from 'axios'
+import CookieService from '../../shared/services/cookie.service'
 import ToastUtility from '../../shared/utils/toast.util'
-import TokenUtils from '../../shared/utils/tokens/token.utils'
 import ApiHelper from '../helpers/api.helper'
 
 const axiosClient = axios.create({
@@ -15,7 +15,7 @@ axiosClient.interceptors.request.use(
     config => {
         ToastUtility.displayLoading()
 
-        config.headers.Authorization = `Bearer ${TokenUtils.getTokenFromCookie()}`
+        config.headers.Authorization = `Bearer ${CookieService.getTokenFromCookie()}`
         return config
     },
     async (error: AxiosError) => {

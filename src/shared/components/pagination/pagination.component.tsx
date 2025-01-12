@@ -1,7 +1,7 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import usePagination from '../../hooks/usePagination'
+import { memo, useEffect, useState } from 'react'
+import { Button } from 'react-bootstrap'
 import { PaginationResult } from '../../models/pagination'
+import '../pagination/pagination.scss'
 
 interface PaginationProps<T> {
     paginationResult?: PaginationResult<T>
@@ -18,25 +18,29 @@ function PaginationComponent<T>({
     onPageIndexChange,
     onPageSizeChange
 }: PaginationProps<T>) {
-    const pageResult = usePagination(paginationResult!)
+    const [finishIndex, setFinishIndex] = useState(1)
+    const pageSize = paginationResult?.pageSize ?? 0
+    const pageIndex = paginationResult?.pageIndex ?? 0
+    const totalRecords = paginationResult?.totalRecords || 0
+    const showNumber = (pageIndex - 1) * pageSize + 1
+    const toNumber = Math.min(showNumber + pageSize - 1, totalRecords)
 
-    const startIndex = 1
-    const pageSize = pageResult?.pageSize ?? 0
-    const totalRecords = pageResult?.totalRecords || 0
-    const showNumber = (pageResult?.pageIndex! - 1) * pageSize + 1
-    const toNumber = Math.min(showNumber + (pageResult?.items?.length || 0) - 1, totalRecords)
+    useEffect(() => {
+        const newFinishIndex = totalRecords ? Math.ceil(totalRecords / (pageSize || 1)) : 1
+        setFinishIndex(newFinishIndex)
+    }, [totalRecords, pageSize])
 
-    const [finishIndex, setFinishIndex] = useState<number>(
-        totalRecords ? Math.max(1, Math.ceil(totalRecords / (pageSize || 1))) : 1
-    )
+    const handlePageIndexChange = (newPageIndex: number) => {
+        if (newPageIndex !== pageIndex) {
+            onPageIndexChange(newPageIndex)
+        }
+    }
 
     const handlePageSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const newPageSize = parseInt(e.target.value, 10)
-
         onPageSizeChange(newPageSize)
-        onPageIndexChange(1)
 
-        const newFinishIndex = totalRecords ? Math.max(1, Math.ceil(totalRecords / newPageSize)) : 1
+        const newFinishIndex = totalRecords ? Math.ceil(totalRecords / newPageSize) : 1
         setFinishIndex(newFinishIndex)
     }
 
@@ -49,7 +53,7 @@ function PaginationComponent<T>({
                         name='dataTable_length'
                         aria-controls='dataTable'
                         onChange={handlePageSizeChange}
-                        className='custom-select custom-select-sm form-control form-control-sm'
+                        className='custom-select-sm form-control form-control-sm'
                     >
                         <option value={5}>5</option>
                         <option value={10}>10</option>
@@ -65,68 +69,70 @@ function PaginationComponent<T>({
                 </div>
             </div>
 
-            {/* Paging */}
+            {/* Pagination */}
             <div className='col-sm-12 col-md-6'>
                 <div className='dataTables_paginate paging_simple_numbers'>
-                    <ul className='pagination justify-content-end'>
-                        {paginationResult?.pageIndex !== startIndex && (
-                            <>
-                                <li className='page-item' onClick={() => onPageIndexChange(1)}>
-                                    <Link className='page-link' to=''>
-                                        First
-                                    </Link>
-                                </li>
+                    {totalRecords > 0 && (
+                        <ul className='pagination justify-content-end'>
+                            {pageIndex !== 1 && (
+                                <>
+                                    <li className='page-item' onClick={() => handlePageIndexChange(1)}>
+                                        <Button className='page-link no-radius' type='button'>
+                                            First
+                                        </Button>
+                                    </li>
 
-                                <li
-                                    className='page-item'
-                                    onClick={() => onPageIndexChange((paginationResult?.pageIndex || 1) - 1)}
-                                >
-                                    <Link className='page-link' to=''>
-                                        Previous
-                                    </Link>
-                                </li>
-                            </>
-                        )}
+                                    <li
+                                        className='page-item'
+                                        onClick={() => handlePageIndexChange((pageIndex || 1) - 1)}
+                                    >
+                                        <Button className='page-link no-radius' type='button'>
+                                            Previous
+                                        </Button>
+                                    </li>
+                                </>
+                            )}
 
-                        {createRange(finishIndex).map(item => (
-                            <li
-                                key={item}
-                                className={`page-item ${
-                                    paginationResult?.pageIndex === item ? 'active' : ''
-                                }`}
-                            >
-                                <Link className='page-link' onClick={() => onPageIndexChange(item)} to=''>
-                                    {item}
-                                    {paginationResult?.pageIndex === item && (
-                                        <span className='sr-only'>(current)</span>
-                                    )}
-                                </Link>
-                            </li>
-                        ))}
-
-                        {paginationResult?.pageIndex !== finishIndex && (
-                            <>
-                                <li
-                                    className='page-item'
-                                    onClick={() => onPageIndexChange((paginationResult?.pageIndex || 1) + 1)}
-                                >
-                                    <Link className='page-link' to=''>
-                                        Next
-                                    </Link>
+                            {createRange(finishIndex).map(item => (
+                                <li key={item} className={`page-item ${pageIndex === item ? 'active' : ''}`}>
+                                    <Button
+                                        type='button'
+                                        className='page-link no-radius'
+                                        onClick={() => handlePageIndexChange(item)}
+                                    >
+                                        {item}
+                                        {pageIndex === item && <span className='sr-only'>(current)</span>}
+                                    </Button>
                                 </li>
+                            ))}
 
-                                <li className='page-item' onClick={() => onPageIndexChange(finishIndex)}>
-                                    <Link className='page-link' to=''>
-                                        End
-                                    </Link>
-                                </li>
-                            </>
-                        )}
-                    </ul>
+                            {pageIndex !== finishIndex && (
+                                <>
+                                    <li
+                                        className='page-item'
+                                        onClick={() => handlePageIndexChange((pageIndex || 1) + 1)}
+                                    >
+                                        <Button className='page-link no-radius' type='button'>
+                                            Next
+                                        </Button>
+                                    </li>
+
+                                    <li
+                                        className='page-item'
+                                        onClick={() => handlePageIndexChange(finishIndex)}
+                                    >
+                                        <Button className='page-link no-radius' type='button'>
+                                            End
+                                        </Button>
+                                    </li>
+                                </>
+                            )}
+                        </ul>
+                    )}
                 </div>
             </div>
         </div>
     )
 }
 
-export default PaginationComponent
+export default memo(PaginationComponent)

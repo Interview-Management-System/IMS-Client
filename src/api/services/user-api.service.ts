@@ -6,10 +6,8 @@ import { BaseApiService } from './base-api.service'
 
 class UserApiService extends BaseApiService {
     getUserListPaging(userPaginatedSearchRequest: UserPaginatedSearchRequest) {
-        return this.post<ApiResponse<PaginationResult<UserForRetrieveDTO>>>(
-            UserEndpoint.USER_PAGING,
-            userPaginatedSearchRequest
-        )
+        const url = UserEndpoint.USER_PAGING
+        return this.post<ApiResponse<PaginationResult<UserForRetrieveDTO>>>(url, userPaginatedSearchRequest)
     }
 }
 

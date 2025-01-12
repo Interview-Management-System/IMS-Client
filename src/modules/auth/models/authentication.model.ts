@@ -15,6 +15,6 @@ export interface ResetPasswordRequest {
 }
 
 export interface UserLoginResponse {
-    username?: string | undefined
-    token?: string | undefined
+    username?: string
+    token?: string
 }

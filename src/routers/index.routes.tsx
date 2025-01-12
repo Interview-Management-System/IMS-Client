@@ -1,5 +1,5 @@
 import { createBrowserRouter } from 'react-router-dom'
-import App from '../App'
+import App from '../app/App'
 import MainLayout from '../site/management/layouts/main-layout'
 import authRouters from './auth.routes'
 import userRouters from './management-routers/user.routes'

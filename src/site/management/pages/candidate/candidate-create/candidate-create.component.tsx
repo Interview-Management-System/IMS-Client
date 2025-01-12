@@ -13,12 +13,11 @@ import { RoleIdEnum } from '../../../../../shared/enums/entity-enums/master-data
 import { EnumList } from '../../../../../shared/helpers/enums/enum-list.helper'
 import { createCandidateValidationSchema } from '../../../../../shared/helpers/form/validations/schemas/candidate-schemas.validation'
 import useModal from '../../../../../shared/hooks/useModal'
-import TokenUtils from '../../../../../shared/utils/tokens/token.utils'
 
 function onSubmit(formData: CreateCandidateRequest) {
     // service here
     formData.roleId = RoleIdEnum.Candidate
-    formData.createdBy = TokenUtils.getCurrentUserIdFromCookie() // get guid from jwt
+    // formData.createdBy = TokenUtils.getCurrentUserIdFromCookie() // get guid from jwt
 
     console.log(formData)
 }
@@ -48,7 +47,7 @@ function CandidateCreateComponent() {
         const isValid = await createCandidateForm.trigger()
 
         if (isValid) {
-            modal.setShow(true)
+            modal.showModal()
         }
     }
 
@@ -58,7 +57,7 @@ function CandidateCreateComponent() {
                 show={modal.show}
                 modalTitle='Create confirm'
                 buttonVariant={ButtonVariant.Primary}
-                handleClose={modal.handleClose}
+                handleClose={modal.closeModal}
                 modalConfirmQuestion='Do you want to create candidate ?'
                 handleConfirm={createCandidateForm.handleSubmit(onSubmit)}
             />

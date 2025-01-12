@@ -1,6 +1,6 @@
 export interface PaginationRequest {
-    pageSize: number
-    pageIndex: number
+    pageSize?: number
+    pageIndex?: number
 }
 
 export interface PaginatedSearchRequest {

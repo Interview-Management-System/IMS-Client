@@ -1,5 +1,6 @@
 import { faEye, faPenToSquare, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { memo } from 'react'
 import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 
@@ -44,4 +45,4 @@ function ActionButtonComponent({ detailRoute, editRoute, deleteAction }: ActionB
     )
 }
 
-export default ActionButtonComponent
+export default memo(ActionButtonComponent)

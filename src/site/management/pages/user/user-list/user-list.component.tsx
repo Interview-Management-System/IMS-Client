@@ -1,69 +1,56 @@
 import { faAdd, faSearch } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useState } from 'react'
+import { observer } from 'mobx-react-lite'
+import { useMemo, useState } from 'react'
 import { Button } from 'react-bootstrap'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
-
-import { userListTestData } from '../../../../../data/test/user-data.test'
-import { UserPaginatedSearchRequest } from '../../../../../modules/user/models/user.model'
+import { UserForRetrieveDTO, UserPaginatedSearchRequest } from '../../../../../modules/user/models/user.model'
 import userService from '../../../../../modules/user/services/user.service'
+import userStore from '../../../../../modules/user/stores/user.store'
 import ActionButtonComponent from '../../../../../shared/components/buttons/action-button.component'
 import ModalConfirmComponent from '../../../../../shared/components/modals/modal-confirm/modal-confirm.component'
 import PaginationComponent from '../../../../../shared/components/pagination/pagination.component'
+import TableComponent from '../../../../../shared/components/table/table.component'
 import { ButtonVariant } from '../../../../../shared/enums/button-variant.enum'
 import { RoleEnum } from '../../../../../shared/enums/entity-enums/master-data.enum'
 import { EnumList } from '../../../../../shared/helpers/enums/enum-list.helper'
 import { useFetch } from '../../../../../shared/hooks/use-fetch'
 import useModal from '../../../../../shared/hooks/useModal'
-import usePagination from '../../../../../shared/hooks/usePagination'
 
-const defaultSearchValue = {
-    searchText: '',
-    roleId: RoleEnum.Default,
-    paginationRequest: { pageIndex: 1, pageSize: 5 }
-} as UserPaginatedSearchRequest
-
-function deleteUser(userId: string) {
-    // todo:
-    console.log(userId)
+function deleteUser(userId: string, formData: UserPaginatedSearchRequest) {
+    // userService.deleteUserById(userId).then(() => userService.getUserListPaging(formData))
 }
 
-function resetForm() {
-    userService.getUserListPaging(defaultSearchValue)
+function resetForm(formData: UserPaginatedSearchRequest) {
+    if (formData.roleId !== RoleEnum.Default || formData.searchText?.trim() !== '') {
+        userService.getUserListPaging()
+    }
 }
 
 function handleSubmitForm(formData: UserPaginatedSearchRequest) {
-    if (formData.searchText !== '' || formData.roleId !== RoleEnum.Default) {
-        userService.getUserListPaging(formData)
-    }
+    userService.getUserListPaging(formData)
 }
 
 function UserListComponent() {
     const modal = useModal()
     const navigate = useNavigate()
+    const pageResult = userStore.userPageResult
+    const headers = ['User Name', 'Email', 'Phone', 'Role', 'Status']
+    const columns = ['username', 'email', 'phoneNumber', 'role', 'status'] as (keyof UserForRetrieveDTO)[]
 
-    useFetch(() => {
-        userService.getUserListPaging(defaultSearchValue)
-    })
-
-    const pageResult = usePagination({
-        items: userListTestData,
-        pageSize: 5,
-        pageIndex: 1,
-        totalRecords: userListTestData.length
-    })
-
-    const { register, handleSubmit, reset } = useForm<UserPaginatedSearchRequest>({
-        defaultValues: defaultSearchValue
-    })
+    useFetch(() => userService.getUserListPaging())
 
     const [userIdToDelete, setUserIdToDelete] = useState('')
+    const { register, handleSubmit, reset, getValues } = useForm<UserPaginatedSearchRequest>()
 
-    const handleDeleteUser = (userId: string) => {
-        setUserIdToDelete(userId)
-        modal.setShow(true)
-    }
+    const handleDeleteUser = useMemo(
+        () => (userId: string) => {
+            setUserIdToDelete(userId)
+            modal.showModal()
+        },
+        [modal]
+    )
 
     return (
         <>
@@ -71,9 +58,11 @@ function UserListComponent() {
                 show={modal.show}
                 buttonVariant={ButtonVariant.Danger}
                 modalTitle='Delete confirm'
-                handleClose={modal.handleClose}
+                handleClose={modal.closeModal}
                 modalConfirmQuestion='Do you want to delete this user ?'
-                handleConfirm={() => deleteUser(userIdToDelete)}
+                handleConfirm={() => {
+                    //
+                }}
             />
 
             <div className='card shadow mb-4'>
@@ -139,8 +128,8 @@ function UserListComponent() {
                                                     <Button
                                                         className='btn-secondary'
                                                         onClick={() => {
+                                                            resetForm(getValues())
                                                             reset()
-                                                            resetForm()
                                                         }}
                                                     >
                                                         Reset
@@ -152,47 +141,37 @@ function UserListComponent() {
                                 </div>
                             </div>
 
-                            {/* Table */}
-                            <div className='row'>
-                                <table className='table table-bordered' id='dataTable' cellSpacing='0'>
-                                    <thead>
-                                        <tr>
-                                            <th className='text-center'>User Name</th>
-                                            <th className='text-center'>Email</th>
-                                            <th className='text-center'>Phone</th>
-                                            <th className='text-center'>Role</th>
-                                            <th className='text-center'>Status</th>
-                                            <th className='text-center'>Actions</th>
-                                        </tr>
-                                    </thead>
-
-                                    <tbody>
-                                        {pageResult.items?.map(user => (
-                                            <tr key={user.id}>
-                                                <td>{user.username}</td>
-                                                <td>{user.email}</td>
-                                                <td>{user.phoneNumber}</td>
-                                                <td>{user.role}</td>
-                                                <td>{user.status}</td>
-                                                <td className='badge badge-success'></td>
-
-                                                <td className='text-center' style={{ width: '10%' }}>
-                                                    <ActionButtonComponent
-                                                        editRoute={`/user/edit?id=${user.id}`}
-                                                        detailRoute={`/user/detail/${user.id}`}
-                                                        deleteAction={() => handleDeleteUser(user.id)}
-                                                    />
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
+                            <TableComponent
+                                headers={headers}
+                                columns={columns}
+                                items={pageResult.items}
+                                renderActions={user => (
+                                    <ActionButtonComponent
+                                        editRoute={`/user/edit/${user.id}`}
+                                        detailRoute={`/user/detail/${user.id}`}
+                                        deleteAction={() => handleDeleteUser(user.id)}
+                                    />
+                                )}
+                            />
 
                             <PaginationComponent
                                 paginationResult={pageResult}
-                                onPageSizeChange={pageResult.handlePageSizeChange}
-                                onPageIndexChange={pageResult.handlePageIndexChange}
+                                onPageIndexChange={(newPageIndex: number) => {
+                                    userService.getUserListPaging({
+                                        ...getValues(),
+                                        paginationRequest: {
+                                            pageIndex: newPageIndex
+                                        }
+                                    })
+                                }}
+                                onPageSizeChange={(newPageSize: number) => {
+                                    userService.getUserListPaging({
+                                        ...getValues(),
+                                        paginationRequest: {
+                                            pageSize: newPageSize
+                                        }
+                                    })
+                                }}
                             />
                         </div>
                     </div>
@@ -202,4 +181,4 @@ function UserListComponent() {
     )
 }
 
-export default UserListComponent
+export default observer(UserListComponent)
