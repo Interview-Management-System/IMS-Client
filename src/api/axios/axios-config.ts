@@ -3,6 +3,8 @@ import CookieService from '../../shared/services/cookie.service'
 import ToastUtility from '../../shared/utils/toast.util'
 import ApiHelper from '../helpers/api.helper'
 
+//https://jsonplaceholder.typicode.com/
+//https://localhost:7139/api'
 const axiosClient = axios.create({
     baseURL: 'https://localhost:7139/api',
     timeout: 100000,
@@ -29,9 +31,9 @@ axiosClient.interceptors.response.use(
         ApiHelper.handleSuccessResponse(response)
         return response.data
     },
-    async (error: AxiosError) => {
+    (error: AxiosError) => {
         ApiHelper.handleErrorResponse(error)
-        return await Promise.reject(error).catch(() => {})
+        return Promise.reject(error).catch(() => {})
     }
 )
 

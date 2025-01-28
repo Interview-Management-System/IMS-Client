@@ -1,6 +1,6 @@
 import * as Yup from 'yup'
 
-export function createDateValidation(isRequired: boolean = true) {
+export function createDateValidation(isRequired: boolean = false) {
     return isRequired ? Yup.date().required('Date is required') : Yup.date()
 }
 

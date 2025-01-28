@@ -1,19 +1,12 @@
-import { Controller, FieldValues, Path, PathValue } from 'react-hook-form'
-import { GenderEnum } from '../../enums/entity-enums/master-data.enum'
+import { Controller, FieldValues, Path } from 'react-hook-form'
 import { capitalizeFirstCharacter, ControlledSelectionProps } from './input-prop'
-
-function getDisplayValue<T>(value: string, fieldValue: PathValue<T, Path<T>>) {
-    if (value === 'gender') {
-        return fieldValue === true ? GenderEnum.Male : fieldValue === false ? GenderEnum.Female : ''
-    }
-    return fieldValue
-}
 
 function ControlledSelection<T extends FieldValues>({
     form,
     name,
     className = 'form-control',
-    optionList
+    optionList,
+    registerOptions = {}
 }: ControlledSelectionProps<T>) {
     return (
         <Controller
@@ -23,30 +16,8 @@ function ControlledSelection<T extends FieldValues>({
             render={({ field, fieldState: { error } }) => {
                 return (
                     <>
-                        <select
-                            className={className}
-                            {...field}
-                            value={getDisplayValue<T>(name, field.value)} // Ensure the correct value is displayed
-                            onChange={e => {
-                                const selectedValue = e.target.value
-                                const option = optionList.find(option => String(option.id) === selectedValue)
-
-                                let convertedValue: null | string | number | boolean = null
-
-                                if (option !== undefined) {
-                                    // Handle special case for gender
-                                    if (name === 'gender') {
-                                        convertedValue = +option.id === GenderEnum.Male
-                                    } else {
-                                        convertedValue =
-                                            typeof option.id === 'number' ? +option.id : option.id
-                                    }
-                                }
-
-                                field.onChange(convertedValue)
-                            }}
-                        >
-                            <option value={undefined}>Select your option</option>
+                        <select {...field} className={className} {...form.register(name, registerOptions)}>
+                            <option value=''>Select your option</option>
 
                             {optionList.map(option => (
                                 <option key={option.id} value={option.id}>
@@ -64,3 +35,46 @@ function ControlledSelection<T extends FieldValues>({
 }
 
 export default ControlledSelection
+
+/*
+
+
+function getDisplayValue<T>(value: string, fieldValue?: PathValue<T, Path<T>>) {
+    if (value === 'gender') {
+        return fieldValue === true ? GenderEnum.Male : fieldValue === false ? GenderEnum.Female : ''
+    } else if (value === 'isActive') {
+        return fieldValue === true ? StatusEnum.Active : fieldValue === false ? StatusEnum.InActive : ''
+    }
+
+    return fieldValue ?? ''
+}
+
+
+
+
+ // value={getDisplayValue<T>(name, field.value)} // Ensure the correct value is displayed
+                           
+                            onChange={e => {
+                                const selectedValue = e.target.value
+                                const option = optionList.find(option => String(option.id) === selectedValue)
+
+                                let convertedValue: null | string | number | boolean = null
+
+                                if (option !== undefined) {
+                                    // Handle special cases
+                                    if (name === 'gender') {
+                                        convertedValue = +option.id === GenderEnum.Male
+                                    } else if (name === 'isActive') {
+                                        convertedValue = +option.id === StatusEnum.Active
+                                    } else {
+                                        convertedValue =
+                                            typeof option.id === 'number' ? +option.id : option.id
+                                    }
+                                }
+                                field.onChange(convertedValue)
+                            }}
+                           
+
+
+
+*/

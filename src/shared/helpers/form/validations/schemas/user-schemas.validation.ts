@@ -1,6 +1,11 @@
 import * as Yup from 'yup'
 import { CreateCandidateRequest } from '../../../../../modules/user/models/candidate.model'
-import { HighestLevelEnum, PositionEnum } from '../../../../enums/entity-enums/master-data.enum'
+import { UserForCreateDTO } from '../../../../../modules/user/models/user.model'
+import {
+    DepartmentEnum,
+    HighestLevelEnum,
+    PositionEnum
+} from '../../../../enums/entity-enums/master-data.enum'
 import {
     createBooleanValidation,
     createDateValidation,
@@ -13,39 +18,15 @@ import {
     createStringValidation
 } from '../validation-builder/string-validation.builder'
 import { createValidationSchema } from './validation-schema.builder'
-/*
+
 export function createCandidateValidationSchema() {
     return createValidationSchema<CreateCandidateRequest>({
-        email: undefined,
-        username: undefined,
-        dob: undefined,
-        address: undefined,
-        phoneNumber: undefined,
-        gender: undefined,
-        roleId: undefined,
-        createdBy: undefined,
-        isActive: undefined,
-        attachment: undefined,
-        status: undefined,
-        note: undefined,
-        recruiterId: undefined,
-        yearsOfExperience: undefined,
-        departmentId: undefined,
-        positionId: undefined,
-        skillId: undefined,
-        highestLevelId: undefined
-    })
-}
-*/
-export function createCandidateValidationSchema() {
-    return createValidationSchema<CreateCandidateRequest>({
-        email: createEmailValidation(1, 50),
+        email: createEmailValidation(),
         username: createStringValidation(true),
         dob: createDateValidation(true),
         address: createStringValidation(true),
         phoneNumber: createPhoneValidation(),
         gender: createBooleanValidation(),
-        roleId: undefined,
         createdBy: undefined,
         isActive: undefined,
         attachment: createFileValidation(),
@@ -57,5 +38,21 @@ export function createCandidateValidationSchema() {
         positionId: createEnumValidation(PositionEnum),
         skillId: Yup.mixed().required(),
         highestLevelId: createEnumValidation(HighestLevelEnum)
+    })
+}
+
+export function createUserCreateValidationSchema() {
+    return createValidationSchema<UserForCreateDTO>({
+        email: createEmailValidation(),
+        username: createStringValidation(true),
+        dob: createDateValidation(true),
+        address: createStringValidation(true),
+        phoneNumber: createPhoneValidation(),
+        gender: createBooleanValidation(),
+        roleId: createStringValidation(true),
+        createdBy: undefined,
+        isActive: createBooleanValidation(),
+        note: createStringValidation(),
+        departmentId: createEnumValidation(DepartmentEnum)
     })
 }

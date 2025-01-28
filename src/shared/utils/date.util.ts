@@ -1,13 +1,14 @@
 export class DateUtility {
-    static formatDate(date: Date, format: 'dd/mm/yyyy' | 'yyyy/mm/dd' | 'mm/dd/yyyy') {
-        if (date === null) return
+    static formatDate(date?: Date, format?: 'dd/mm/yyyy' | 'yyyy/mm/dd' | 'mm/dd/yyyy') {
+        if (!(date instanceof Date) || isNaN(date.getTime())) return
 
         const parts = {
-            dd: String(date.getDate()).padStart(2, '0'),
-            mm: String(date.getMonth() + 1).padStart(2, '0'),
-            yyyy: date.getFullYear()
+            dd: date.getDate().toString().padStart(2, '0'),
+            mm: (date.getMonth() + 1).toString().padStart(2, '0'),
+            yyyy: date.getFullYear().toString()
         }
 
-        return format.replace('dd', parts.dd).replace('mm', parts.mm).replace('yyyy', String(parts.yyyy))
+        // Replace placeholders in the format string
+        return format?.replace('dd', parts.dd).replace('mm', parts.mm).replace('yyyy', parts.yyyy)
     }
 }

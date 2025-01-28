@@ -8,7 +8,6 @@ import { CandidateForRetrieveDTO } from '../../../../../modules/user/models/cand
 import ActionButtonComponent from '../../../../../shared/components/buttons/action-button.component'
 import PaginationComponent from '../../../../../shared/components/pagination/pagination.component'
 import { EnumList } from '../../../../../shared/helpers/enums/enum-list.helper'
-
 import usePagination from '../../../../../shared/hooks/usePagination'
 import { PaginationResult } from '../../../../../shared/models/pagination'
 import './candidate-list.scss'

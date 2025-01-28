@@ -5,7 +5,9 @@ export interface PaginationRequest {
 
 export interface PaginatedSearchRequest {
     searchText?: string
+    isLoadInActive?: boolean
     paginationRequest: PaginationRequest
+    sortCriteria?: SortCriteria | null
 }
 
 export interface PaginationResult<T> {
@@ -13,4 +15,9 @@ export interface PaginationResult<T> {
     pageSize?: number
     pageIndex?: number
     totalRecords?: number
+}
+
+export interface SortCriteria {
+    isAscending?: boolean
+    sortProperty?: string
 }

@@ -9,14 +9,14 @@ import ControlledSelection from '../../../../../shared/components/form/form-sele
 import ControlledTextArea from '../../../../../shared/components/form/form-text-area.component'
 import ModalConfirmComponent from '../../../../../shared/components/modals/modal-confirm/modal-confirm.component'
 import { ButtonVariant } from '../../../../../shared/enums/button-variant.enum'
-import { RoleIdEnum } from '../../../../../shared/enums/entity-enums/master-data.enum'
+import { GenderEnum } from '../../../../../shared/enums/entity-enums/master-data.enum'
 import { EnumList } from '../../../../../shared/helpers/enums/enum-list.helper'
-import { createCandidateValidationSchema } from '../../../../../shared/helpers/form/validations/schemas/candidate-schemas.validation'
+import { createCandidateValidationSchema } from '../../../../../shared/helpers/form/validations/schemas/user-schemas.validation'
 import useModal from '../../../../../shared/hooks/useModal'
 
 function onSubmit(formData: CreateCandidateRequest) {
     // service here
-    formData.roleId = RoleIdEnum.Candidate
+
     // formData.createdBy = TokenUtils.getCurrentUserIdFromCookie() // get guid from jwt
 
     console.log(formData)
@@ -166,6 +166,13 @@ function CandidateCreateComponent() {
                                             name='gender'
                                             form={createCandidateForm}
                                             optionList={EnumList.genderList}
+                                            registerOptions={{
+                                                setValueAs: value => {
+                                                    if (value) {
+                                                        return value !== GenderEnum.Female.toString()
+                                                    }
+                                                }
+                                            }}
                                         />
                                     </div>
                                 </div>
@@ -206,6 +213,7 @@ function CandidateCreateComponent() {
                                             name='positionId'
                                             form={createCandidateForm}
                                             optionList={EnumList.positionList}
+                                            registerOptions={{ valueAsNumber: true }}
                                         />
                                     </div>
                                 </div>
@@ -272,6 +280,7 @@ function CandidateCreateComponent() {
                                             name='highestLevelId'
                                             form={createCandidateForm}
                                             optionList={EnumList.highestLevelList}
+                                            registerOptions={{ valueAsNumber: true }}
                                         />
                                     </div>
                                 </div>

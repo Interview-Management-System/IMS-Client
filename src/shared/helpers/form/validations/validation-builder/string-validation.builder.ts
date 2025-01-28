@@ -1,6 +1,6 @@
 import * as Yup from 'yup'
 
-export function createEmailValidation(minLength: number, maxLength: number) {
+export function createEmailValidation(minLength: number = 1, maxLength: number = 40) {
     return Yup.string()
         .email('Invalid email format')
         .min(minLength)

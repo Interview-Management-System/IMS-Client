@@ -4,66 +4,81 @@ import { JobStatusEnum } from '../../enums/entity-enums/job.enum'
 import {
     BenefitEnum,
     ContractTypeEnum,
+    DepartmentEnum,
     GenderEnum,
     HighestLevelEnum,
     LevelEnum,
     PositionEnum,
     RoleEnum,
-    SkillEnum
+    RoleIdEnum,
+    SkillEnum,
+    StatusEnum
 } from '../../enums/entity-enums/master-data.enum'
 import { OfferStatusEnum } from '../../enums/entity-enums/offer.enum'
 import { EnumBuilder } from '../../utils/enums/enum-builder.utils'
 
 export class EnumList {
     static get candidateStatusList() {
-        return EnumBuilder.generateEnumList(CandidateStatusEnum)
+        return EnumBuilder.generateEnumList(CandidateStatusEnum, Number)
     }
 
     static get benefitList() {
-        return EnumBuilder.generateEnumList(BenefitEnum)
+        return EnumBuilder.generateEnumList(BenefitEnum, Number)
     }
 
     static get contractTypeList() {
-        return EnumBuilder.generateEnumList(ContractTypeEnum)
+        return EnumBuilder.generateEnumList(ContractTypeEnum, Number)
     }
 
     static get highestLevelList() {
-        return EnumBuilder.generateEnumList(HighestLevelEnum)
+        return EnumBuilder.generateEnumList(HighestLevelEnum, Number)
     }
 
     static get LevelList() {
-        return EnumBuilder.generateEnumList(LevelEnum)
+        return EnumBuilder.generateEnumList(LevelEnum, Number)
     }
 
     static get positionList() {
-        return EnumBuilder.generateEnumList(PositionEnum)
+        return EnumBuilder.generateEnumList(PositionEnum, Number)
     }
 
     static get roleList() {
-        return EnumBuilder.generateEnumList(RoleEnum)
+        return EnumBuilder.generateEnumList(RoleEnum, Number)
+    }
+
+    static get roleIdList() {
+        return EnumBuilder.generateEnumList(RoleIdEnum, String)
     }
 
     static get skillList() {
-        return EnumBuilder.generateEnumList(SkillEnum)
+        return EnumBuilder.generateEnumList(SkillEnum, Number)
     }
 
     static get offerList() {
-        return EnumBuilder.generateEnumList(OfferStatusEnum)
+        return EnumBuilder.generateEnumList(OfferStatusEnum, Number)
     }
 
     static get jobList() {
-        return EnumBuilder.generateEnumList(JobStatusEnum)
+        return EnumBuilder.generateEnumList(JobStatusEnum, Number)
     }
 
     static get InterviewResultList() {
-        return EnumBuilder.generateEnumList(InterviewResultEnum)
+        return EnumBuilder.generateEnumList(InterviewResultEnum, Number)
     }
 
     static get InterviewStatusList() {
-        return EnumBuilder.generateEnumList(InterviewStatusEnum)
+        return EnumBuilder.generateEnumList(InterviewStatusEnum, Number)
     }
 
     static get genderList() {
-        return EnumBuilder.generateEnumList(GenderEnum)
+        return EnumBuilder.generateEnumList(GenderEnum, Number)
+    }
+
+    static get departmentList() {
+        return EnumBuilder.generateEnumList(DepartmentEnum, Number)
+    }
+
+    static get statusList() {
+        return EnumBuilder.generateEnumList(StatusEnum, Number)
     }
 }

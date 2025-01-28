@@ -1,0 +1,10 @@
+.sortable-header {
+    display: flex;
+    align-items: center; /* Aligns items vertically */
+    gap: 4px; /* Reduces spacing between text and icons */
+    justify-content: flex-start; /* Ensures left alignment */
+}
+
+.sort-icon {
+    font-size: '0.8' !important;
+}

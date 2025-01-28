@@ -15,7 +15,6 @@ interface BaseCandidate {
 
 export interface CreateCandidateRequest extends BaseCandidate {
     gender?: boolean
-    roleId?: string
     createdBy?: string
     departmentId?: DepartmentEnum
     isActive?: boolean

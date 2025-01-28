@@ -7,10 +7,11 @@ import { useNavigate } from 'react-router-dom'
 interface ActionButtonProps {
     detailRoute: string
     editRoute: string
-    deleteAction: () => void
+    deleteAction?: () => void
+    otherAction?: () => void
 }
 
-function ActionButtonComponent({ detailRoute, editRoute, deleteAction }: ActionButtonProps) {
+function ActionButtonComponent({ detailRoute, editRoute, deleteAction, otherAction }: ActionButtonProps) {
     const navigate = useNavigate()
 
     return (
@@ -37,7 +38,7 @@ function ActionButtonComponent({ detailRoute, editRoute, deleteAction }: ActionB
                 placement='top'
                 overlay={<Tooltip id='tooltip-another-action'>Another Action</Tooltip>}
             >
-                <Button variant='danger' className='m-1 btn-sm'>
+                <Button variant='danger' className='m-1 btn-sm' onClick={otherAction}>
                     <FontAwesomeIcon icon={faTrash} />
                 </Button>
             </OverlayTrigger>

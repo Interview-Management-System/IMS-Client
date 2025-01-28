@@ -4,7 +4,7 @@ import { ControlledTextAreaProps } from './input-prop'
 function ControlledTextArea<T extends FieldValues>({
     name,
     form,
-    rows = 3,
+    rows = 3.5,
     className = ''
 }: ControlledTextAreaProps<T>) {
     return (

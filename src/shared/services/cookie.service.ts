@@ -16,7 +16,7 @@ export default class CookieService {
 
     /************************************************* JWT Token *************************************/
     static getTokenFromCookie() {
-        return CookieService.cookies.get('token')
+        return CookieService.cookies.get('token') ?? ''
     }
 
     static setTokenToCookie(token?: string) {

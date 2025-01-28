@@ -78,3 +78,8 @@ export enum GenderEnum {
     Female,
     Male
 }
+
+export enum StatusEnum {
+    Active,
+    InActive
+}

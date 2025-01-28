@@ -1,4 +1,4 @@
-import { memo, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from 'react-bootstrap'
 import { PaginationResult } from '../../models/pagination'
 import '../pagination/pagination.scss'
@@ -30,13 +30,13 @@ function PaginationComponent<T>({
         setFinishIndex(newFinishIndex)
     }, [totalRecords, pageSize])
 
-    const handlePageIndexChange = (newPageIndex: number) => {
+    function handlePageIndexChange(newPageIndex: number) {
         if (newPageIndex !== pageIndex) {
             onPageIndexChange(newPageIndex)
         }
     }
 
-    const handlePageSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    function handlePageSizeChange(e: React.ChangeEvent<HTMLSelectElement>) {
         const newPageSize = parseInt(e.target.value, 10)
         onPageSizeChange(newPageSize)
 
@@ -135,4 +135,4 @@ function PaginationComponent<T>({
     )
 }
 
-export default memo(PaginationComponent)
+export default PaginationComponent

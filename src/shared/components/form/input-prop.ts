@@ -1,5 +1,5 @@
 import { HTMLInputAutoCompleteAttribute, HTMLInputTypeAttribute } from 'react'
-import { FieldValues, Path, UseFormReturn } from 'react-hook-form'
+import { FieldValues, Path, RegisterOptions, UseFormReturn } from 'react-hook-form'
 
 type ControlledProp<T extends FieldValues> = {
     name: Path<T>
@@ -15,10 +15,11 @@ export type ControlledInputProps<T extends FieldValues> = ControlledProp<T> & {
 
 export type ControlledSelectionProps<T extends FieldValues> = ControlledProp<T> & {
     optionList: { id: number | string; name: string | undefined | null }[]
+    registerOptions?: RegisterOptions<T, Path<T>>
 }
 
 export type ControlledTextAreaProps<T extends FieldValues> = ControlledProp<T> & {
-    rows: number
+    rows?: number
 }
 
 export function capitalizeFirstCharacter(message: string = '') {

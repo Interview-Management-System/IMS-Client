@@ -1,14 +1,21 @@
-import { faAdd, faSearch } from '@fortawesome/free-solid-svg-icons'
+import {
+    faAdd,
+    faEye,
+    faPenToSquare,
+    faSearch,
+    faToggleOff,
+    faToggleOn,
+    faTrash
+} from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { observer } from 'mobx-react-lite'
-import { useMemo, useState } from 'react'
-import { Button } from 'react-bootstrap'
+import { useState } from 'react'
+import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import { UserForRetrieveDTO, UserPaginatedSearchRequest } from '../../../../../modules/user/models/user.model'
 import userService from '../../../../../modules/user/services/user.service'
 import userStore from '../../../../../modules/user/stores/user.store'
-import ActionButtonComponent from '../../../../../shared/components/buttons/action-button.component'
 import ModalConfirmComponent from '../../../../../shared/components/modals/modal-confirm/modal-confirm.component'
 import PaginationComponent from '../../../../../shared/components/pagination/pagination.component'
 import TableComponent from '../../../../../shared/components/table/table.component'
@@ -17,52 +24,132 @@ import { RoleEnum } from '../../../../../shared/enums/entity-enums/master-data.e
 import { EnumList } from '../../../../../shared/helpers/enums/enum-list.helper'
 import { useFetch } from '../../../../../shared/hooks/use-fetch'
 import useModal from '../../../../../shared/hooks/useModal'
+import { TableConfig } from '../../../../../shared/models/table-config'
 
-function deleteUser(userId: string, formData: UserPaginatedSearchRequest) {
-    // userService.deleteUserById(userId).then(() => userService.getUserListPaging(formData))
-}
-
-function resetForm(formData: UserPaginatedSearchRequest) {
+function handleSearchUser(formData: UserPaginatedSearchRequest) {
     if (formData.roleId !== RoleEnum.Default || formData.searchText?.trim() !== '') {
+        userStore.setUserPaginationSearchValue(formData)
         userService.getUserListPaging()
     }
-}
-
-function handleSubmitForm(formData: UserPaginatedSearchRequest) {
-    userService.getUserListPaging(formData)
 }
 
 function UserListComponent() {
     const modal = useModal()
     const navigate = useNavigate()
     const pageResult = userStore.userPageResult
-    const headers = ['User Name', 'Email', 'Phone', 'Role', 'Status']
-    const columns = ['username', 'email', 'phoneNumber', 'role', 'status'] as (keyof UserForRetrieveDTO)[]
 
     useFetch(() => userService.getUserListPaging())
 
-    const [userIdToDelete, setUserIdToDelete] = useState('')
+    const tableConfig = {
+        headers: [
+            {
+                headerName: 'User Name',
+                propertyName: 'UserName'
+            },
+            {
+                headerName: 'Email',
+                propertyName: 'Email'
+            },
+            {
+                headerName: 'Phone',
+                propertyName: 'PhoneNumber'
+            },
+            {
+                headerName: 'Role'
+            },
+            {
+                headerName: 'Status'
+            }
+        ],
+        columns: ['username', 'email', 'phoneNumber', 'role', 'statusText']
+    } as TableConfig<UserForRetrieveDTO>
+
     const { register, handleSubmit, reset, getValues } = useForm<UserPaginatedSearchRequest>()
 
-    const handleDeleteUser = useMemo(
-        () => (userId: string) => {
-            setUserIdToDelete(userId)
-            modal.showModal()
-        },
-        [modal]
-    )
+    const [, setUserIdToDelete] = useState('')
+    const [, setUserIdToActivate] = useState('')
+    const [, setUserIdToDeActivate] = useState('')
+
+    // Modal states
+    const [modalTitle, setModalTitle] = useState('')
+    const [modalConfirmQuestion, setModalConfirmQuestion] = useState('')
+    const [modalConfirmHandler, setModalConfirmHandler] = useState<() => void>(() => {})
+
+    // Delete
+    function confirmDeleteUser(userId: string) {
+        modal.showModal()
+        setUserIdToDelete(userId)
+        setModalTitle('Delete confirmation')
+        setModalConfirmQuestion('Are you sure you want to delete ?')
+        setModalConfirmHandler(() => () => userService.deleteUser(userId))
+    }
+
+    // Activate
+    function confirmActivateUser(userId: string) {
+        modal.showModal()
+        setUserIdToActivate(userId)
+        setModalTitle('Active confirmation')
+        setModalConfirmQuestion('Are you sure you want to activate ?')
+        setModalConfirmHandler(() => () => userService.activateUser(userId))
+    }
+
+    // De-Activate
+    function confirmDeActivateUser(userId: string) {
+        modal.showModal()
+        setUserIdToDeActivate(userId)
+        setModalTitle('De-activate confirmation')
+        setModalConfirmQuestion('Are you sure you want to de-activate ?')
+        setModalConfirmHandler(() => () => userService.deActivateUser(userId))
+    }
+
+    function resetForm() {
+        reset()
+        userStore.resetUserPaginationSearchValue()
+        userService.getUserListPaging()
+    }
+
+    function onPageIndexChange(newPageIndex: number) {
+        userStore.setUserPaginationSearchValue({
+            ...getValues(),
+            paginationRequest: {
+                pageIndex: newPageIndex
+            }
+        })
+
+        userService.getUserListPaging()
+    }
+
+    function onPageSizeChange(newPageSize: number) {
+        userStore.setUserPaginationSearchValue({
+            ...getValues(),
+            paginationRequest: {
+                pageSize: newPageSize
+            }
+        })
+
+        userService.getUserListPaging()
+    }
+
+    function onSortChange(propertyName: string, isAscending: boolean) {
+        userStore.setUserPaginationSearchValue({
+            ...getValues(),
+            sortCriteria: {
+                isAscending: isAscending,
+                sortProperty: propertyName
+            }
+        })
+        userService.getUserListPaging()
+    }
 
     return (
         <>
             <ModalConfirmComponent
                 show={modal.show}
                 buttonVariant={ButtonVariant.Danger}
-                modalTitle='Delete confirm'
+                modalTitle={modalTitle}
                 handleClose={modal.closeModal}
-                modalConfirmQuestion='Do you want to delete this user ?'
-                handleConfirm={() => {
-                    //
-                }}
+                modalConfirmQuestion={modalConfirmQuestion}
+                handleConfirm={modalConfirmHandler}
             />
 
             <div className='card shadow mb-4'>
@@ -91,7 +178,7 @@ function UserListComponent() {
                                 {/* Search */}
                                 <div className='col-sm-10 col-md-7'>
                                     <div id='dataTable_filter' className='dataTables_filter text-right'>
-                                        <form className='user' onSubmit={handleSubmit(handleSubmitForm)}>
+                                        <form className='user' onSubmit={handleSubmit(handleSearchUser)}>
                                             <div className='row'>
                                                 {/* Status dropdown */}
                                                 <select
@@ -125,13 +212,7 @@ function UserListComponent() {
                                                 </div>
 
                                                 <div className='col-md-1'>
-                                                    <Button
-                                                        className='btn-secondary'
-                                                        onClick={() => {
-                                                            resetForm(getValues())
-                                                            reset()
-                                                        }}
-                                                    >
+                                                    <Button className='btn-secondary' onClick={resetForm}>
                                                         Reset
                                                     </Button>
                                                 </div>
@@ -142,36 +223,98 @@ function UserListComponent() {
                             </div>
 
                             <TableComponent
-                                headers={headers}
-                                columns={columns}
+                                tableConfig={tableConfig}
                                 items={pageResult.items}
+                                onSortChange={onSortChange}
                                 renderActions={user => (
-                                    <ActionButtonComponent
-                                        editRoute={`/user/edit/${user.id}`}
-                                        detailRoute={`/user/detail/${user.id}`}
-                                        deleteAction={() => handleDeleteUser(user.id)}
-                                    />
+                                    <>
+                                        <OverlayTrigger
+                                            placement='top'
+                                            overlay={<Tooltip id='tooltip-view'>Details</Tooltip>}
+                                        >
+                                            <Button
+                                                variant={ButtonVariant.Primary}
+                                                className='m-1 btn-sm'
+                                                onClick={() => navigate(`/user/detail/${user.id}`)}
+                                            >
+                                                <FontAwesomeIcon icon={faEye} />
+                                            </Button>
+                                        </OverlayTrigger>
+
+                                        <OverlayTrigger
+                                            placement='top'
+                                            overlay={<Tooltip id='tooltip-edit'>Edit </Tooltip>}
+                                        >
+                                            <Button
+                                                disabled={!user.isActive}
+                                                variant={ButtonVariant.Info}
+                                                className='m-1 btn-sm'
+                                                onClick={() => navigate(`/user/edit/${user.id}`)}
+                                            >
+                                                <FontAwesomeIcon icon={faPenToSquare} />
+                                            </Button>
+                                        </OverlayTrigger>
+
+                                        <OverlayTrigger
+                                            placement='top'
+                                            overlay={<Tooltip id='tooltip-delete'>Delete </Tooltip>}
+                                        >
+                                            <Button
+                                                variant={ButtonVariant.Danger}
+                                                className='m-1 btn-sm'
+                                                onClick={() => confirmDeleteUser(user.id)}
+                                            >
+                                                <FontAwesomeIcon icon={faTrash} />
+                                            </Button>
+                                        </OverlayTrigger>
+
+                                        <>
+                                            {user.isActive && (
+                                                <OverlayTrigger
+                                                    placement='top'
+                                                    overlay={
+                                                        <Tooltip id='tooltip-another-action'>
+                                                            De-activate
+                                                        </Tooltip>
+                                                    }
+                                                >
+                                                    <Button
+                                                        variant={ButtonVariant.Dark}
+                                                        className='m-1 btn-sm'
+                                                        onClick={() => confirmDeActivateUser(user.id)}
+                                                    >
+                                                        <FontAwesomeIcon icon={faToggleOff} />
+                                                    </Button>
+                                                </OverlayTrigger>
+                                            )}
+
+                                            {!user.isActive && (
+                                                <OverlayTrigger
+                                                    placement='top'
+                                                    overlay={
+                                                        <Tooltip id='tooltip-another-action'>
+                                                            Activate
+                                                        </Tooltip>
+                                                    }
+                                                >
+                                                    <Button
+                                                        variant={ButtonVariant.Success}
+                                                        className='m-1 btn-sm'
+                                                        onClick={() => confirmActivateUser(user.id)}
+                                                    >
+                                                        <FontAwesomeIcon icon={faToggleOn} />
+                                                    </Button>
+                                                </OverlayTrigger>
+                                            )}
+                                        </>
+                                    </>
                                 )}
                             />
 
                             <PaginationComponent
                                 paginationResult={pageResult}
-                                onPageIndexChange={(newPageIndex: number) => {
-                                    userService.getUserListPaging({
-                                        ...getValues(),
-                                        paginationRequest: {
-                                            pageIndex: newPageIndex
-                                        }
-                                    })
-                                }}
-                                onPageSizeChange={(newPageSize: number) => {
-                                    userService.getUserListPaging({
-                                        ...getValues(),
-                                        paginationRequest: {
-                                            pageSize: newPageSize
-                                        }
-                                    })
-                                }}
+                                onPageIndexChange={onPageIndexChange}
+                                onPageSizeChange={onPageSizeChange}
                             />
                         </div>
                     </div>
