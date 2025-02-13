@@ -1,40 +1,33 @@
 import { faPaperclip } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useEffect, useState } from 'react'
+import { observer } from 'mobx-react-lite'
+import { useState } from 'react'
 import { Button } from 'react-bootstrap'
-import { useNavigate } from 'react-router-dom'
-import { pdfBytes } from '../../../../../data/test/test'
-import { candidateDetailTestData } from '../../../../../data/test/user-data.test'
+import { useNavigate, useParams } from 'react-router-dom'
+import candidateService from '../../../../../modules/user/services/candidate.service'
+import userStore from '../../../../../modules/user/stores/user.store'
 import ModalPdfComponent from '../../../../../shared/components/modals/modal-pdf/modal-pdf.component'
+import { CandidateStatusEnum } from '../../../../../shared/enums/entity-enums/candidate.enum'
+import { useFetch } from '../../../../../shared/hooks/use-fetch'
 import { DateUtility } from '../../../../../shared/utils/date.util'
-import { FileUtils } from '../../../../../shared/utils/file.utils'
 import './candidate-detail.scss'
 
 function CandidateDetailComponent() {
+    const { id } = useParams()
     const navigate = useNavigate()
-    const candidateDetail = candidateDetailTestData
 
+    const candidateDetail = userStore.candidateDetail
     const [isModalOpen, setIsModalOpen] = useState(false)
-    const [pdfUrl, setPdfUrl] = useState<string>('')
-    const [fileName, setFileName] = useState<string>('')
 
-    useEffect(() => {
-        const pdfUrl = FileUtils.createPdfUrlFromBytes(pdfBytes)
-
-        setFileName('asdfasfasdf')
-        setPdfUrl(pdfUrl)
-
-        // Cleanup function to revoke the Blob URL when the component unmounts
-        return () => URL.revokeObjectURL(pdfUrl)
-    }, [])
+    useFetch(() => candidateService.getCandidateById(id!))
 
     return (
         <>
             <ModalPdfComponent
+                fileName={'adsfasdfafsddasaasdfsdaf'}
                 isOpen={isModalOpen}
+                // pdfUrl={candidateDetail.attachment}
                 closeModal={() => setIsModalOpen(false)}
-                fileName={fileName}
-                pdfUrl={pdfUrl}
             />
 
             <div className='card shadow mb-3'>
@@ -45,8 +38,12 @@ function CandidateDetailComponent() {
 
                     <h6 className='m-0'>
                         <span>
-                            Created on {DateUtility.formatDate(candidateDetail.createAt!, 'dd/mm/yyyy')}, last
-                            updated by {candidateDetail.updatedBy}
+                            Created on{' '}
+                            {DateUtility.formatDate(candidateDetail.auditInformation?.createAt, 'dd/mm/yyyy')}
+                            , last updated at{' '}
+                            {DateUtility.formatDate(candidateDetail.auditInformation?.updateAt, 'dd/mm/yyyy')}{' '}
+                            by {candidateDetail.auditInformation?.updateBy ?? ''},{' '}
+                            {DateUtility.formatRelativeDate(candidateDetail.auditInformation?.updateAt)}
                         </span>
                     </h6>
                 </div>
@@ -60,46 +57,57 @@ function CandidateDetailComponent() {
                         <div className='col-lg-6 col-md-6 col-12'>
                             {/* Full name */}
                             <div className='form-group row'>
-                                <label className='col-lg-4 col-form-label'>Full Name</label>
+                                <label className='col-lg-4 col-form-label fw-semibold'>Full Name</label>
 
-                                <div className='col-lg-6 col-form-label'>{candidateDetail.username}</div>
+                                <div className='col-lg-6 col-form-label'>
+                                    {candidateDetail.personalInformation?.username}
+                                </div>
                             </div>
 
                             {/* DOB */}
                             <div className='form-group row'>
-                                <label className='col-lg-4 col-form-label'>D.O.B</label>
+                                <label className='col-lg-4 col-form-label fw-semibold'>D.O.B</label>
 
                                 <div className='col-lg-6 col-form-label'>
-                                    {DateUtility.formatDate(candidateDetail.dob!, 'dd/mm/yyyy')}
+                                    {DateUtility.formatDate(
+                                        candidateDetail.personalInformation?.dob!,
+                                        'dd/mm/yyyy'
+                                    )}
                                 </div>
                             </div>
 
                             {/* Phone number */}
                             <div className='form-group row'>
-                                <label className='col-lg-4 col-form-label'>Phone Number</label>
+                                <label className='col-lg-4 col-form-label fw-semibold'>Phone Number</label>
 
-                                <div className='col-lg-6 col-form-label'>{candidateDetail.phoneNumber}</div>
+                                <div className='col-lg-6 col-form-label'>
+                                    {candidateDetail.personalInformation?.phoneNumber}
+                                </div>
                             </div>
                         </div>
 
                         <div className='col-lg-6 col-md-6 col-12'>
                             {/* Email */}
                             <div className='form-group row'>
-                                <label className='col-lg-4 col-form-label'>Email</label>
+                                <label className='col-lg-4 col-form-label fw-semibold'>Email</label>
 
-                                <div className='col-lg-6 col-form-label'>{candidateDetail.email}</div>
+                                <div className='col-lg-6 col-form-label'>
+                                    {candidateDetail.personalInformation?.email}
+                                </div>
                             </div>
 
                             {/* Address */}
                             <div className='form-group row'>
-                                <label className='col-lg-4 col-form-label'>Address</label>
+                                <label className='col-lg-4 col-form-label fw-semibold'>Address</label>
 
-                                <div className='col-lg-6 col-form-label'>{candidateDetail.address}</div>
+                                <div className='col-lg-6 col-form-label'>
+                                    {candidateDetail.personalInformation?.address}
+                                </div>
                             </div>
 
                             {/* Gender */}
                             <div className='form-group row'>
-                                <label className='col-lg-4 col-form-label'>Gender</label>
+                                <label className='col-lg-4 col-form-label fw-semibold'>Gender</label>
 
                                 <div className='col-lg-6 col-form-label'>{candidateDetail.gender}</div>
                             </div>
@@ -116,42 +124,48 @@ function CandidateDetailComponent() {
                         <div className='col-lg-6 col-md-6 col-12'>
                             {/* CV */}
                             <div className='form-group row'>
-                                <label className='col-lg-4 col-form-label '>CV Attachment</label>
+                                <label className='col-lg-4 col-form-label fw-semibold '>CV Attachment</label>
 
                                 <div className='col-lg-6 col-form-label d-flex'>
-                                    <span style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                        {fileName}
-                                        <FontAwesomeIcon icon={faPaperclip} />
-                                    </span>
+                                    {candidateDetail.attachment && (
+                                        <>
+                                            <span
+                                                style={{ display: 'flex', alignItems: 'center', gap: '10px' }}
+                                            >
+                                                {`CV-${candidateDetail.personalInformation?.username}`}
+                                                <FontAwesomeIcon icon={faPaperclip} />
+                                            </span>
 
-                                    <Button
-                                        variant='warning'
-                                        size='sm'
-                                        className='ms-2'
-                                        onClick={() => {
-                                            setPdfUrl(pdfUrl)
-                                            setFileName(fileName)
-                                            setIsModalOpen(true)
-                                        }}
-                                    >
-                                        View
-                                    </Button>
+                                            <Button
+                                                variant='warning'
+                                                size='sm'
+                                                className='ms-2'
+                                                onClick={() => setIsModalOpen(true)}
+                                            >
+                                                View
+                                            </Button>
+                                        </>
+                                    )}
+
+                                    {!candidateDetail.attachment && <>Not available</>}
                                 </div>
                             </div>
 
                             {/* Current position */}
                             <div className='form-group row'>
-                                <label className='col-lg-4 col-form-label '>Current Position</label>
+                                <label className='col-lg-4 col-form-label fw-semibold '>
+                                    Current Position
+                                </label>
 
                                 <div className='col-lg-6 col-form-label'>{candidateDetail.position}</div>
                             </div>
 
                             {/* Skills */}
                             <div className='form-group row'>
-                                <label className='col-lg-4 col-form-label '>Skills</label>
+                                <label className='col-lg-4 col-form-label fw-semibold '>Skills</label>
 
                                 <div className='col-lg-8 col-form-label skills-container'>
-                                    {candidateDetail.skills!.map((skill, index) => (
+                                    {candidateDetail.skills?.map((skill, index) => (
                                         <span key={index} className='badge bg-secondary me-2 skill-tag'>
                                             {skill}
                                         </span>
@@ -161,39 +175,47 @@ function CandidateDetailComponent() {
 
                             {/* Recruiter */}
                             <div className='form-group row'>
-                                <label className='col-lg-4 col-form-label '>Recruiter</label>
+                                <label className='col-lg-4 col-form-label fw-semibold '>Recruiter</label>
 
-                                <div className='col-lg-6 col-form-label'>{candidateDetail.recruiterName}</div>
+                                {/* <div className='col-lg-6 col-form-label'>{candidateDetail.recruiterName}</div> */}
                             </div>
                         </div>
 
                         {/* 2nd column */}
                         <div className='col-lg-6 col-md-6 col-12'>
+                            {/* Status */}
                             <div className='form-group row'>
-                                <label className='col-lg-4 col-form-label '>Status</label>
-
-                                <div className='col-lg-6 col-form-label'>{candidateDetail.status}</div>
-                            </div>
-
-                            <div className='form-group row'>
-                                <label className='col-lg-4 col-form-label '>Year of Experience</label>
+                                <label className='col-lg-4 col-form-label fw-semibold '>Status</label>
 
                                 <div className='col-lg-6 col-form-label'>
-                                    {candidateDetail.yearsOfExperience}
+                                    {candidateDetail.candidateStatus}
                                 </div>
                             </div>
 
+                            {/* Year of Experience */}
                             <div className='form-group row'>
-                                <label className='col-lg-4 col-form-label '>Highest Level</label>
+                                <label className='col-lg-4 col-form-label fw-semibold '>
+                                    Year of Experience
+                                </label>
+
+                                <div className='col-lg-6 col-form-label'>
+                                    {candidateDetail.professionalInformation?.yearsOfExperience}
+                                </div>
+                            </div>
+
+                            {/* Highest Level */}
+                            <div className='form-group row'>
+                                <label className='col-lg-4 col-form-label fw-semibold '>Highest Level</label>
 
                                 <div className='col-lg-6 col-form-label'>{candidateDetail.highestLevel}</div>
                             </div>
 
+                            {/* Note */}
                             <div className='form-group row'>
-                                <label className='col-lg-4 col-form-label '>Note</label>
+                                <label className='col-lg-4 col-form-label fw-semibold '>Note</label>
 
                                 <div className='col-lg-6 col-form-label'>
-                                    {!candidateDetail.note?.trim() ? 'N/A' : candidateDetail.note}
+                                    {!candidateDetail.note ? 'N/A' : candidateDetail.note}
                                 </div>
                             </div>
                         </div>
@@ -201,13 +223,21 @@ function CandidateDetailComponent() {
 
                     <div className='form-group row'>
                         <div className='col-lg-12 d-flex justify-content-center'>
-                            <Button className='me-2' variant='info' type='button' onClick={() => {}}>
+                            <Button
+                                className='me-2'
+                                variant='info'
+                                type='button'
+                                onClick={() => navigate(`/candidate/edit/${candidateDetail.id}`)}
+                            >
                                 Edit
                             </Button>
 
-                            <Button className='me-2' variant='danger' type='button' onClick={() => {}}>
-                                Ban Candidate
-                            </Button>
+                            {candidateDetail.professionalInformation?.candidateStatusId !==
+                                CandidateStatusEnum.Banned && (
+                                <Button className='me-2' variant='danger' type='button' onClick={() => {}}>
+                                    Ban Candidate
+                                </Button>
+                            )}
 
                             <Button variant='secondary' type='button' onClick={() => navigate(-1)}>
                                 Cancel
@@ -220,4 +250,4 @@ function CandidateDetailComponent() {
     )
 }
 
-export default CandidateDetailComponent
+export default observer(CandidateDetailComponent)

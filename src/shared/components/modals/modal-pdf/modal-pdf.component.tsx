@@ -1,14 +1,20 @@
+import { useEffect } from 'react'
 import { Button } from 'react-bootstrap'
+import { FileUtils } from '../../../utils/file.utils'
 
 interface ShowPdfModalProps {
     isOpen: boolean
-    closeModal: () => void
-    pdfUrl: string
+    pdfUrl?: string
     fileName: string
+    closeModal: () => void
 }
 
-function ModalPdfComponent({ pdfUrl, fileName, isOpen, closeModal }: ShowPdfModalProps) {
-    if (!isOpen) return null
+function ModalPdfComponent({ pdfUrl, fileName, isOpen = false, closeModal }: ShowPdfModalProps) {
+    const originalUrl = FileUtils.createPdfUrlFromBytes(pdfUrl)
+
+    useEffect(() => {
+        return () => window.URL.revokeObjectURL(originalUrl)
+    }, [originalUrl])
 
     return (
         <>
@@ -32,7 +38,13 @@ function ModalPdfComponent({ pdfUrl, fileName, isOpen, closeModal }: ShowPdfModa
 
                             {/* PDF Viewer */}
                             <div className='modal-body' style={{ height: '70vh', overflow: 'auto' }}>
-                                <embed src={pdfUrl} type='application/pdf' width='100%' height='500px' />
+                                <embed
+                                    src={originalUrl}
+                                    width='100%'
+                                    height='500px'
+                                    title={fileName}
+                                    type='application/pdf'
+                                />
                             </div>
 
                             <div className='modal-footer'>

@@ -1,13 +1,18 @@
 import { faSort } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import React, { memo, useState } from 'react'
-import { TableConfig } from '../../models/table-config'
+import { memo, useState } from 'react'
+import { TableProps } from '../../models/table-config'
 
-interface TableProps<T> {
-    items?: T[]
-    tableConfig: TableConfig<T>
-    renderActions?: (item: T) => React.ReactNode
-    onSortChange: (sortName: string, isAscending: boolean) => void
+function displayColumnValue<T>(obj: T, path: string): any {
+    const value = path.split('.').reduce<unknown>((acc, key) => {
+        if (acc && typeof acc === 'object' && key in acc) {
+            return (acc as Record<string, unknown>)[key]
+        }
+        return undefined
+    }, obj)
+
+    // Return a fallback value if the value is undefined or null
+    return value && typeof value !== 'object' ? value : ''
 }
 
 function TableComponent<T>({ items = [], tableConfig, onSortChange, renderActions }: TableProps<T>) {
@@ -91,7 +96,7 @@ function TableComponent<T>({ items = [], tableConfig, onSortChange, renderAction
                         items.map((item, rowIndex) => (
                             <tr key={rowIndex}>
                                 {tableConfig.columns.map((col, colIndex) => (
-                                    <td key={colIndex}>{item[col] as any}</td>
+                                    <td key={colIndex}>{displayColumnValue(item, String(col))}</td>
                                 ))}
 
                                 {renderActions && (

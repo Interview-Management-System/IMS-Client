@@ -1,9 +1,7 @@
-import { observer } from 'mobx-react-lite'
 import { Button } from 'react-bootstrap'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
-import { CandidateForCreateDTO } from '../../../../../modules/user/models/candidate.model'
-import userService from '../../../../../modules/user/services/user.service'
+import { CandidateForUpdateDTO } from '../../../../../modules/user/models/candidate.model'
 import userStore from '../../../../../modules/user/stores/user.store'
 import ControlledDateInput from '../../../../../shared/components/form/form-date-input.component'
 import ControlledInput from '../../../../../shared/components/form/form-input.component'
@@ -12,58 +10,44 @@ import ControlledTextArea from '../../../../../shared/components/form/form-text-
 import ModalConfirmComponent from '../../../../../shared/components/modals/modal-confirm/modal-confirm.component'
 import { ButtonVariant } from '../../../../../shared/enums/button-variant.enum'
 import { EnumList } from '../../../../../shared/helpers/enums/enum-list.helper'
-import NavigationHelper from '../../../../../shared/helpers/navigation.helper'
-import { useFetch } from '../../../../../shared/hooks/use-fetch'
 import useModal from '../../../../../shared/hooks/useModal'
 
-function onSubmit(formData: CandidateForCreateDTO) {
-    // service here
-
-    // formData.createdBy = TokenUtils.getCurrentUserIdFromCookie() // get guid from jwt
-    // candidateService.createCandidate(formData)
-
+function handleEditCandidate(formData: CandidateForUpdateDTO) {
     console.log(formData)
 }
 
-function CandidateCreateComponent() {
+function CandidateEditComponent() {
     const modal = useModal()
     const navigate = useNavigate()
-    NavigationHelper.setNavigate = navigate
-
-    const recruiterList = userStore.recruiterlist
-
-    useFetch(() => userService.getListRecruiter())
-
-    const createCandidateForm = useForm<CandidateForCreateDTO>({
-        // resolver: yupResolver(UserSchemaValidation.candidateCreateSchemaValidation)
+    const candidateUpdateForm = useForm<CandidateForUpdateDTO>({
+        defaultValues: userStore.candidateDetail as any
+        // resolver: yupResolver(createCandidateValidationSchema())
     })
 
-    function assignToMe() {
-        // get user guid from jwt here
-        const currentUserId = '65t4r3'
-        // createCandidateForm.setValue('recruiterId', currentUserId)
-    }
-
-    // Check for validation errors before showing the modal
     async function handleSubmitWithModal() {
-        const isValid = await createCandidateForm.trigger()
+        const isValid = await candidateUpdateForm.trigger()
 
         if (isValid) {
             modal.showModal()
         }
     }
 
+    function assignToMe() {
+        // get user guid from jwt here
+        const currentUserId = '65t4r3'
+        candidateUpdateForm.setValue('recruiterId', currentUserId)
+    }
+
     return (
         <>
             <ModalConfirmComponent
                 show={modal.show}
-                modalTitle='Create confirm'
+                modalTitle='Edit confirm'
                 buttonVariant={ButtonVariant.Primary}
                 handleClose={modal.closeModal}
-                modalConfirmQuestion='Do you want to create candidate ?'
-                handleConfirm={createCandidateForm.handleSubmit(onSubmit)}
+                modalConfirmQuestion='Do you want to edit candidate ?'
+                handleConfirm={candidateUpdateForm.handleSubmit(handleEditCandidate)}
             />
-
             <div className='card shadow mb-3'>
                 <div className='card-header py-3'>
                     <h6 className='m-0 font-weight-bold text-primary'>Create Candidate</h6>
@@ -84,10 +68,9 @@ function CandidateCreateComponent() {
                                     </label>
 
                                     <div className='col-lg-6'>
-                                        <ControlledInput<CandidateForCreateDTO>
-                                            name='personalInformation.username'
-                                            type='text'
-                                            form={createCandidateForm}
+                                        <ControlledInput<CandidateForUpdateDTO>
+                                            name='username'
+                                            form={candidateUpdateForm}
                                             placeholder='Enter full name'
                                         />
                                     </div>
@@ -100,9 +83,9 @@ function CandidateCreateComponent() {
                                     </label>
 
                                     <div className='col-lg-6'>
-                                        <ControlledDateInput<CandidateForCreateDTO>
-                                            name='personalInformation.dob'
-                                            form={createCandidateForm}
+                                        <ControlledDateInput<CandidateForUpdateDTO>
+                                            name='dob'
+                                            form={candidateUpdateForm}
                                         />
                                     </div>
                                 </div>
@@ -114,10 +97,10 @@ function CandidateCreateComponent() {
                                     </label>
 
                                     <div className='col-lg-6'>
-                                        <ControlledInput<CandidateForCreateDTO>
-                                            name='personalInformation.phoneNumber'
+                                        <ControlledInput<CandidateForUpdateDTO>
+                                            name='phoneNumber'
                                             type='tel'
-                                            form={createCandidateForm}
+                                            form={candidateUpdateForm}
                                             placeholder='Type a number'
                                         />
                                     </div>
@@ -130,11 +113,12 @@ function CandidateCreateComponent() {
                                     <label className='col-lg-4 col-form-label fw-semibold '>
                                         Email <span className='text-danger'>*</span>
                                     </label>
+
                                     <div className='col-lg-6'>
-                                        <ControlledInput<CandidateForCreateDTO>
-                                            name='personalInformation.email'
+                                        <ControlledInput<CandidateForUpdateDTO>
+                                            name='email'
                                             type='email'
-                                            form={createCandidateForm}
+                                            form={candidateUpdateForm}
                                             placeholder='Enter Email address'
                                         />
                                     </div>
@@ -145,12 +129,11 @@ function CandidateCreateComponent() {
                                     <label className='col-lg-4 col-form-label fw-semibold '>
                                         Address <span className='text-danger'>*</span>
                                     </label>
-
                                     <div className='col-lg-6'>
-                                        <ControlledInput<CandidateForCreateDTO>
-                                            name='personalInformation.address'
+                                        <ControlledInput<CandidateForUpdateDTO>
+                                            name='address'
                                             type='text'
-                                            form={createCandidateForm}
+                                            form={candidateUpdateForm}
                                             placeholder='Enter address'
                                         />
                                     </div>
@@ -163,9 +146,9 @@ function CandidateCreateComponent() {
                                     </label>
 
                                     <div className='col-lg-6'>
-                                        <ControlledSelection<CandidateForCreateDTO>
-                                            name='personalInformation.gender'
-                                            form={createCandidateForm}
+                                        <ControlledSelection<CandidateForUpdateDTO>
+                                            name='gender'
+                                            form={candidateUpdateForm}
                                             options={EnumList.genderList}
                                         />
                                     </div>
@@ -184,7 +167,7 @@ function CandidateCreateComponent() {
                                 {/* CV */}
                                 <div className='form-group row'>
                                     <label className='col-lg-4 col-form-label fw-semibold '>
-                                        CV Attachment <span className='text-danger'>*</span>
+                                        CV Attachment
                                     </label>
 
                                     <div className='col-lg-6'>
@@ -192,8 +175,9 @@ function CandidateCreateComponent() {
                                             type='file'
                                             className='form-control'
                                             accept='application/pdf'
-                                            {...createCandidateForm.register('attachment')}
+                                            {...candidateUpdateForm.register('attachment')}
                                         />
+                                        <p></p>
                                     </div>
                                 </div>
 
@@ -204,9 +188,9 @@ function CandidateCreateComponent() {
                                     </label>
 
                                     <div className='col-lg-6'>
-                                        <ControlledSelection<CandidateForCreateDTO>
-                                            name='professionalInformation.positionId'
-                                            form={createCandidateForm}
+                                        <ControlledSelection<CandidateForUpdateDTO>
+                                            name='positionId'
+                                            form={candidateUpdateForm}
                                             options={EnumList.positionList}
                                         />
                                     </div>
@@ -219,11 +203,11 @@ function CandidateCreateComponent() {
                                     </label>
 
                                     <div className='col-lg-6'>
-                                        <ControlledSelection<CandidateForCreateDTO>
+                                        <ControlledSelection<CandidateForUpdateDTO>
                                             isMulti
+                                            name='skillId'
                                             closeMenuOnSelect={false}
-                                            form={createCandidateForm}
-                                            name='skillList'
+                                            form={candidateUpdateForm}
                                             options={EnumList.skillList}
                                         />
                                     </div>
@@ -236,10 +220,10 @@ function CandidateCreateComponent() {
                                     </label>
 
                                     <div className='col-lg-6'>
-                                        <ControlledSelection<CandidateForCreateDTO>
-                                            name='professionalInformation.recruiterId'
-                                            form={createCandidateForm}
-                                            options={recruiterList}
+                                        <ControlledSelection<CandidateForUpdateDTO>
+                                            name='recruiterId'
+                                            form={candidateUpdateForm}
+                                            options={userStore.recruiterlist}
                                         />
 
                                         <Button
@@ -261,10 +245,10 @@ function CandidateCreateComponent() {
                                     </label>
 
                                     <div className='col-lg-6'>
-                                        <ControlledInput<CandidateForCreateDTO>
-                                            name='professionalInformation.yearsOfExperience'
+                                        <ControlledInput<CandidateForUpdateDTO>
                                             type='number'
-                                            form={createCandidateForm}
+                                            name='yearsOfExperience'
+                                            form={candidateUpdateForm}
                                             placeholder='Type a number'
                                         />
                                     </div>
@@ -276,9 +260,9 @@ function CandidateCreateComponent() {
                                     </label>
 
                                     <div className='col-lg-6'>
-                                        <ControlledSelection<CandidateForCreateDTO>
-                                            name='professionalInformation.highestLevelId'
-                                            form={createCandidateForm}
+                                        <ControlledSelection<CandidateForUpdateDTO>
+                                            name='highestLevelId'
+                                            form={candidateUpdateForm}
                                             options={EnumList.highestLevelList}
                                         />
                                     </div>
@@ -291,7 +275,7 @@ function CandidateCreateComponent() {
 
                                     <div className='col-lg-6'>
                                         <ControlledTextArea
-                                            form={createCandidateForm}
+                                            form={candidateUpdateForm}
                                             name='note'
                                             className='form-control'
                                         />
@@ -319,7 +303,7 @@ function CandidateCreateComponent() {
                                     className='ms-2'
                                     variant='info'
                                     type='button'
-                                    onClick={() => createCandidateForm.reset()}
+                                    onClick={() => candidateUpdateForm.reset()}
                                 >
                                     Reset
                                 </Button>
@@ -332,4 +316,4 @@ function CandidateCreateComponent() {
     )
 }
 
-export default observer(CandidateCreateComponent)
+export default CandidateEditComponent

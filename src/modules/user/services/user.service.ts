@@ -47,6 +47,11 @@ class UserService {
 
     async changeUserRole(userId: string, roleId: string) {}
 
+    async getListRecruiter() {
+        const response = await userApiService.getListRecruiter()
+        userStore.setListRecruiter(response?.data)
+    }
+
     private setupSignalListerners() {
         const handlers: { [key: string]: () => void } = {
             UserDelete: () => this.getUserListPaging(),

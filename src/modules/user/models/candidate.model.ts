@@ -1,48 +1,68 @@
+import { CandidateStatusEnum } from '../../../shared/enums/entity-enums/candidate.enum'
 import {
-    DepartmentEnum,
     HighestLevelEnum,
     PositionEnum,
     SkillEnum
 } from '../../../shared/enums/entity-enums/master-data.enum'
+import { AuditInformation } from '../../../shared/models/base-dto'
+import { PaginatedSearchRequest } from '../../../shared/models/pagination'
+import { ProfessionalInformation } from './base-candidate.model'
+import { BaseUserDTO, UserStatus } from './base-user.model'
 
-interface BaseCandidate {
-    username?: string
-    email?: string
-    dob?: Date | null
-    address?: string
-    phoneNumber?: string
+export interface CandidateForCreateDTO extends BaseUserDTO {
+    attachment?: File
+    //public SkillsEnum[] SkillId { get; set; } = [];
+    skillList?: SkillEnum[]
+    professionalInformation?: ProfessionalInformation
 }
 
-export interface CreateCandidateRequest extends BaseCandidate {
-    gender?: boolean
-    createdBy?: string
-    departmentId?: DepartmentEnum
-    isActive?: boolean
+export interface CandidateForRetrieveDTO extends BaseUserDTO {
+    id: string
+}
+
+export interface CandidateForUpdateDTO {
+    id: string
+    dob?: Date
     note?: string
+    email?: string
+    address?: string
+    gender?: boolean
+    username?: string
     attachment?: File
-    status?: number
     recruiterId?: string
-    positionId?: PositionEnum
+    phoneNumber?: string
     skillId?: SkillEnum[]
+    positionId?: PositionEnum
     yearsOfExperience?: number
     highestLevelId?: HighestLevelEnum
 }
 
-export interface CandidateForRetrieveDTO extends BaseCandidate {
-    id: string
-    createAt?: Date
-    updatedBy?: string
+/////////////////
+
+export interface CandidateForDetailRetrieveDTO extends CandidateForRetrieveDTO {
     gender?: string
-    role?: string
-    department?: string
-    status?: string
-    isDeleted?: boolean
-    note?: string
-    yearsOfExperience?: number
-    recruiterName?: string
+    offers: string[]
     position?: string
+    skills?: string[]
+    attachment?: string[]
     highestLevel?: string
     candidateStatus?: string
-    offers?: string[]
-    skills?: string[]
+    auditInformation?: AuditInformation
+    professionalInformation?: ProfessionalInformation
+}
+
+export interface CandidateForPaginationRetrieveDTO {
+    id: string
+    email?: string
+    isDeleted: boolean
+    ownerHr?: string
+    username?: string
+    phoneNumber?: string
+    currentPosition?: string
+    candidateStatus?: string
+    userStatus?: UserStatus
+}
+
+export interface CandidatePaginatedSearchRequest extends PaginatedSearchRequest {
+    statusId?: CandidateStatusEnum
 }

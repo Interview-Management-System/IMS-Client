@@ -13,7 +13,10 @@ import { useState } from 'react'
 import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
-import { UserForRetrieveDTO, UserPaginatedSearchRequest } from '../../../../../modules/user/models/user.model'
+import {
+    UserForPaginationRetrieveDTO,
+    UserPaginatedSearchRequest
+} from '../../../../../modules/user/models/user.model'
 import userService from '../../../../../modules/user/services/user.service'
 import userStore from '../../../../../modules/user/stores/user.store'
 import ModalConfirmComponent from '../../../../../shared/components/modals/modal-confirm/modal-confirm.component'
@@ -61,8 +64,8 @@ function UserListComponent() {
                 headerName: 'Status'
             }
         ],
-        columns: ['username', 'email', 'phoneNumber', 'role', 'statusText']
-    } as TableConfig<UserForRetrieveDTO>
+        columns: ['username', 'email', 'phoneNumber', 'role', 'userStatus.statusText']
+    } as TableConfig<UserForPaginationRetrieveDTO>
 
     const { register, handleSubmit, reset, getValues } = useForm<UserPaginatedSearchRequest>()
 
@@ -188,8 +191,11 @@ function UserListComponent() {
                                                     <option value={0}>Select role to filter</option>
 
                                                     {EnumList.roleList.map(role => (
-                                                        <option key={role.id} value={role.id}>
-                                                            {role.name}
+                                                        <option
+                                                            key={role.value as string}
+                                                            value={role.value as number}
+                                                        >
+                                                            {role.label}
                                                         </option>
                                                     ))}
                                                 </select>
@@ -246,7 +252,7 @@ function UserListComponent() {
                                             overlay={<Tooltip id='tooltip-edit'>Edit </Tooltip>}
                                         >
                                             <Button
-                                                disabled={!user.isActive}
+                                                disabled={!user.userStatus.isActive}
                                                 variant={ButtonVariant.Info}
                                                 className='m-1 btn-sm'
                                                 onClick={() => navigate(`/user/edit/${user.id}`)}
@@ -269,7 +275,7 @@ function UserListComponent() {
                                         </OverlayTrigger>
 
                                         <>
-                                            {user.isActive && (
+                                            {user.userStatus.isActive && (
                                                 <OverlayTrigger
                                                     placement='top'
                                                     overlay={
@@ -288,7 +294,7 @@ function UserListComponent() {
                                                 </OverlayTrigger>
                                             )}
 
-                                            {!user.isActive && (
+                                            {!user.userStatus.isActive && (
                                                 <OverlayTrigger
                                                     placement='top'
                                                     overlay={

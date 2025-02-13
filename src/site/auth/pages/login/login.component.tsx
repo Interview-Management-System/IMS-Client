@@ -7,7 +7,7 @@ import { AbortSignalManager } from '../../../../api/abort-signal-manager'
 import { UserLoginRequest } from '../../../../modules/auth/models/authentication.model'
 import authService from '../../../../modules/auth/services/auth.service'
 import ControlledInput from '../../../../shared/components/form/form-input.component'
-import { loginValidationSchema } from '../../../../shared/helpers/form/validations/schemas/auth-schemas.validation'
+import AuthSchemaValidation from '../../../../shared/helpers/form/validations/schemas/auth-schemas.validation'
 import './login.style.scss'
 
 function onSubmit(formData: UserLoginRequest) {
@@ -16,7 +16,7 @@ function onSubmit(formData: UserLoginRequest) {
 
 function LoginComponent() {
     const loginForm = useForm<UserLoginRequest>({
-        resolver: yupResolver(loginValidationSchema())
+        resolver: yupResolver(AuthSchemaValidation.loginSchemaValidation)
     })
 
     useEffect(() => {

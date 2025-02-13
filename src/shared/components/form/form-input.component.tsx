@@ -12,6 +12,7 @@ function handlePhoneInput(e: React.ChangeEvent<HTMLInputElement>, inputType: HTM
 }
 
 function ControlledInput<T extends FieldValues>({
+    value,
     name,
     form,
     type = 'text',
@@ -19,9 +20,9 @@ function ControlledInput<T extends FieldValues>({
     autoComplete = '',
     className = 'form-control'
 }: ControlledInputProps<T>) {
-    const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value
+    function handleInput(e: React.ChangeEvent<HTMLInputElement>) {
         if (type === 'tel') {
+            const value = e.target.value
             // Remove non-numeric characters
             e.target.value = value.replace(/[^0-9]/g, '')
         }
@@ -30,21 +31,20 @@ function ControlledInput<T extends FieldValues>({
     return (
         <>
             <Controller
-                defaultValue={'' as T[Path<T>]}
                 name={name}
                 control={form.control}
+                defaultValue={'' as T[Path<T>]}
                 render={({ field, fieldState: { error } }) => (
                     <>
                         <input
                             id={name}
                             {...field}
                             type={type}
-                            autoComplete={autoComplete}
-                            placeholder={placeholder}
-                            className={className}
-                            accept={type === 'file' ? 'application/pdf' : ''}
-                            onChange={e => field.onChange(e.target.value)}
                             onInput={handleInput}
+                            className={className}
+                            placeholder={placeholder}
+                            autoComplete={autoComplete}
+                            // onChange={e => field.onChange(e.target.value)}
                         />
 
                         <p className='text-danger'>{capitalizeFirstCharacter(error?.message!)}</p>

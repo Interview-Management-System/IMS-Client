@@ -1,12 +1,9 @@
 export class FileUtils {
-    static createPdfUrlFromBytes(bytes: string) {
-        const base64Data = bytes
-        const binaryData = atob(base64Data)
-        const byteNumbers = new Uint8Array(binaryData.length)
+    static createPdfUrlFromBytes(bytes?: string) {
+        if (!bytes) return ''
 
-        for (let i = 0; i < binaryData.length; i++) {
-            byteNumbers[i] = binaryData.charCodeAt(i)
-        }
+        const binaryData = atob(bytes)
+        const byteNumbers = Uint8Array.from(binaryData, char => char.charCodeAt(0))
 
         const blob = new Blob([byteNumbers], { type: 'application/pdf' })
         return URL.createObjectURL(blob)

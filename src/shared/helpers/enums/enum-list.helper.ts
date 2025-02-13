@@ -12,7 +12,7 @@ import {
     RoleEnum,
     RoleIdEnum,
     SkillEnum,
-    StatusEnum
+    UserStatusEnum
 } from '../../enums/entity-enums/master-data.enum'
 import { OfferStatusEnum } from '../../enums/entity-enums/offer.enum'
 import { EnumBuilder } from '../../utils/enums/enum-builder.utils'
@@ -71,7 +71,7 @@ export class EnumList {
     }
 
     static get genderList() {
-        return EnumBuilder.generateEnumList(GenderEnum, Number)
+        return EnumBuilder.generateEnumList(GenderEnum, Boolean)
     }
 
     static get departmentList() {
@@ -79,6 +79,6 @@ export class EnumList {
     }
 
     static get statusList() {
-        return EnumBuilder.generateEnumList(StatusEnum, Number)
+        return EnumBuilder.generateEnumList(UserStatusEnum, Boolean)
     }
 }

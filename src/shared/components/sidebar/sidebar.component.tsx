@@ -3,6 +3,7 @@ import {
     faChevronLeft,
     faChevronRight,
     faFile,
+    faGauge,
     faLaughWink,
     faPeopleGroup,
     faRocket,
@@ -22,6 +23,7 @@ function SideBarComponent() {
 
     // Define navigation links
     const navLinks = [
+        { to: 'dashboard', icon: faGauge, label: 'Dashboard', route: '/dashboard' },
         { to: 'candidate/list', icon: faPeopleGroup, label: 'Candidate Management', route: '/candidate' },
         { to: 'job/list', icon: faBriefcase, label: 'Job Management', route: '/job' },
         { to: 'interview/list', icon: faRocket, label: 'Interview Management', route: '/interview' },

@@ -1,3 +1,4 @@
+import 'bootstrap/dist/css/bootstrap.min.css'
 import { CookiesProvider } from 'react-cookie'
 import { Outlet } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'

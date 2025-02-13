@@ -1,15 +1,18 @@
-import { DepartmentEnum } from '../../../shared/enums/entity-enums/master-data.enum'
+export interface PersonalInformation {
+    gender: boolean
+    dob?: Date
+    email?: string
+    address?: string
+    username?: string
+    phoneNumber?: string
+}
+
+export interface UserStatus {
+    isActive: boolean
+    statusText?: string
+}
 
 export interface BaseUserDTO {
-    username?: string
-    email?: string
-    dob?: Date
-    address?: string
-    phoneNumber?: string
-    gender?: boolean
-    roleId?: string
-    createdBy?: string
-    departmentId?: DepartmentEnum
-    isActive?: boolean
     note?: string
+    personalInformation?: PersonalInformation
 }

@@ -1,24 +1,23 @@
-import { yupResolver } from '@hookform/resolvers/yup'
 import { Button } from 'react-bootstrap'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import { UserForCreateDTO } from '../../../../../modules/user/models/user.model'
+import userService from '../../../../../modules/user/services/user.service'
+import ControlledDateInput from '../../../../../shared/components/form/form-date-input.component'
 import ControlledInput from '../../../../../shared/components/form/form-input.component'
 import ControlledSelection from '../../../../../shared/components/form/form-selection.component'
 import ControlledTextArea from '../../../../../shared/components/form/form-text-area.component'
 import ModalConfirmComponent from '../../../../../shared/components/modals/modal-confirm/modal-confirm.component'
 import { ButtonVariant } from '../../../../../shared/enums/button-variant.enum'
-import { GenderEnum, StatusEnum } from '../../../../../shared/enums/entity-enums/master-data.enum'
 import { EnumList } from '../../../../../shared/helpers/enums/enum-list.helper'
-import { createUserCreateValidationSchema } from '../../../../../shared/helpers/form/validations/schemas/user-schemas.validation'
 import useModal from '../../../../../shared/hooks/useModal'
 
 function UserCreateComponent() {
-    const navigate = useNavigate()
     const modal = useModal()
+    const navigate = useNavigate()
 
     const userCreateForm = useForm<UserForCreateDTO>({
-        resolver: yupResolver(createUserCreateValidationSchema())
+        // resolver: yupResolver(UserSchemaValidation.userCreateSchemaValidation)
     })
 
     // Check for validation errors before showing the modal
@@ -32,7 +31,7 @@ function UserCreateComponent() {
 
     function handleCreateUser(formData: UserForCreateDTO) {
         // formData.createdBy = CookieService.getCurrentUserIdFromCookie()
-        // userService.createUser(formData, navigate)
+        userService.createUser(formData, navigate)
         console.log(formData)
     }
 
@@ -66,7 +65,7 @@ function UserCreateComponent() {
 
                                     <div className='col-lg-6'>
                                         <ControlledInput<UserForCreateDTO>
-                                            name='username'
+                                            name='personalInformation.username'
                                             type='text'
                                             form={userCreateForm}
                                             placeholder='Enter full name'
@@ -81,9 +80,8 @@ function UserCreateComponent() {
                                     </label>
 
                                     <div className='col-lg-6'>
-                                        <ControlledInput<UserForCreateDTO>
-                                            name='dob'
-                                            type='date'
+                                        <ControlledDateInput<UserForCreateDTO>
+                                            name='personalInformation.dob'
                                             form={userCreateForm}
                                         />
                                     </div>
@@ -97,7 +95,7 @@ function UserCreateComponent() {
 
                                     <div className='col-lg-6'>
                                         <ControlledInput<UserForCreateDTO>
-                                            name='phoneNumber'
+                                            name='personalInformation.phoneNumber'
                                             type='tel'
                                             form={userCreateForm}
                                             placeholder='Type a number'
@@ -115,7 +113,7 @@ function UserCreateComponent() {
                                         <ControlledSelection<UserForCreateDTO>
                                             name='roleId'
                                             form={userCreateForm}
-                                            optionList={EnumList.roleIdList}
+                                            options={EnumList.roleIdList}
                                         />
                                     </div>
                                 </div>
@@ -130,14 +128,7 @@ function UserCreateComponent() {
                                         <ControlledSelection<UserForCreateDTO>
                                             name='isActive'
                                             form={userCreateForm}
-                                            optionList={EnumList.statusList}
-                                            registerOptions={{
-                                                setValueAs: value => {
-                                                    if (value) {
-                                                        return value === StatusEnum.Active.toString()
-                                                    }
-                                                }
-                                            }}
+                                            options={EnumList.statusList}
                                         />
                                     </div>
                                 </div>
@@ -152,7 +143,7 @@ function UserCreateComponent() {
 
                                     <div className='col-lg-6'>
                                         <ControlledInput<UserForCreateDTO>
-                                            name='email'
+                                            name='personalInformation.email'
                                             type='email'
                                             form={userCreateForm}
                                             placeholder='Enter Email address'
@@ -167,7 +158,7 @@ function UserCreateComponent() {
                                     </label>
                                     <div className='col-lg-6'>
                                         <ControlledInput<UserForCreateDTO>
-                                            name='address'
+                                            name='personalInformation.address'
                                             type='text'
                                             form={userCreateForm}
                                             placeholder='Enter address'
@@ -183,16 +174,9 @@ function UserCreateComponent() {
 
                                     <div className='col-lg-6'>
                                         <ControlledSelection<UserForCreateDTO>
-                                            name='gender'
+                                            name='personalInformation.gender'
                                             form={userCreateForm}
-                                            optionList={EnumList.genderList}
-                                            registerOptions={{
-                                                setValueAs: value => {
-                                                    if (value) {
-                                                        return value !== GenderEnum.Female.toString()
-                                                    }
-                                                }
-                                            }}
+                                            options={EnumList.genderList}
                                         />
                                     </div>
                                 </div>
@@ -207,8 +191,7 @@ function UserCreateComponent() {
                                         <ControlledSelection<UserForCreateDTO>
                                             name='departmentId'
                                             form={userCreateForm}
-                                            optionList={EnumList.departmentList}
-                                            registerOptions={{ valueAsNumber: true }}
+                                            options={EnumList.departmentList}
                                         />
                                     </div>
                                 </div>

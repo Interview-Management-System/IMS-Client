@@ -14,7 +14,7 @@ function MainLayout() {
                     <div className='container-fluid'>
                         <div id='contentPage'>
                             <Routes>
-                                <Route path='/' element={<Navigate replace to='/candidate/list' />} />
+                                <Route path='/' element={<Navigate replace to='/dashboard' />} />
                             </Routes>
 
                             <Outlet />

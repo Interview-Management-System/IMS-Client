@@ -1,58 +1,81 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import { makeAutoObservable } from 'mobx'
-import { userListTestData } from '../../../data/test/user-data.test'
-import { DepartmentEnum } from '../../../shared/enums/entity-enums/master-data.enum'
 import { PaginationResult } from '../../../shared/models/pagination'
-import { UserForRetrieveDTO, UserPaginatedSearchRequest } from '../models/user.model'
+import {
+    CandidateForDetailRetrieveDTO,
+    CandidateForPaginationRetrieveDTO,
+    CandidatePaginatedSearchRequest
+} from '../models/candidate.model'
+import {
+    UserForDetailRetrieveDTO,
+    UserForPaginationRetrieveDTO,
+    UserForRetrieveDTO,
+    UserPaginatedSearchRequest
+} from '../models/user.model'
 
 class UserStore {
-    userPageResult = {
-        items: userListTestData,
-        pageSize: 5,
-        pageIndex: 1,
-        totalRecords: userListTestData.length
-    } as PaginationResult<UserForRetrieveDTO>
+    private listRecruiter = [] as UserForRetrieveDTO[]
 
-    userDetail = {
-        id: '123e4567-e89b-12d3-a456-426614174000', // Example GUID as a string
-        username: 'JohnDoe',
-        email: 'johndoe@example.com',
-        dob: new Date('1990-01-01'), // Example Date object
-        address: '123 Main St, Anytown, USA',
-        phoneNumber: '1234567890',
-        gender: 'Male',
-        role: 'Developer',
-        department: DepartmentEnum.Accounting.toString(),
-        isActive: false,
-        isDeleted: false,
-        note: 'null',
-        departmentId: DepartmentEnum.Accounting,
-        statusText: 'null'
-    } as UserForRetrieveDTO
+    // Detail
+    userDetail = {} as UserForDetailRetrieveDTO
+    candidateDetail = {} as CandidateForDetailRetrieveDTO
 
+    // Pagination
+    userPageResult = {} as PaginationResult<UserForPaginationRetrieveDTO>
+    candidatePageResult = {} as PaginationResult<CandidateForPaginationRetrieveDTO>
     userPaginationSearchValue: UserPaginatedSearchRequest | undefined = undefined
+    candidatePaginationSearchValue: CandidatePaginatedSearchRequest | undefined = undefined
 
     constructor() {
         makeAutoObservable(this)
     }
 
-    setUserPageResult(userPageResult?: PaginationResult<UserForRetrieveDTO>) {
+    get recruiterlist() {
+        return this.listRecruiter.map(recruiter => ({
+            value: recruiter.id as any,
+            label: recruiter.personalInformation?.username!
+        }))
+    }
+
+    setUserPageResult(userPageResult?: PaginationResult<UserForPaginationRetrieveDTO>) {
         this.userPageResult = userPageResult ?? {}
     }
 
-    setUserDetail(userDetail?: UserForRetrieveDTO) {
-        this.userDetail = userDetail ?? ({} as UserForRetrieveDTO)
+    setUserDetail(userDetail?: UserForDetailRetrieveDTO) {
+        this.userDetail = userDetail ?? ({} as UserForDetailRetrieveDTO)
+    }
+
+    setCandidatePageResult(candidatePageResult?: PaginationResult<CandidateForPaginationRetrieveDTO>) {
+        this.candidatePageResult = candidatePageResult ?? {}
+    }
+
+    setListRecruiter(listRecruiter?: UserForRetrieveDTO[]) {
+        this.listRecruiter = listRecruiter ?? []
+    }
+
+    setCandidateDetail(candidateDetail: CandidateForDetailRetrieveDTO) {
+        this.candidateDetail = candidateDetail
     }
 
     /*
      For search values
     */
+
+    // User
     setUserPaginationSearchValue(searchValue: UserPaginatedSearchRequest) {
         this.userPaginationSearchValue = searchValue
     }
 
     resetUserPaginationSearchValue() {
         this.userPaginationSearchValue = undefined
+    }
+
+    // Candidate
+    setCandidatePaginationSearchValue(searchValue: CandidatePaginatedSearchRequest) {
+        this.candidatePaginationSearchValue = searchValue
+    }
+
+    resetCandidatePaginationSearchValue() {
+        this.candidatePaginationSearchValue = undefined
     }
 }
 

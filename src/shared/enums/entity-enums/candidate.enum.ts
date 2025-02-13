@@ -1,5 +1,6 @@
 export enum CandidateStatusEnum {
-    Open = 1,
+    Default,
+    Open,
     Banned,
     WaitingForInterview,
     InProgress,

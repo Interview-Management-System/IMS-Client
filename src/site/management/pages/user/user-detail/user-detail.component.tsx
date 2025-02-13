@@ -17,9 +17,8 @@ function UserDetailComponent() {
     const navigate = useNavigate()
 
     const userDetail = userStore.userDetail
-    useFetch(() => userService.getUserById(id ?? ''))
+    useFetch(() => userService.getUserById(id!))
 
-    const [, setUserIdToDelete] = useState('')
     const [, setUserIdToActivate] = useState('')
     const [, setUserIdToDeActivate] = useState('')
 
@@ -64,7 +63,7 @@ function UserDetailComponent() {
                     </h6>
 
                     <h6 className='m-0'>
-                        {userDetail.isActive && (
+                        {userDetail.userStatus?.isActive && (
                             <Button
                                 variant={ButtonVariant.Danger}
                                 type='button'
@@ -75,7 +74,7 @@ function UserDetailComponent() {
                             </Button>
                         )}
 
-                        {!userDetail.isActive && (
+                        {!userDetail.userStatus?.isActive && (
                             <Button
                                 variant={ButtonVariant.Success}
                                 type='button'
@@ -95,7 +94,9 @@ function UserDetailComponent() {
                             <div className='form-group row'>
                                 <label className='col-lg-4 col-form-label fw-semibold'>Full Name</label>
 
-                                <div className='col-lg-6 col-form-label'>{userDetail.username}</div>
+                                <div className='col-lg-6 col-form-label'>
+                                    {userDetail.personalInformation?.username}
+                                </div>
                             </div>
 
                             {/* DOB */}
@@ -103,7 +104,10 @@ function UserDetailComponent() {
                                 <label className='col-lg-4 col-form-label fw-semibold'>D.O.B</label>
 
                                 <div className='col-lg-6 col-form-label'>
-                                    {DateUtility.formatDate(userDetail.dob, 'dd/mm/yyyy')}
+                                    {DateUtility.formatDate(
+                                        userDetail.personalInformation?.dob,
+                                        'dd/mm/yyyy'
+                                    )}
                                 </div>
                             </div>
 
@@ -111,7 +115,9 @@ function UserDetailComponent() {
                             <div className='form-group row'>
                                 <label className='col-lg-4 col-form-label fw-semibold'>Phone Number</label>
 
-                                <div className='col-lg-6 col-form-label'>{userDetail.phoneNumber}</div>
+                                <div className='col-lg-6 col-form-label'>
+                                    {userDetail.personalInformation?.phoneNumber}
+                                </div>
                             </div>
 
                             {/* Role */}
@@ -125,7 +131,9 @@ function UserDetailComponent() {
                             <div className='form-group row'>
                                 <label className='col-lg-4 col-form-label fw-semibold'>Status</label>
 
-                                <div className='col-lg-6 col-form-label'>{userDetail.statusText}</div>
+                                <div className='col-lg-6 col-form-label'>
+                                    {userDetail.userStatus?.statusText}
+                                </div>
                             </div>
                         </div>
 
@@ -134,14 +142,18 @@ function UserDetailComponent() {
                             <div className='form-group row'>
                                 <label className='col-lg-4 col-form-label fw-semibold'>Email</label>
 
-                                <div className='col-lg-6 col-form-label'>{userDetail.email}</div>
+                                <div className='col-lg-6 col-form-label'>
+                                    {userDetail.personalInformation?.email}
+                                </div>
                             </div>
 
                             {/* Address */}
                             <div className='form-group row'>
                                 <label className='col-lg-4 col-form-label fw-semibold'>Address</label>
 
-                                <div className='col-lg-6 col-form-label'>{userDetail.address}</div>
+                                <div className='col-lg-6 col-form-label'>
+                                    {userDetail.personalInformation?.address}
+                                </div>
                             </div>
 
                             {/* Gender */}

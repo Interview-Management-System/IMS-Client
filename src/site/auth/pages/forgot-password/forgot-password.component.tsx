@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
 import { ForgetPasswordRequest } from '../../../../modules/auth/models/authentication.model'
 import ControlledInput from '../../../../shared/components/form/form-input.component'
-import { forgotPasswordValidationSchema } from '../../../../shared/helpers/form/validations/schemas/auth-schemas.validation'
+import AuthSchemaValidation from '../../../../shared/helpers/form/validations/schemas/auth-schemas.validation'
 
 function onSubmit(formData: ForgetPasswordRequest) {
     // service here
@@ -13,7 +13,7 @@ function onSubmit(formData: ForgetPasswordRequest) {
 
 function ForgotPasswordComponent() {
     const forgotPasswordForm = useForm<ForgetPasswordRequest>({
-        resolver: yupResolver(forgotPasswordValidationSchema())
+        resolver: yupResolver(AuthSchemaValidation.forgotPasswordSchemaValidation)
     })
 
     return (
