@@ -23,12 +23,14 @@ function CandidateDetailComponent() {
 
     return (
         <>
-            <ModalPdfComponent
-                fileName={'adsfasdfafsddasaasdfsdaf'}
-                isOpen={isModalOpen}
-                // pdfUrl={candidateDetail.attachment}
-                closeModal={() => setIsModalOpen(false)}
-            />
+            {candidateDetail.attachmentLink && (
+                <ModalPdfComponent
+                    fileName={'adsfasdfafsddasaasdfsdaf'}
+                    isOpen={isModalOpen}
+                    pdfUrl={candidateDetail.attachmentLink}
+                    closeModal={() => setIsModalOpen(false)}
+                />
+            )}
 
             <div className='card shadow mb-3'>
                 <div className='card-header py-3 d-flex justify-content-between'>
@@ -127,7 +129,7 @@ function CandidateDetailComponent() {
                                 <label className='col-lg-4 col-form-label fw-semibold '>CV Attachment</label>
 
                                 <div className='col-lg-6 col-form-label d-flex'>
-                                    {candidateDetail.attachment && (
+                                    {candidateDetail.attachmentLink && (
                                         <>
                                             <span
                                                 style={{ display: 'flex', alignItems: 'center', gap: '10px' }}
@@ -147,7 +149,7 @@ function CandidateDetailComponent() {
                                         </>
                                     )}
 
-                                    {!candidateDetail.attachment && <>Not available</>}
+                                    {!candidateDetail.attachmentLink && <>Not available</>}
                                 </div>
                             </div>
 

@@ -5,6 +5,7 @@ export interface PersonalInformation {
     address?: string
     username?: string
     phoneNumber?: string
+    avatarLink?: string
 }
 
 export interface UserStatus {

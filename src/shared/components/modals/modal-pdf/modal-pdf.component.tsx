@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { memo, useEffect, useState } from 'react'
 import { Button } from 'react-bootstrap'
 import { FileUtils } from '../../../utils/file.utils'
 
@@ -10,11 +10,22 @@ interface ShowPdfModalProps {
 }
 
 function ModalPdfComponent({ pdfUrl, fileName, isOpen = false, closeModal }: ShowPdfModalProps) {
-    const originalUrl = FileUtils.createPdfUrlFromBytes(pdfUrl)
+    const [newPdfUrl, setNewPdfUrl] = useState('')
+
+    console.log('render')
 
     useEffect(() => {
-        return () => window.URL.revokeObjectURL(originalUrl)
-    }, [originalUrl])
+        async function loadPdf() {
+            if (pdfUrl) {
+                const url = await FileUtils.fetchFileUrl(pdfUrl)
+                setNewPdfUrl(url!)
+            }
+        }
+
+        loadPdf()
+
+        return () => window.URL.revokeObjectURL(newPdfUrl)
+    }, [pdfUrl])
 
     return (
         <>
@@ -39,7 +50,7 @@ function ModalPdfComponent({ pdfUrl, fileName, isOpen = false, closeModal }: Sho
                             {/* PDF Viewer */}
                             <div className='modal-body' style={{ height: '70vh', overflow: 'auto' }}>
                                 <embed
-                                    src={originalUrl}
+                                    src={newPdfUrl}
                                     width='100%'
                                     height='500px'
                                     title={fileName}
@@ -60,4 +71,4 @@ function ModalPdfComponent({ pdfUrl, fileName, isOpen = false, closeModal }: Sho
     )
 }
 
-export default ModalPdfComponent
+export default memo(ModalPdfComponent)

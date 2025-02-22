@@ -38,6 +38,6 @@ export class DateUtility {
         if (weeks > 1 && remainingDays === 0) return `${weeks} weeks ago`
 
         // Showing weeks and total days for the rest of the cases
-        return `${weeks} week${weeks > 1 ? 's' : ''} (${diffDays} days ago)`
+        return `${weeks} week${weeks > 1 ? 's' : ''} (${diffDays} days) ago`
     }
 }

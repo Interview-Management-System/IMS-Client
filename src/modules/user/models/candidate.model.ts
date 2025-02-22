@@ -44,8 +44,8 @@ export interface CandidateForDetailRetrieveDTO extends CandidateForRetrieveDTO {
     offers: string[]
     position?: string
     skills?: string[]
-    attachment?: string[]
     highestLevel?: string
+    attachmentLink?: string
     candidateStatus?: string
     auditInformation?: AuditInformation
     professionalInformation?: ProfessionalInformation

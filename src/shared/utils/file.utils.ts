@@ -1,11 +1,32 @@
 export class FileUtils {
-    static createPdfUrlFromBytes(bytes?: string) {
-        if (!bytes) return ''
+    static async createPdfUrl(pdfUrl: string) {
+        const blob = await FileUtils.fetchFileFromUrl(pdfUrl)
+        return URL.createObjectURL(blob!)
+    }
 
-        const binaryData = atob(bytes)
-        const byteNumbers = Uint8Array.from(binaryData, char => char.charCodeAt(0))
+    static async createImageUrl(imageUrl: string) {
+        const blob = await FileUtils.fetchFileFromUrl(imageUrl)
+        return URL.createObjectURL(blob!)
+    }
 
-        const blob = new Blob([byteNumbers], { type: 'application/pdf' })
-        return URL.createObjectURL(blob)
+    private static async fetchFileFromUrl(url?: string) {
+        if (url) {
+            const response = await fetch(url)
+            return await response.blob()
+        }
+    }
+
+    static async fetchFileUrl(fileUrl: string) {
+        if (!fileUrl) return null
+
+        try {
+            const response = await fetch(fileUrl)
+            const blob = await response.blob()
+
+            return URL.createObjectURL(blob)
+        } catch (error) {
+            console.error('Error fetching file:', error)
+            return null
+        }
     }
 }
