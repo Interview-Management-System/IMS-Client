@@ -1,3 +1,5 @@
+import { PaginationResult } from './pagination'
+
 type Primitive = string | number | boolean | symbol | null | undefined
 
 type NestedKeys<T> = {
@@ -15,13 +17,29 @@ export interface TableColumn<T> {
     sortable?: boolean
 }
 
+// To be removed
 export interface TableConfig<T> {
     columns: TableColumn<T>[]
 }
 
-export interface TableProps<T> {
-    items?: T[]
-    tableConfig: TableConfig<T>
+export interface TablePaginationProps<T> {
+    tableActions: {
+        renderActions?: (item: T) => React.ReactNode
+        onPageSizeChange: (pageSize: number) => void
+        onPageIndexChange: (pageIndex: number) => void
+        onSortChange: (sortName: string, isAscending: boolean) => void
+    }
+    tableConfig: {
+        tableName: string
+        columns: TableColumn<T>[]
+        paginationResult?: PaginationResult<T>
+    }
+    tableSearchForm?: {}
+}
+
+export interface TableDataProps<T> {
+    items: T[]
+    columns: TableColumn<T>[]
     renderActions?: (item: T) => React.ReactNode
     onSortChange: (sortName: string, isAscending: boolean) => void
 }

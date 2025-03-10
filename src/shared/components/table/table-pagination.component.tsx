@@ -1,111 +1,99 @@
-import { faArrowDownAZ, faArrowUpAZ, faSort } from '@fortawesome/free-solid-svg-icons'
+import { faAdd, faSearch } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { memo, useState } from 'react'
-import { TableColumn, TableProps } from '../../models/table-config'
+import { memo } from 'react'
+import { Button } from 'react-bootstrap'
+import { EnumList } from '../../helpers/enums/enum-list.helper'
+import { TablePaginationProps } from '../../models/table-config'
+import PaginationComponent from './components/pagination/pagination.component'
+import TableDataComponent from './components/table-data/table-data.component'
 import './table.scss'
 
-function displayColumnValue<T>(obj: T, path: string): any {
-    return path.split('.').reduce((acc: any, key) => acc?.[key], obj) ?? ''
-}
-
-function TablePaginationComponent<T>({
-    items = [],
-    tableConfig,
-    onSortChange,
-    renderActions
-}: TableProps<T>) {
-    const [sortColumn, setSortColumn] = useState<string | null>(null)
-    const [isAscending, setIsAscending] = useState<boolean>(true)
-
-    function handleSort(column: TableColumn<T>) {
-        if (!column.sortable || !column.accessor) return
-
-        const sortKey = String(column.accessor)
-        let newIsAscending = true
-
-        if (sortColumn === sortKey) {
-            newIsAscending = !isAscending
-        }
-
-        setSortColumn(sortKey)
-        setIsAscending(newIsAscending)
-
-        onSortChange(sortKey, newIsAscending)
-    }
-
-    function getSortIcon(column: TableColumn<T>) {
-        if (!column.sortable) return null
-        if (column.accessor !== sortColumn) return <FontAwesomeIcon icon={faSort} size='1x' /> // Default sort icon
-        return <FontAwesomeIcon icon={isAscending ? faArrowUpAZ : faArrowDownAZ} size='1x' />
-    }
-
+function TablePaginationComponent<T>({ tableConfig, tableActions }: TablePaginationProps<T>) {
     return (
-        <div className='table-responsive'>
-            <table className='table table-bordered text-muted' id='dataTable' width='100%' cellSpacing='0'>
-                {/* Header */}
-                <thead>
-                    <tr>
-                        <th></th>
+        <div className='card shadow mb-4'>
+            <div className='card-header py-3'>
+                <h6 className='m-0 font-weight-bold text-primary'>{tableConfig.tableName}</h6>
+            </div>
 
-                        {tableConfig.columns.map((column, index) => (
-                            <th
-                                key={index}
-                                className='text-center text-gray-800 sorting'
-                                onClick={() => handleSort(column)}
-                                style={{ cursor: column.sortable ? 'pointer' : 'default' }}
-                            >
-                                <div
-                                    style={{
-                                        display: 'inline-flex',
-                                        alignItems: 'center',
-                                        gap: '4px',
-                                        justifyContent: 'center'
-                                    }}
-                                >
-                                    {column.header}
-                                    {column.sortable && (
-                                        <span style={{ marginLeft: '4px' }}>{getSortIcon(column)}</span>
-                                    )}
+            <div className='card-body'>
+                <div className='table-responsive'>
+                    <div id='dataTable_wrapper' className='dataTables_wrapper pt-1 px-1'>
+                        {/* Form */}
+                        <div className='row my-2'>
+                            <div className='col-sm-2 col-md-5'>
+                                <div className='dataTables_length'>
+                                    <Button className='btn-icon-split' onClick={() => {}}>
+                                        <span className='icon text-white-50'>
+                                            <FontAwesomeIcon icon={faAdd} size='1x' />
+                                        </span>
+                                        <span className='text'>Create</span>
+                                    </Button>
                                 </div>
-                            </th>
-                        ))}
-                        {renderActions && <th className='text-center text-gray-800'>Actions</th>}
-                    </tr>
-                </thead>
+                            </div>
 
-                {/* Body */}
-                <tbody>
-                    {items.length === 0 ? (
-                        <tr>
-                            <td
-                                colSpan={tableConfig.columns.length + (renderActions ? 1 : 0)}
-                                className='text-center text-muted'
-                            >
-                                No records found
-                            </td>
-                        </tr>
-                    ) : (
-                        <>
-                            {items.map((item, rowIndex) => (
-                                <tr key={rowIndex}>
-                                    <td className='text-gray-800'>{rowIndex + 1}</td>
+                            {/* Search */}
+                            <div className='col-sm-10 col-md-7'>
+                                <div id='dataTable_filter' className='dataTables_filter text-right'>
+                                    <form className='user'>
+                                        <div className='row'>
+                                            {/* Status dropdown */}
+                                            <select className='form-control col-md-5 '>
+                                                <option value={0}>Select role to filter</option>
 
-                                    {tableConfig.columns.map((column, colIndex) => (
-                                        <td key={colIndex} className='text-gray-800'>
-                                            {column.accessor
-                                                ? displayColumnValue(item, String(column.accessor))
-                                                : ''}
-                                        </td>
-                                    ))}
-                                    {renderActions && <td className='text-center'>{renderActions(item)}</td>}
-                                </tr>
-                            ))}
-                        </>
-                    )}
-                </tbody>
-            </table>
+                                                {EnumList.roleList.map(role => (
+                                                    <option
+                                                        key={role.value as string}
+                                                        value={role.value as number}
+                                                    >
+                                                        {role.label}
+                                                    </option>
+                                                ))}
+                                            </select>
+
+                                            {/* Search field */}
+                                            <div className='input-group col-md-5'>
+                                                <input
+                                                    type='text'
+                                                    id='searchInput'
+                                                    placeholder='Search...'
+                                                    className='form-control bg-light border-0 small'
+                                                />
+
+                                                <div className='input-group-append'>
+                                                    <Button className='btn-info' type='submit'>
+                                                        <FontAwesomeIcon icon={faSearch} size='1x' />
+                                                    </Button>
+                                                </div>
+                                            </div>
+
+                                            <div className='col-md-1'>
+                                                <Button className='btn-secondary'>Reset</Button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Data */}
+                        <TableDataComponent
+                            columns={tableConfig.columns}
+                            onSortChange={tableActions.onSortChange}
+                            renderActions={tableActions.renderActions}
+                            items={tableConfig.paginationResult?.items ?? []}
+                        />
+
+                        {/* Pagination */}
+                        <PaginationComponent
+                            paginationResult={tableConfig.paginationResult}
+                            onPageSizeChange={tableActions.onPageSizeChange}
+                            onPageIndexChange={tableActions.onPageIndexChange}
+                        />
+                    </div>
+                </div>
+            </div>
         </div>
     )
 }
 
-export default memo(TablePaginationComponent) as <T>(props: TableProps<T>) => JSX.Element
+export default memo(TablePaginationComponent) as <T>(props: TablePaginationProps<T>) => JSX.Element
