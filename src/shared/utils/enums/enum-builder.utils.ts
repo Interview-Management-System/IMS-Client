@@ -1,5 +1,5 @@
 export class EnumBuilder {
-    /*
+    /**
      * Generates a list of enum entries with id and name.
      * Works for both numeric and string enums.
      */
@@ -9,6 +9,9 @@ export class EnumBuilder {
     ) {
         return Object.entries(enumObj)
             .filter(([key, value]) => {
+                // Exclude the 'Default' in enum
+                if (key === 'Default') return false
+
                 if (enumValueType === Number) {
                     return typeof value === 'number' // Filter for number enums
                 } else if (enumValueType === String) {
@@ -28,17 +31,6 @@ export class EnumBuilder {
     }
 
     /**
-     * Retrieves the enum name for a given value.
-     */
-    private static getEnumName<T extends Record<string, number | string>>(
-        enumObj: T,
-        value: T[keyof T]
-    ): string | undefined {
-        const name = Object.entries(enumObj).find(([_, v]) => v === value)?.[0]
-        return name ? EnumBuilder.formatEnumName(name) : undefined
-    }
-
-    /**
      * Formats an enum key into a human-readable string.
      */
     private static formatEnumName(enumValue: string): string {
@@ -51,12 +43,5 @@ export class EnumBuilder {
 
     static areAllEnumValuesNumbers<T extends Record<string, number | string>>(enumObj: T): boolean {
         return Object.values(enumObj).every(value => typeof value === 'number')
-    }
-
-    /**
-     * Checks if all values of an enum are of type 'string'.
-     */
-    private static areAllEnumValuesStrings<T extends Record<string, number | string>>(enumObj: T): boolean {
-        return Object.values(enumObj).every(value => typeof value === 'string')
     }
 }

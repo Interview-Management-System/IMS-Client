@@ -6,51 +6,36 @@ import { Button } from 'react-bootstrap'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import {
-    CandidateForPaginationRetrieveDTO,
-    CandidatePaginatedSearchRequest
-} from '../../../../../modules/user/models/candidate.model'
-import candidateService from '../../../../../modules/user/services/candidate.service'
-import userService from '../../../../../modules/user/services/user.service'
-import userStore from '../../../../../modules/user/stores/user.store'
+    JobPaginatedSearchRequest,
+    JobPaginationRetrieveDTO
+} from '../../../../../modules/job/models/job-retrieve.model'
+import jobService from '../../../../../modules/job/services/job.service'
+import jobStore from '../../../../../modules/user/stores/job.store'
 import ModalConfirmComponent from '../../../../../shared/components/modals/modal-confirm/modal-confirm.component'
 import { ButtonColor } from '../../../../../shared/enums/button.enum'
-import { CandidateStatusEnum } from '../../../../../shared/enums/entity-enums/candidate.enum'
 import { EnumList } from '../../../../../shared/helpers/enums/enum-list.helper'
-import { useFetch } from '../../../../../shared/hooks/use-fetch'
 import useModal from '../../../../../shared/hooks/use-modal'
 import { TableConfig } from '../../../../../shared/models/table-config'
-import './candidate-list.scss'
 
-function handleSearchCandidate(formData: CandidatePaginatedSearchRequest) {
-    if (formData.statusId !== CandidateStatusEnum.Default || formData.searchText?.trim() !== '') {
-        userStore.setCandidatePaginationSearchValue(formData)
-        candidateService.getCandidateListPaging()
-    }
-}
-
-function CandidateListComponent() {
+function JobListComponent() {
     const modal = useModal()
     const navigate = useNavigate()
-    const pageResult = userStore.candidatePageResult
 
-    const tableConfig = {
+    const pageResult = jobStore.jobPageResult
+
+    const jobTableConfig: TableConfig<JobPaginationRetrieveDTO> = {
         columns: [
-            { header: 'Candidate Name', accessor: 'username', sortable: true },
-            { header: 'Email', accessor: 'email', sortable: true },
-            { header: 'Phone', accessor: 'phoneNumber', sortable: true },
-            { header: 'Position', accessor: 'currentPosition', sortable: false },
-            { header: 'Recruiter', accessor: 'ownerHr', sortable: false },
-            { header: 'Status', accessor: 'userStatus.statusText', sortable: false }
+            { header: 'Title', accessor: 'title', sortable: true },
+            { header: 'Skills', accessor: 'requiredSkills', sortable: true },
+            { header: 'Start Date', accessor: 'datePeriod.startDate', sortable: true },
+            { header: 'End Date', accessor: 'datePeriod.endDate', sortable: true },
+            { header: 'Levels', accessor: 'levels', sortable: false },
+            { header: 'Status', accessor: 'jobStatus', sortable: false }
         ]
-    } as TableConfig<CandidateForPaginationRetrieveDTO>
+    }
 
-    useFetch(() => candidateService.getCandidateListPaging())
-
-    const { register, handleSubmit, reset, getValues } = useForm<CandidatePaginatedSearchRequest>()
-
-    const [, setUserIdToDelete] = useState('')
-    const [, setUserIdToActivate] = useState('')
-    const [, setUserIdToDeActivate] = useState('')
+    const [, setJobIdToDelete] = useState('')
+    const { register, handleSubmit, reset, getValues } = useForm<JobPaginatedSearchRequest>()
 
     // Modal states
     const [modalTitle, setModalTitle] = useState('')
@@ -58,69 +43,53 @@ function CandidateListComponent() {
     const [modalConfirmHandler, setModalConfirmHandler] = useState<() => void>(() => {})
 
     // Delete
-    function confirmDeleteCandidate(userId: string) {
+    function confirmDeleteJob(jobId: string) {
         modal.showModal()
-        setUserIdToDelete(userId)
+        setJobIdToDelete(jobId)
         setModalTitle('Delete confirmation')
         setModalConfirmQuestion('Are you sure you want to delete ?')
-        setModalConfirmHandler(() => () => userService.deleteUser(userId))
-    }
-
-    // Activate
-    function confirmActivateCandidate(userId: string) {
-        modal.showModal()
-        setUserIdToActivate(userId)
-        setModalTitle('Active confirmation')
-        setModalConfirmQuestion('Are you sure you want to activate ?')
-        setModalConfirmHandler(() => () => userService.activateUser(userId))
-    }
-
-    // De-Activate
-    function confirmDeActivateCandidate(userId: string) {
-        modal.showModal()
-        setUserIdToDeActivate(userId)
-        setModalTitle('De-activate confirmation')
-        setModalConfirmQuestion('Are you sure you want to de-activate ?')
-        setModalConfirmHandler(() => () => userService.deActivateUser(userId))
+        setModalConfirmHandler(() => () => {
+            /// del job
+        })
     }
 
     function resetForm() {
         reset()
-        userStore.resetCandidatePaginationSearchValue()
-        candidateService.getCandidateListPaging()
+        jobStore.resetJobPaginationSearchValue()
+        jobService.getJobListPaging()
     }
 
     function onPageIndexChange(newPageIndex: number) {
-        userStore.setCandidatePaginationSearchValue({
+        jobStore.setJobPaginationSearchValue({
             ...getValues(),
             paginationRequest: {
                 pageIndex: newPageIndex
             }
         })
 
-        candidateService.getCandidateListPaging()
+        jobService.getJobListPaging()
     }
 
     function onPageSizeChange(newPageSize: number) {
-        userStore.setCandidatePaginationSearchValue({
+        jobStore.setJobPaginationSearchValue({
             ...getValues(),
             paginationRequest: {
                 pageSize: newPageSize
             }
         })
 
-        candidateService.getCandidateListPaging()
+        jobService.getJobListPaging()
     }
 
     function onSortChange(propertyName: string, isAscending: boolean) {
-        userStore.setCandidatePaginationSearchValue({
+        jobStore.setJobPaginationSearchValue({
             ...getValues(),
             sortCriteria: {
                 isAscending: isAscending,
                 sortProperty: propertyName
             }
         })
-        candidateService.getCandidateListPaging()
+        jobService.getJobListPaging()
     }
 
     return (
@@ -130,13 +99,13 @@ function CandidateListComponent() {
                 modalTitle={modalTitle}
                 handleClose={modal.closeModal}
                 buttonColor={ButtonColor.Danger}
-                modalConfirmQuestion={modalConfirmQuestion}
                 handleConfirm={modalConfirmHandler}
+                modalConfirmQuestion={modalConfirmQuestion}
             />
 
             <div className='card shadow mb-4'>
                 <div className='card-header py-3'>
-                    <h6 className='m-0 font-weight-bold text-primary'>Candidate List</h6>
+                    <h6 className='m-0 font-weight-bold text-primary'>Job List</h6>
                 </div>
 
                 <div className='card-body'>
@@ -147,7 +116,7 @@ function CandidateListComponent() {
                                     <div className='dataTables_length'>
                                         <Button
                                             className='btn-icon-split'
-                                            onClick={() => navigate('/candidate/create')}
+                                            onClick={() => navigate('/job/create')}
                                         >
                                             <span className='icon text-white-50'>
                                                 <FontAwesomeIcon icon={faAdd} size='1x' />
@@ -160,21 +129,21 @@ function CandidateListComponent() {
                                 {/* Search */}
                                 <div className='col-sm-10 col-md-7'>
                                     <div id='dataTable_filter' className='dataTables_filter text-right'>
-                                        <form className='user' onSubmit={handleSubmit(handleSearchCandidate)}>
+                                        <form className='user' onSubmit={handleSubmit(() => {})}>
                                             <div className='row'>
                                                 {/* Status dropdown */}
                                                 <select
                                                     className='form-control col-md-5 '
-                                                    {...register('statusId', { valueAsNumber: true })}
+                                                    {...register('jobStatusId', { valueAsNumber: true })}
                                                 >
-                                                    <option value={0}>Select status to filter</option>
+                                                    <option value={0}>Select role to filter</option>
 
-                                                    {EnumList.candidateStatusList.map(candidateStatus => (
+                                                    {EnumList.jobList.map(role => (
                                                         <option
-                                                            key={candidateStatus.value as number}
-                                                            value={candidateStatus.value as number}
+                                                            key={role.value as string}
+                                                            value={role.value as number}
                                                         >
-                                                            {candidateStatus.label}
+                                                            {role.label}
                                                         </option>
                                                     ))}
                                                 </select>
@@ -184,7 +153,7 @@ function CandidateListComponent() {
                                                     <input
                                                         type='text'
                                                         id='searchInput'
-                                                        placeholder='Search for...'
+                                                        placeholder='Search...'
                                                         {...register('searchText')}
                                                         className='form-control bg-light border-0 small'
                                                     />
@@ -209,52 +178,32 @@ function CandidateListComponent() {
 
                             {/* <TableComponent
                                 onSortChange={onSortChange}
-                                paginationResult={pageResult}
-                                tableConfig={tableConfig}
+                                ={pageResult}
+                                tableConfig={jobTableConfig}
                                 onPageSizeChange={onPageSizeChange}
                                 onPageIndexChange={onPageIndexChange}
-                                renderActions={candidate => (
+                                renderActions={job => (
                                     <>
                                         <ButtonActionComponent
                                             icon={faEye}
                                             tooltipName='Details'
                                             buttonColor={ButtonColor.Primary}
-                                            action={() => navigate(`/candidate/detail/${candidate.id}`)}
+                                            action={() => navigate(`/job/detail/${job.id}`)}
                                         />
 
                                         <ButtonActionComponent
                                             icon={faPenToSquare}
                                             tooltipName='Edit'
-                                            buttonColor={ButtonColor.Info}
-                                            action={() => navigate(`/candidate/edit/${candidate.id}`)}
+                                            buttonColor={ButtonColor.Primary}
+                                            action={() => navigate(`/job/edit/${job.id}`)}
                                         />
 
                                         <ButtonActionComponent
                                             icon={faTrash}
                                             tooltipName='Delete'
-                                            buttonColor={ButtonColor.Danger}
-                                            action={() => confirmDeleteCandidate(candidate.id)}
+                                            buttonColor={ButtonColor.Primary}
+                                            action={() => confirmDeleteJob(job.id)}
                                         />
-
-                                        <>
-                                            {candidate.userStatus?.isActive && (
-                                                <ButtonActionComponent
-                                                    icon={faToggleOff}
-                                                    tooltipName='De-active'
-                                                    buttonColor={ButtonColor.Dark}
-                                                    action={() => confirmDeActivateCandidate(candidate.id)}
-                                                />
-                                            )}
-
-                                            {!candidate.userStatus?.isActive && (
-                                                <ButtonActionComponent
-                                                    icon={faToggleOn}
-                                                    tooltipName='Active'
-                                                    buttonColor={ButtonColor.Success}
-                                                    action={() => confirmActivateCandidate(candidate.id)}
-                                                />
-                                            )}
-                                        </>
                                     </>
                                 )}
                             /> */}
@@ -266,4 +215,4 @@ function CandidateListComponent() {
     )
 }
 
-export default observer(CandidateListComponent)
+export default observer(JobListComponent)

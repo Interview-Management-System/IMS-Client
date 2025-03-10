@@ -8,9 +8,9 @@ import ControlledInput from '../../../../../shared/components/form/form-input.co
 import ControlledSelection from '../../../../../shared/components/form/form-selection.component'
 import ControlledTextArea from '../../../../../shared/components/form/form-text-area.component'
 import ModalConfirmComponent from '../../../../../shared/components/modals/modal-confirm/modal-confirm.component'
-import { ButtonVariant } from '../../../../../shared/enums/button-variant.enum'
+import { ButtonColor } from '../../../../../shared/enums/button.enum'
 import { EnumList } from '../../../../../shared/helpers/enums/enum-list.helper'
-import useModal from '../../../../../shared/hooks/useModal'
+import useModal from '../../../../../shared/hooks/use-modal'
 
 function UserCreateComponent() {
     const modal = useModal()
@@ -40,7 +40,7 @@ function UserCreateComponent() {
             <ModalConfirmComponent
                 show={modal.show}
                 modalTitle='Create confirm'
-                buttonVariant={ButtonVariant.Primary}
+                buttonColor={ButtonColor.Primary}
                 handleClose={modal.closeModal}
                 modalConfirmQuestion='Do you want to create new user ?'
                 handleConfirm={userCreateForm.handleSubmit(handleCreateUser)}

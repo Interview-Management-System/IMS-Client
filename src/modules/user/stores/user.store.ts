@@ -20,7 +20,12 @@ class UserStore {
     candidateDetail = {} as CandidateForDetailRetrieveDTO
 
     // Pagination
-    userPageResult = {} as PaginationResult<UserForPaginationRetrieveDTO>
+    userPageResult = {
+        items: [
+            { id: 'test', userStatus: { isActive: true } },
+            { id: 'sdafasdf', userStatus: { isActive: true } }
+        ]
+    } as PaginationResult<UserForPaginationRetrieveDTO>
     candidatePageResult = {} as PaginationResult<CandidateForPaginationRetrieveDTO>
     userPaginationSearchValue: UserPaginatedSearchRequest | undefined = undefined
     candidatePaginationSearchValue: CandidatePaginatedSearchRequest | undefined = undefined
@@ -61,11 +66,11 @@ class UserStore {
     */
 
     // User
-    setUserPaginationSearchValue(searchValue: UserPaginatedSearchRequest) {
+    setUserPaginationSearchValue = (searchValue: UserPaginatedSearchRequest) => {
         this.userPaginationSearchValue = searchValue
     }
 
-    resetUserPaginationSearchValue() {
+    resetUserPaginationSearchValue = () => {
         this.userPaginationSearchValue = undefined
     }
 

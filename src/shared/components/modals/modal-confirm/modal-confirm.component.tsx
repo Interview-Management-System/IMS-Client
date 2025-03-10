@@ -1,5 +1,5 @@
 import { Button, Modal } from 'react-bootstrap'
-import { ButtonVariant } from '../../../enums/button-variant.enum'
+import { ButtonColor } from '../../../enums/button.enum'
 import './modal-confirm.scss'
 
 interface ModalConfirm {
@@ -8,14 +8,14 @@ interface ModalConfirm {
     handleClose: () => void
     handleConfirm: () => void
     modalConfirmQuestion?: string
-    buttonVariant?: ButtonVariant
+    buttonColor?: ButtonColor
 }
 
 function ModalConfirmComponent({
     modalTitle,
     modalConfirmQuestion,
     show,
-    buttonVariant,
+    buttonColor,
     handleClose,
     handleConfirm
 }: ModalConfirm) {
@@ -33,7 +33,7 @@ function ModalConfirmComponent({
                 </Button>
 
                 <Button
-                    variant={buttonVariant ?? ButtonVariant.Primary}
+                    variant={buttonColor ?? ButtonColor.Primary}
                     onClick={() => {
                         handleClose()
                         handleConfirm()

@@ -1,10 +1,16 @@
-.sortable-header {
-    display: flex;
-    align-items: center; /* Aligns items vertically */
-    gap: 4px; /* Reduces spacing between text and icons */
-    justify-content: flex-start; /* Ensures left alignment */
+.table-responsive {
+    overflow-x: auto; /* Ensures responsiveness */
+    max-width: 100%; /* Prevents overflow */
+    white-space: nowrap; /* Prevents content from wrapping */
 }
 
-.sort-icon {
-    font-size: '0.8' !important;
+table {
+    width: 100%; /* Makes sure table fits within container */
+    table-layout: auto; /* Allows columns to adjust dynamically */
+}
+
+th,
+td {
+    word-wrap: break-word; /* Ensures text does not cause overflow */
+    white-space: normal; /* Allows wrapping within table cells */
 }

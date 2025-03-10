@@ -12,11 +12,6 @@ class CandidateService {
         this.setupSignalListerners()
     }
 
-    async test() {
-        // var a = await candidateApiService.test()
-        // console.log(a)
-    }
-
     async getCandidateListPaging() {
         const searchValue = userStore.candidatePaginationSearchValue
         const responseData = await candidateApiService.getCandidateListPaging(searchValue)

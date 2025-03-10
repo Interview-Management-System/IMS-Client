@@ -27,12 +27,6 @@ class CandidateApiService extends BaseApiService {
             `${UserEndpoint.CandidateDetailEndpoint}/${id}`
         )
     }
-
-    test() {
-        return this.get<any>(`Values/get`, {
-            responseType: 'arraybuffer'
-        })
-    }
 }
 
 const candidateApiService = new CandidateApiService()

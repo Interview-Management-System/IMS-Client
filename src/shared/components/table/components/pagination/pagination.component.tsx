@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react'
+import { memo, useEffect, useState } from 'react'
 import { Button } from 'react-bootstrap'
-import { PaginationResult } from '../../models/pagination'
+import { PaginationResult } from '../../../../models/pagination'
 import '../pagination/pagination.scss'
 
 interface PaginationProps<T> {
@@ -21,8 +21,8 @@ function PaginationComponent<T>({
     const [finishIndex, setFinishIndex] = useState(1)
     const pageSize = paginationResult?.pageSize ?? 0
     const pageIndex = paginationResult?.pageIndex ?? 0
-    const totalRecords = paginationResult?.totalRecords || 0
     const showNumber = (pageIndex - 1) * pageSize + 1
+    const totalRecords = paginationResult?.totalRecords || 0
     const toNumber = Math.min(showNumber + pageSize - 1, totalRecords)
 
     useEffect(() => {
@@ -53,6 +53,7 @@ function PaginationComponent<T>({
                         name='dataTable_length'
                         aria-controls='dataTable'
                         onChange={handlePageSizeChange}
+                        value={paginationResult?.pageSize}
                         className='custom-select-sm form-control form-control-sm'
                     >
                         <option value={5}>5</option>
@@ -93,6 +94,7 @@ function PaginationComponent<T>({
                                 </>
                             )}
 
+                            {/* Number range (1 -> n) */}
                             {createRange(finishIndex).map(item => (
                                 <li key={item} className={`page-item ${pageIndex === item ? 'active' : ''}`}>
                                     <Button
@@ -106,6 +108,7 @@ function PaginationComponent<T>({
                                 </li>
                             ))}
 
+                            {/* Next and end buttons */}
                             {pageIndex !== finishIndex && (
                                 <>
                                     <li
@@ -135,4 +138,4 @@ function PaginationComponent<T>({
     )
 }
 
-export default PaginationComponent
+export default memo(PaginationComponent)

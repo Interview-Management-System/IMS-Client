@@ -5,9 +5,9 @@ import { useNavigate, useParams } from 'react-router-dom'
 import userService from '../../../../../modules/user/services/user.service'
 import userStore from '../../../../../modules/user/stores/user.store'
 import ModalConfirmComponent from '../../../../../shared/components/modals/modal-confirm/modal-confirm.component'
-import { ButtonVariant } from '../../../../../shared/enums/button-variant.enum'
+import { ButtonColor } from '../../../../../shared/enums/button.enum'
 import { useFetch } from '../../../../../shared/hooks/use-fetch'
-import useModal from '../../../../../shared/hooks/useModal'
+import useModal from '../../../../../shared/hooks/use-modal'
 import { DateUtility } from '../../../../../shared/utils/date.util'
 import './user-detail.scss'
 
@@ -49,7 +49,7 @@ function UserDetailComponent() {
         <>
             <ModalConfirmComponent
                 show={modal.show}
-                buttonVariant={ButtonVariant.Danger}
+                buttonColor={ButtonColor.Danger}
                 modalTitle={modalTitle}
                 handleClose={modal.closeModal}
                 modalConfirmQuestion={modalConfirmQuestion}
@@ -65,7 +65,7 @@ function UserDetailComponent() {
                     <h6 className='m-0'>
                         {userDetail.userStatus?.isActive && (
                             <Button
-                                variant={ButtonVariant.Danger}
+                                variant={ButtonColor.Danger}
                                 type='button'
                                 size='sm'
                                 onClick={() => confirmDeActivateUser(userDetail.id)}
@@ -76,7 +76,7 @@ function UserDetailComponent() {
 
                         {!userDetail.userStatus?.isActive && (
                             <Button
-                                variant={ButtonVariant.Success}
+                                variant={ButtonColor.Success}
                                 type='button'
                                 size='sm'
                                 onClick={() => confirmActivateUser(userDetail.id)}

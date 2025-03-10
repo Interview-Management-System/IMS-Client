@@ -21,7 +21,7 @@ export interface UserForPaginationRetrieveDTO {
     isDeleted: boolean
     username?: string
     phoneNumber?: string
-    userStatus: UserStatus
+    userStatus?: UserStatus
 }
 
 export interface UserForCreateDTO extends BaseUserDTO {
