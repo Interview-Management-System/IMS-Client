@@ -175,38 +175,6 @@ function JobListComponent() {
                                     </div>
                                 </div>
                             </div>
-
-                            {/* <TableComponent
-                                onSortChange={onSortChange}
-                                ={pageResult}
-                                tableConfig={jobTableConfig}
-                                onPageSizeChange={onPageSizeChange}
-                                onPageIndexChange={onPageIndexChange}
-                                renderActions={job => (
-                                    <>
-                                        <ButtonActionComponent
-                                            icon={faEye}
-                                            tooltipName='Details'
-                                            buttonColor={ButtonColor.Primary}
-                                            action={() => navigate(`/job/detail/${job.id}`)}
-                                        />
-
-                                        <ButtonActionComponent
-                                            icon={faPenToSquare}
-                                            tooltipName='Edit'
-                                            buttonColor={ButtonColor.Primary}
-                                            action={() => navigate(`/job/edit/${job.id}`)}
-                                        />
-
-                                        <ButtonActionComponent
-                                            icon={faTrash}
-                                            tooltipName='Delete'
-                                            buttonColor={ButtonColor.Primary}
-                                            action={() => confirmDeleteJob(job.id)}
-                                        />
-                                    </>
-                                )}
-                            /> */}
                         </div>
                     </div>
                 </div>

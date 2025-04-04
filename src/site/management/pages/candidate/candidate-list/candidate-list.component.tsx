@@ -1,7 +1,7 @@
 import { faAdd, faSearch } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { observer } from 'mobx-react-lite'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from 'react-bootstrap'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
@@ -45,6 +45,12 @@ function CandidateListComponent() {
     } as TableConfig<CandidateForPaginationRetrieveDTO>
 
     useFetch(() => candidateService.getCandidateListPaging())
+    // candidateService.getCandidateListPaging()
+    useEffect(() => {
+        return () => {
+            // candidateService.stopConnection()
+        }
+    }, [])
 
     const { register, handleSubmit, reset, getValues } = useForm<CandidatePaginatedSearchRequest>()
 

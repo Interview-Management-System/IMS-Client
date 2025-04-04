@@ -13,6 +13,7 @@ import ModalConfirmComponent from '../../../../../shared/components/modals/modal
 import TablePaginationComponent from '../../../../../shared/components/table/table-pagination.component'
 import { ButtonColor } from '../../../../../shared/enums/button.enum'
 import { RoleEnum } from '../../../../../shared/enums/entity-enums/master-data.enum'
+import { EnumList } from '../../../../../shared/helpers/enums/enum-list.helper'
 import { useFetch } from '../../../../../shared/hooks/use-fetch'
 import useModal from '../../../../../shared/hooks/use-modal'
 import usePaginatedSearch from '../../../../../shared/hooks/use-paginated-search'
@@ -30,6 +31,7 @@ function UserListComponent() {
     const searchForm = useForm<UserPaginatedSearchRequest>()
     const { show, closeModal, modalTitle, modalConfirmQuestion, modalConfirmHandler, confirm } = useModal()
 
+    // useSignalR(userService)
     useFetch(() => userService.getUserListPaging())
 
     const userTableColumns = [
@@ -79,11 +81,23 @@ function UserListComponent() {
                 modalConfirmQuestion={modalConfirmQuestion}
             />
 
-            <TablePaginationComponent
+            <TablePaginationComponent<UserForPaginationRetrieveDTO, UserPaginatedSearchRequest>
                 tableConfig={{
                     tableName: 'User List',
                     columns: userTableColumns,
-                    paginationResult: pageResult
+                    paginationResult: pageResult,
+                    createPageRoute: '/user/create'
+                }}
+                tableSearchForm={{
+                    resetForm: resetForm,
+                    searchForm: searchForm,
+                    handleSearch: handleSearchUser,
+                    filterOptions: [
+                        {
+                            filterOptionKey: 'roleId',
+                            options: EnumList.roleList
+                        }
+                    ]
                 }}
                 tableActions={{
                     onSortChange: onSortChange,

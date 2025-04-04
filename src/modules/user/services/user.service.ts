@@ -1,14 +1,14 @@
 import { NavigateFunction } from 'react-router-dom'
 import userApiService from '../../../api/services/user-api.service'
+
 import SignalRService from '../../../shared/services/signalR.service'
+import { SignalEvent } from '../../../shared/utils/signalR.util'
 import { UserForCreateDTO } from '../models/user.model'
 import userStore from '../stores/user.store'
 
-class UserService {
-    private readonly signalRService = new SignalRService('/user-hub')
-
+class UserService extends SignalRService {
     constructor() {
-        this.setupSignalListerners()
+        super('/user-hub')
     }
 
     async getUserById(id: string) {
@@ -16,6 +16,7 @@ class UserService {
         userStore.setUserDetail(response?.data)
     }
 
+    @SignalEvent('UserStatusChange')
     async getUserListPaging() {
         const searchValue = userStore.userPaginationSearchValue
         const responseData = await userApiService.getUserListPaging(searchValue)
@@ -50,15 +51,6 @@ class UserService {
     async getListRecruiter() {
         const response = await userApiService.getListRecruiter()
         userStore.setListRecruiter(response?.data)
-    }
-
-    private setupSignalListerners() {
-        const handlers: { [key: string]: () => void } = {
-            UserDelete: () => this.getUserListPaging(),
-            UserStatusChange: () => this.getUserListPaging()
-        }
-
-        this.signalRService.registerSignalHandlers(handlers)
     }
 }
 

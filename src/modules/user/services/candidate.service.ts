@@ -1,22 +1,19 @@
 import candidateApiService from '../../../api/services/candidate-api.service'
 import { FormDataHelper } from '../../../shared/helpers/form/data/form-data.helper'
 import NavigationHelper from '../../../shared/helpers/navigation.helper'
-import SignalRService from '../../../shared/services/signalR.service'
 import { CandidateForCreateDTO } from '../models/candidate.model'
 import userStore from '../stores/user.store'
 
 class CandidateService {
-    private readonly signalRService = new SignalRService('/user-hub')
+    // private readonly signalRService = new SignalRService('/user-hub')
 
     constructor() {
-        this.setupSignalListerners()
+        // this.setupSignalListerners()
     }
 
     async getCandidateListPaging() {
         const searchValue = userStore.candidatePaginationSearchValue
         const responseData = await candidateApiService.getCandidateListPaging(searchValue)
-
-        console.log(responseData.data)
 
         userStore.setCandidatePageResult(responseData?.data)
     }
@@ -41,7 +38,7 @@ class CandidateService {
             UserStatusChange: () => this.getCandidateListPaging()
         }
 
-        this.signalRService.registerSignalHandlers(handlers)
+        // this.registerSignalHandlers(handlers)
     }
 }
 

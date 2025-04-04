@@ -1,6 +1,30 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
+import { ButtonColor } from '../../enums/button.enum'
+import useModal from '../../hooks/use-modal'
+import ModalConfirmComponent from '../modals/modal-confirm/modal-confirm.component'
+import NotificationComponent from './components/notifcation.component'
+
 function HeaderComponent() {
+    const { show, closeModal, modalTitle, modalConfirmQuestion, modalConfirmHandler, confirm } = useModal()
+
+    function logout() {
+        confirm('Logout confirmation', 'Are you sure you want to logout ?', () => {
+            // call logout api
+        })
+    }
+
     return (
         <>
+            {/* Logout popup */}
+            <ModalConfirmComponent
+                show={show}
+                modalTitle={modalTitle}
+                handleClose={closeModal}
+                buttonColor={ButtonColor.Danger}
+                handleConfirm={modalConfirmHandler}
+                modalConfirmQuestion={modalConfirmQuestion}
+            />
+
             {/* <!-- Topbar --> */}
             <nav className='navbar navbar-expand navbar-light bg-white topbar static-top shadow mb-3'>
                 {/* <!-- Sidebar Toggle (Topbar) --> */}
@@ -22,90 +46,13 @@ function HeaderComponent() {
 
                     {/* <!-- Notification Bell --> */}
                     <li className='nav-item dropdown no-arrow mx-1'>
-                        <a
-                            href='/'
-                            className='nav-link dropdown-toggle'
-                            id='alertsDropdown'
-                            role='button'
-                            data-bs-toggle='dropdown'
-                        >
-                            <i className='fas fa-bell fa-fw'></i>
-                            {/* <!-- Counter - Alerts --> */}
-                            <span className='badge badge-danger badge-counter'>3</span>
-                        </a>
-                        {/* <!-- Dropdown - Alerts --> */}
-                        <div className='dropdown-list dropdown-menu dropdown-menu-right shadow custom-dropdown'>
-                            <div className='n-header'>
-                                <h6 className='notification-header'>Notifications</h6>
-                                <div className='icon-container'>
-                                    <i className='fa-solid fa-ellipsis custom-fa-ellipsis'></i>
-                                </div>
-                            </div>
-                            <div className='options-menu'>
-                                <ul>
-                                    <li>
-                                        <i className='fa-solid fa-check mr-2'></i> Mark all as read
-                                    </li>
-                                    <li>
-                                        <i className='fa-solid fa-computer mr-1'></i> Open in new window
-                                    </li>
-                                </ul>
-                            </div>
-                            <div className='dropdown-actions'>
-                                <p className='notification-tab' style={{ color: '#000' }}>
-                                    All
-                                </p>
-                                <p className='notification-tab' style={{ color: '#000' }}>
-                                    Unread
-                                </p>
-                            </div>
-                            {/* <!-- Notification Content --> */}
-                            <div className='notification-container'>
-                                <a
-                                    href='s'
-                                    className='dropdown-item d-flex align-items-center border-none'
-                                    style={{ cursor: 'pointer' }}
-                                >
-                                    <div className='mr-3'>
-                                        <div className='icon-circle bg-success'>
-                                            <i className='fa-solid fa-check text-white'></i>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div className='small text-gray-500'>
-                                            January 1, 2023, 12:00:00 PM
-                                        </div>
-                                        <span className='font-weight-bold' style={{ color: '#000' }}>
-                                            Notification Title
-                                        </span>
-                                        <div style={{ color: '#000' }}>Notification content goes here...</div>
-                                        <div className='unread-indicator'></div>
-                                    </div>
-                                </a>
-                                <div className='sub-icon-container'>
-                                    <i className='fa-solid fa-ellipsis-vertical custom-fa-ellipsis'></i>
-                                </div>
-                                <div className='sub-option-menu'>
-                                    <a>
-                                        <i className='fa-solid fa-check mr-2'></i> Mark as Read
-                                    </a>
-                                    <a>
-                                        <i
-                                            className='fa-solid fa-delete-left mr-2'
-                                            style={{ color: '#000000' }}
-                                        ></i>{' '}
-                                        Delete
-                                    </a>
-                                </div>
-                            </div>
-                            <p className='text-center'>You have no notification</p>
-                        </div>
+                        <NotificationComponent />
                     </li>
 
                     {/* <!-- User Information --> */}
                     <li className='nav-item dropdown no-arrow'>
                         <a
-                            href='/'
+                            href='#'
                             className='nav-link dropdown-toggle'
                             id='userDropdown'
                             role='button'
@@ -116,24 +63,23 @@ function HeaderComponent() {
                             <img
                                 id='headerImage'
                                 className='img-profile rounded-circle'
-                                src='profile_image_url.jpg'
+                                src='https://cdn-icons-png.flaticon.com/512/9187/9187604.png'
                                 alt=''
                             />
                         </a>
                         {/* <!-- Dropdown - User Information --> */}
-                        <div className='dropdown-menu dropdown-menu-right shadow animated--grow-in'>
-                            <a className='dropdown-item' href='/public/user/my-profile'>
+                        <div className='dropdown-menu dropdown-menu-end shadow animated--grow-in'>
+                            {/* <a className='dropdown-item' href='/public/user/my-profile'>
                                 <i className='fas fa-user fa-sm fa-fw mr-2 text-gray-400'></i> Profile
                             </a>
+
                             <a className='dropdown-item' href='/public/user/my-request'>
                                 <i className='fa-solid fa-book fa-sm fa-fw mr-2 text-gray-400'></i> My Request
-                            </a>
-                            <div className='dropdown-divider'></div>
-                            <button
-                                className='dropdown-item'
-                                data-bs-toggle='modal'
-                                data-bs-target='#logoutModal'
-                            >
+                            </a> */}
+
+                            {/* <div className='dropdown-divider'></div> */}
+
+                            <button className='dropdown-item' onClick={logout}>
                                 <i className='fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400'></i> Logout
                             </button>
                         </div>
