@@ -5,7 +5,7 @@ import ApiHelper from '../helpers/api.helper'
 
 //https://jsonplaceholder.typicode.com/
 //https://localhost:7139/api'
-const axiosClient = axios.create({
+export const axiosClient = axios.create({
     baseURL: 'https://localhost:7139/api',
     timeout: 100000,
     headers: {
@@ -17,6 +17,7 @@ axiosClient.interceptors.request.use(
     config => {
         ToastUtility.displayLoading()
 
+        // config.signal = new AbortController().signal
         config.headers.Authorization = `Bearer ${CookieService.getTokenFromCookie()}`
         return config
     },

@@ -15,7 +15,7 @@ import {
     UserStatusEnum
 } from '../../enums/entity-enums/master-data.enum'
 import { OfferStatusEnum } from '../../enums/entity-enums/offer.enum'
-import { EnumBuilder } from '../../utils/enums/enum-builder.utils'
+import { EnumBuilder } from './enum-builder.helper'
 
 export class EnumList {
     static get candidateStatusList() {

@@ -6,7 +6,6 @@ import userService from '../../../../../modules/user/services/user.service'
 import userStore from '../../../../../modules/user/stores/user.store'
 import ModalConfirmComponent from '../../../../../shared/components/modals/modal-confirm/modal-confirm.component'
 import { ButtonColor } from '../../../../../shared/enums/button.enum'
-import { useFetch } from '../../../../../shared/hooks/use-fetch'
 import useModal from '../../../../../shared/hooks/use-modal'
 import { DateUtility } from '../../../../../shared/utils/date.util'
 import './user-detail.scss'
@@ -17,7 +16,7 @@ function UserDetailComponent() {
     const navigate = useNavigate()
 
     const userDetail = userStore.userDetail
-    useFetch(() => userService.getUserById(id!))
+    // useFetch(() => userService.getUserById(id!))
 
     const [, setUserIdToActivate] = useState('')
     const [, setUserIdToDeActivate] = useState('')

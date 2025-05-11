@@ -4,11 +4,9 @@ import { observer } from 'mobx-react-lite'
 import { useState } from 'react'
 import { Button } from 'react-bootstrap'
 import { useNavigate, useParams } from 'react-router-dom'
-import candidateService from '../../../../../modules/user/services/candidate.service'
 import userStore from '../../../../../modules/user/stores/user.store'
 import ModalPdfComponent from '../../../../../shared/components/modals/modal-pdf/modal-pdf.component'
 import { CandidateStatusEnum } from '../../../../../shared/enums/entity-enums/candidate.enum'
-import { useFetch } from '../../../../../shared/hooks/use-fetch'
 import { DateUtility } from '../../../../../shared/utils/date.util'
 import './candidate-detail.scss'
 
@@ -19,7 +17,7 @@ function CandidateDetailComponent() {
     const candidateDetail = userStore.candidateDetail
     const [isModalOpen, setIsModalOpen] = useState(false)
 
-    useFetch(() => candidateService.getCandidateById(id!))
+    // useFetch(() => candidateService.getCandidateById(id!))
 
     return (
         <>

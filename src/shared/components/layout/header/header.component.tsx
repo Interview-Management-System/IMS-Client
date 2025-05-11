@@ -1,7 +1,9 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import { ButtonColor } from '../../enums/button.enum'
-import useModal from '../../hooks/use-modal'
-import ModalConfirmComponent from '../modals/modal-confirm/modal-confirm.component'
+
+import { Button, Navbar } from 'react-bootstrap'
+import { ButtonColor } from '../../../enums/button.enum'
+import useModal from '../../../hooks/use-modal'
+import ModalConfirmComponent from '../../modals/modal-confirm/modal-confirm.component'
 import NotificationComponent from './components/notifcation.component'
 
 function HeaderComponent() {
@@ -26,14 +28,14 @@ function HeaderComponent() {
             />
 
             {/* <!-- Topbar --> */}
-            <nav className='navbar navbar-expand navbar-light bg-white topbar static-top shadow mb-3'>
+            <Navbar className='navbar navbar-expand navbar-light bg-white topbar static-top shadow mb-4 p-0'>
                 {/* <!-- Sidebar Toggle (Topbar) --> */}
-                <button
+                <Button
                     id='sidebarToggleTop'
                     className='btn btn-link d-md-none rounded-circle mr-3 sidebar-toggler'
                 >
                     <i className='fa fa-bars'></i>
-                </button>
+                </Button>
 
                 {/* <!-- Topbar Navbar --> */}
                 <ul className='navbar-nav ml-auto'>
@@ -63,6 +65,7 @@ function HeaderComponent() {
                             <img
                                 id='headerImage'
                                 className='img-profile rounded-circle'
+                                // src='../../../../assets/default-avatar.png'
                                 src='https://cdn-icons-png.flaticon.com/512/9187/9187604.png'
                                 alt=''
                             />
@@ -79,13 +82,13 @@ function HeaderComponent() {
 
                             {/* <div className='dropdown-divider'></div> */}
 
-                            <button className='dropdown-item' onClick={logout}>
+                            <Button className='dropdown-item' onClick={logout}>
                                 <i className='fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400'></i> Logout
-                            </button>
+                            </Button>
                         </div>
                     </li>
                 </ul>
-            </nav>
+            </Navbar>
         </>
     )
 }

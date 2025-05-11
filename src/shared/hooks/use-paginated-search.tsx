@@ -3,7 +3,7 @@ import { PaginatedSearchRequest } from '../models/pagination'
 
 interface UsePaginatedSearchProps<T extends PaginatedSearchRequest & FieldValues> {
     form: UseFormReturn<T>
-    resetSearch: Function
+    resetSearch: () => void
     getListPaging: () => void
     setSearchValue: (value: T) => void
 }

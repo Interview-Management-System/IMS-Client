@@ -16,7 +16,6 @@ import ModalConfirmComponent from '../../../../../shared/components/modals/modal
 import { ButtonColor } from '../../../../../shared/enums/button.enum'
 import { CandidateStatusEnum } from '../../../../../shared/enums/entity-enums/candidate.enum'
 import { EnumList } from '../../../../../shared/helpers/enums/enum-list.helper'
-import { useFetch } from '../../../../../shared/hooks/use-fetch'
 import useModal from '../../../../../shared/hooks/use-modal'
 import { TableConfig } from '../../../../../shared/models/table-config'
 import './candidate-list.scss'
@@ -44,7 +43,7 @@ function CandidateListComponent() {
         ]
     } as TableConfig<CandidateForPaginationRetrieveDTO>
 
-    useFetch(() => candidateService.getCandidateListPaging())
+    // useFetch(() => candidateService.getCandidateListPaging())
     // candidateService.getCandidateListPaging()
     useEffect(() => {
         return () => {
@@ -146,74 +145,73 @@ function CandidateListComponent() {
                 </div>
 
                 <div className='card-body'>
-                    <div className='table-responsive'>
-                        <div id='dataTable_wrapper' className='dataTables_wrapper pt-1 px-1'>
-                            <div className='row my-2'>
-                                <div className='col-sm-2 col-md-5'>
-                                    <div className='dataTables_length'>
-                                        <Button
-                                            className='btn-icon-split'
-                                            onClick={() => navigate('/candidate/create')}
-                                        >
-                                            <span className='icon text-white-50'>
-                                                <FontAwesomeIcon icon={faAdd} size='1x' />
-                                            </span>
-                                            <span className='text'>Create</span>
-                                        </Button>
-                                    </div>
-                                </div>
-
-                                {/* Search */}
-                                <div className='col-sm-10 col-md-7'>
-                                    <div id='dataTable_filter' className='dataTables_filter text-right'>
-                                        <form className='user' onSubmit={handleSubmit(handleSearchCandidate)}>
-                                            <div className='row'>
-                                                {/* Status dropdown */}
-                                                <select
-                                                    className='form-control col-md-5 '
-                                                    {...register('statusId', { valueAsNumber: true })}
-                                                >
-                                                    <option value={0}>Select status to filter</option>
-
-                                                    {EnumList.candidateStatusList.map(candidateStatus => (
-                                                        <option
-                                                            key={candidateStatus.value as number}
-                                                            value={candidateStatus.value as number}
-                                                        >
-                                                            {candidateStatus.label}
-                                                        </option>
-                                                    ))}
-                                                </select>
-
-                                                {/* Search field */}
-                                                <div className='input-group col-md-5'>
-                                                    <input
-                                                        type='text'
-                                                        id='searchInput'
-                                                        placeholder='Search for...'
-                                                        {...register('searchText')}
-                                                        className='form-control bg-light border-0 small'
-                                                    />
-
-                                                    <div className='input-group-append'>
-                                                        <Button className='btn-info' type='submit'>
-                                                            <FontAwesomeIcon icon={faSearch} size='1x' />
-                                                        </Button>
-                                                    </div>
-                                                </div>
-
-                                                <div className='col-md-1'>
-                                                    <Button className='btn-secondary' onClick={resetForm}>
-                                                        Reset
-                                                    </Button>
-                                                </div>
-                                            </div>
-                                        </form>
-                                    </div>
+                    <div id='dataTable_wrapper' className='dataTables_wrapper pt-1 px-1'>
+                        <div className='row my-2'>
+                            <div className='col-sm-2 col-md-5'>
+                                <div className='dataTables_length'>
+                                    <Button
+                                        className='btn-icon-split'
+                                        onClick={() => navigate('/candidate/create')}
+                                    >
+                                        <span className='icon text-white-50'>
+                                            <FontAwesomeIcon icon={faAdd} size='1x' />
+                                        </span>
+                                        <span className='text'>Create</span>
+                                    </Button>
                                 </div>
                             </div>
 
-                            {/* <TableComponent
+                            {/* Search */}
+                            <div className='col-sm-10 col-md-7'>
+                                <div id='dataTable_filter' className='dataTables_filter text-right'>
+                                    <form className='user' onSubmit={handleSubmit(handleSearchCandidate)}>
+                                        <div className='row'>
+                                            {/* Status dropdown */}
+                                            <select
+                                                className='form-control col-md-5 '
+                                                {...register('statusId', { valueAsNumber: true })}
+                                            >
+                                                <option value={0}>Select status to filter</option>
+
+                                                {EnumList.candidateStatusList.map(candidateStatus => (
+                                                    <option
+                                                        key={candidateStatus.value as number}
+                                                        value={candidateStatus.value as number}
+                                                    >
+                                                        {candidateStatus.label}
+                                                    </option>
+                                                ))}
+                                            </select>
+
+                                            {/* Search field */}
+                                            <div className='input-group col-md-5'>
+                                                <input
+                                                    type='text'
+                                                    id='searchInput'
+                                                    placeholder='Search for...'
+                                                    {...register('searchText')}
+                                                    className='form-control bg-light border-0 small'
+                                                />
+
+                                                <div className='input-group-append'>
+                                                    <Button className='btn-info' type='submit'>
+                                                        <FontAwesomeIcon icon={faSearch} size='1x' />
+                                                    </Button>
+                                                </div>
+                                            </div>
+
+                                            <div className='col-md-1'>
+                                                <Button className='btn-secondary' onClick={resetForm}>
+                                                    Reset
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* <TableComponent
                                 onSortChange={onSortChange}
                                 paginationResult={pageResult}
                                 tableConfig={tableConfig}
@@ -264,7 +262,6 @@ function CandidateListComponent() {
                                     </>
                                 )}
                             /> */}
-                        </div>
                     </div>
                 </div>
             </div>

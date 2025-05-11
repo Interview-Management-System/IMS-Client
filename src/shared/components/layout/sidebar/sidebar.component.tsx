@@ -46,7 +46,7 @@ function SideBarComponent() {
                 <div className='sidebar-brand-icon rotate-n-15'>
                     <FontAwesomeIcon size='2xl' icon={faLaughWink} />
                 </div>
-                <div className='sidebar-brand-text mx-3'>IMS Dashboard</div>
+                <div className='sidebar-brand-text mx-3'>Interview Management</div>
             </div>
 
             <hr className='sidebar-divider my-0' />

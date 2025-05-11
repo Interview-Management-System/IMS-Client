@@ -3,7 +3,6 @@ import { Button } from 'react-bootstrap'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import { CandidateForCreateDTO } from '../../../../../modules/user/models/candidate.model'
-import userService from '../../../../../modules/user/services/user.service'
 import userStore from '../../../../../modules/user/stores/user.store'
 import ControlledDateInput from '../../../../../shared/components/form/form-date-input.component'
 import ControlledInput from '../../../../../shared/components/form/form-input.component'
@@ -13,7 +12,6 @@ import ModalConfirmComponent from '../../../../../shared/components/modals/modal
 import { ButtonColor } from '../../../../../shared/enums/button.enum'
 import { EnumList } from '../../../../../shared/helpers/enums/enum-list.helper'
 import NavigationHelper from '../../../../../shared/helpers/navigation.helper'
-import { useFetch } from '../../../../../shared/hooks/use-fetch'
 import useModal from '../../../../../shared/hooks/use-modal'
 
 function onSubmit(formData: CandidateForCreateDTO) {
@@ -32,7 +30,7 @@ function CandidateCreateComponent() {
 
     const recruiterList = userStore.recruiterlist
 
-    useFetch(() => userService.getListRecruiter())
+    // useFetch(() => userService.getListRecruiter())
 
     const createCandidateForm = useForm<CandidateForCreateDTO>({
         // resolver: yupResolver(UserSchemaValidation.candidateCreateSchemaValidation)

@@ -6,17 +6,17 @@ import {
     CandidatePaginatedSearchRequest
 } from '../models/candidate.model'
 import {
-    UserForDetailRetrieveDTO,
-    UserForPaginationRetrieveDTO,
-    UserForRetrieveDTO,
-    UserPaginatedSearchRequest
+    UserDetailRetrieveDTO,
+    UserPaginatedSearchRequest,
+    UserPaginationRetrieveDTO,
+    UserRetrieveDTO
 } from '../models/user.model'
 
 class UserStore {
-    private listRecruiter = [] as UserForRetrieveDTO[]
+    private listRecruiter = [] as UserRetrieveDTO[]
 
     // Detail
-    userDetail = {} as UserForDetailRetrieveDTO
+    userDetail = {} as UserDetailRetrieveDTO
     candidateDetail = {} as CandidateForDetailRetrieveDTO
 
     // Pagination
@@ -25,7 +25,7 @@ class UserStore {
             { id: 'test', userStatus: { isActive: true } },
             { id: 'sdafasdf', userStatus: { isActive: true } }
         ]
-    } as PaginationResult<UserForPaginationRetrieveDTO>
+    } as PaginationResult<UserPaginationRetrieveDTO>
     candidatePageResult = {} as PaginationResult<CandidateForPaginationRetrieveDTO>
     userPaginationSearchValue: UserPaginatedSearchRequest | undefined = undefined
     candidatePaginationSearchValue: CandidatePaginatedSearchRequest | undefined = undefined
@@ -41,19 +41,19 @@ class UserStore {
         }))
     }
 
-    setUserPageResult(userPageResult?: PaginationResult<UserForPaginationRetrieveDTO>) {
+    setUserPageResult(userPageResult?: PaginationResult<UserPaginationRetrieveDTO>) {
         this.userPageResult = userPageResult ?? {}
     }
 
-    setUserDetail(userDetail?: UserForDetailRetrieveDTO) {
-        this.userDetail = userDetail ?? ({} as UserForDetailRetrieveDTO)
+    setUserDetail(userDetail?: UserDetailRetrieveDTO) {
+        this.userDetail = userDetail ?? ({} as UserDetailRetrieveDTO)
     }
 
     setCandidatePageResult(candidatePageResult?: PaginationResult<CandidateForPaginationRetrieveDTO>) {
         this.candidatePageResult = candidatePageResult ?? {}
     }
 
-    setListRecruiter(listRecruiter?: UserForRetrieveDTO[]) {
+    setListRecruiter(listRecruiter?: UserRetrieveDTO[]) {
         this.listRecruiter = listRecruiter ?? []
     }
 

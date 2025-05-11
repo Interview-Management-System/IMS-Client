@@ -1,10 +1,6 @@
-interface SignalEventMetadata {
+export interface SignalEventMeta {
     signalEventName: string
-    method: string
-}
-
-interface SignalRServicePrototype {
-    __signalEvents?: SignalEventMetadata[]
+    methodName: string
 }
 
 /**
@@ -24,14 +20,14 @@ interface SignalRServicePrototype {
  * }
  */
 export function SignalEvent(...signalEventNames: string[]) {
-    return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+    return function (target: any, methodName: string, descriptor: PropertyDescriptor) {
         if (!target.__signalEvents) {
-            target.__signalEvents = []
+            target.__signalEvents = [] as SignalEventMeta[]
         }
 
         // Add the signal event names and method name to the __signalEvents array
         signalEventNames.forEach(signalEventName => {
-            target.__signalEvents.push({ signalEventName, method: propertyKey })
+            ;(target.__signalEvents as SignalEventMeta[]).push({ signalEventName, methodName: methodName })
         })
     }
 }

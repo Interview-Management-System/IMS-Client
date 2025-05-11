@@ -3,8 +3,8 @@ import { observer } from 'mobx-react-lite'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import {
-    UserForPaginationRetrieveDTO,
-    UserPaginatedSearchRequest
+    UserPaginatedSearchRequest,
+    UserPaginationRetrieveDTO
 } from '../../../../../modules/user/models/user.model'
 import userService from '../../../../../modules/user/services/user.service'
 import userStore from '../../../../../modules/user/stores/user.store'
@@ -14,25 +14,41 @@ import TablePaginationComponent from '../../../../../shared/components/table/tab
 import { ButtonColor } from '../../../../../shared/enums/button.enum'
 import { RoleEnum } from '../../../../../shared/enums/entity-enums/master-data.enum'
 import { EnumList } from '../../../../../shared/helpers/enums/enum-list.helper'
-import { useFetch } from '../../../../../shared/hooks/use-fetch'
 import useModal from '../../../../../shared/hooks/use-modal'
 import usePaginatedSearch from '../../../../../shared/hooks/use-paginated-search'
+import useSignalR from '../../../../../shared/hooks/use-signalR'
+import useTableAcion from '../../../../../shared/hooks/use-table-action'
 import { TableColumn } from '../../../../../shared/models/table-config'
 
-function handleSearchUser(formData: UserPaginatedSearchRequest) {
-    if (formData.roleId !== RoleEnum.Default || formData.searchText?.trim() !== '') {
-        userStore.setUserPaginationSearchValue(formData)
-        userService.getUserListPaging()
-    }
-}
 function UserListComponent() {
+    useSignalR(userService)
+
     const navigate = useNavigate()
     const pageResult = userStore.userPageResult
     const searchForm = useForm<UserPaginatedSearchRequest>()
+
     const { show, closeModal, modalTitle, modalConfirmQuestion, modalConfirmHandler, confirm } = useModal()
 
-    // useSignalR(userService)
-    useFetch(() => userService.getUserListPaging())
+    useTableAcion([
+        {
+            label: 'Detail',
+            variant: 'primary',
+            isDisable: true,
+            onClick: () => {
+                console.log(32)
+            }
+        },
+        {
+            label: 'Edit',
+            variant: 'info',
+            onClick: () => {}
+        },
+        {
+            label: 'Profile',
+            variant: 'success',
+            onClick: () => {}
+        }
+    ])
 
     const userTableColumns = [
         { header: 'User Name', accessor: 'username', sortable: true },
@@ -40,7 +56,7 @@ function UserListComponent() {
         { header: 'Phone', accessor: 'phoneNumber', sortable: true },
         { header: 'Role', accessor: 'role', sortable: false },
         { header: 'Status', accessor: 'userStatus.statusText', sortable: false }
-    ] as TableColumn<UserForPaginationRetrieveDTO>[]
+    ] as TableColumn<UserPaginationRetrieveDTO>[]
 
     const { resetForm, onPageIndexChange, onPageSizeChange, onSortChange } = usePaginatedSearch({
         form: searchForm,
@@ -70,6 +86,13 @@ function UserListComponent() {
         )
     }
 
+    function handleSearchUser(formData: UserPaginatedSearchRequest) {
+        if (formData.roleId !== RoleEnum.Default || formData.searchText?.trim() !== '') {
+            userStore.setUserPaginationSearchValue(formData)
+            userService.getUserListPaging()
+        }
+    }
+
     return (
         <>
             <ModalConfirmComponent
@@ -81,7 +104,7 @@ function UserListComponent() {
                 modalConfirmQuestion={modalConfirmQuestion}
             />
 
-            <TablePaginationComponent<UserForPaginationRetrieveDTO, UserPaginatedSearchRequest>
+            <TablePaginationComponent<UserPaginationRetrieveDTO, UserPaginatedSearchRequest>
                 tableConfig={{
                     tableName: 'User List',
                     columns: userTableColumns,

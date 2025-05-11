@@ -2,17 +2,20 @@ import { jwtDecode } from 'jwt-decode'
 import { Cookies } from 'react-cookie'
 import { CookieSetOptions } from 'universal-cookie'
 
+enum TokenClaims {
+    UserId = 'sub',
+    Email = 'email',
+    Picture = 'picture',
+    UserName = 'unique_name',
+    Role = 'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'
+}
+
 export default class CookieService {
     private static readonly cookies = new Cookies()
     private static readonly cookieOptions = {
         path: '/',
         expires: new Date()
     } as CookieSetOptions
-
-    private static readonly roleDecoderURL = 'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'
-    private static readonly userNameDecoderURL = 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'
-    private static readonly userIdDecoderURL =
-        'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'
 
     /************************************************* JWT Token *************************************/
     static getTokenFromCookie() {
@@ -33,7 +36,7 @@ export default class CookieService {
 
         if (token) {
             const decodedToken: any = jwtDecode(token)
-            return decodedToken[CookieService.userIdDecoderURL]
+            return decodedToken[TokenClaims.UserId]
         }
         return ''
     }
@@ -42,14 +45,14 @@ export default class CookieService {
         const token = CookieService.getTokenFromCookie()
         const decodedToken = jwtDecode(token) as any
 
-        return decodedToken[CookieService.roleDecoderURL]
+        return decodedToken[TokenClaims.Role]
     }
 
     static getFullNameFromCookie() {
         const token = CookieService.getTokenFromCookie()
         const decodedToken = jwtDecode(token) as any
 
-        return decodedToken[CookieService.userNameDecoderURL]
+        return decodedToken[TokenClaims.UserName]
     }
 
     static checkTokenIsExpired() {

@@ -1,14 +1,15 @@
 import * as signalR from '@microsoft/signalr'
 import { HubConnectionState } from '@microsoft/signalr'
+import { SignalEventMeta } from '../utils/signalR.util'
+import ToastUtility from '../utils/toast.util'
 
 export default abstract class SignalRService {
-    private connection: signalR.HubConnection | null = null
+    protected connection: signalR.HubConnection | null = null
     private eventHandlers: Map<string, (...args: any[]) => void> = new Map()
 
-    constructor(private hubUrl: string) {
-        this.buildConnection()
-        this.startConnection()
-    }
+    constructor(private hubUrl: string) {}
+
+    abstract autoInvokeOnConnect(): Promise<void>
 
     buildConnection() {
         if (this.hubUrl && !this.connection) {
@@ -20,30 +21,46 @@ export default abstract class SignalRService {
                 .withAutomaticReconnect()
                 .build()
         }
+
+        this.connection?.onclose(error => console.log('Connection closed:', error))
     }
 
     startConnection() {
-        if (this.connection?.state === HubConnectionState.Disconnected) {
-            this.connection
-                ?.start()
-                .then(() => {
-                    this.registerSignalEvents()
-                    console.log('Connected to SignalR hub.')
-                })
-                .catch((err: any) => console.error('SignalR connection error:', err))
+        if (!this.connection || this.connection.state !== HubConnectionState.Disconnected) {
+            return
         }
 
-        this.connection?.onclose(error => console.error('Connection closed:', error))
+        this.connection
+            ?.start()
+            .then(() => {
+                console.log(`Connected to SignalR ${this.hubUrl} hub.`)
+                this.registerSignalEvents()
+                this.autoInvokeOnConnect()
+            })
+            .catch((err: any) => console.error('SignalR connection error:', err))
     }
 
-    on(eventName: string, callback: (...args: any[]) => void): void {
+    stopConnection() {
+        if (this.connection) {
+            this.connection
+                .stop()
+                .then(() => {
+                    this.removeAllListeners()
+                    console.log(`SignalR connection for ${this.hubUrl} - ${this.connection?.state}`)
+                    // this.connection = null
+                })
+                .catch(err => console.error('Error stopping SignalR connection:', err))
+        }
+    }
+
+    protected on(eventName: string, callback: (...args: any[]) => void): void {
         if (this.connection) {
             this.eventHandlers.set(eventName, callback)
             this.connection.on(eventName, callback)
         }
     }
 
-    off(eventName: string, method?: (...args: any[]) => void): void {
+    protected off(eventName: string, method?: (...args: any[]) => void): void {
         if (this.connection) {
             if (method) {
                 const callback = this.eventHandlers.get(eventName)
@@ -58,27 +75,26 @@ export default abstract class SignalRService {
         }
     }
 
+    protected async invoke<T>(methodName: string, ...args: any[]) {
+        try {
+            ToastUtility.displayLoading()
+            return await this.connection?.invoke<T>(methodName, ...args)
+        } catch (error) {
+            console.error(`Error invoking method ${methodName}:`, error)
+            return undefined // Or throw the error, depending on desired error handling
+        } finally {
+            ToastUtility.hideLoading()
+        }
+    }
+
     // Send a message to the server
-    async send(eventName: string, ...args: any[]): Promise<void> {
+    protected async send(eventName: string, ...args: any[]): Promise<void> {
         if (!this.connection) throw new Error('Connection is not established.')
 
         try {
             await this.connection.send(eventName, ...args)
         } catch (err) {
             console.error(`Error sending message to ${eventName}:`, err)
-        }
-    }
-
-    stopConnection() {
-        if (this.connection) {
-            this.connection
-                .stop()
-                .then(() => {
-                    this.removeAllListeners()
-                    console.log(`SignalR connection ${this.connection?.state}`)
-                    this.connection = null
-                })
-                .catch(err => console.error('Error stopping SignalR connection:', err))
         }
     }
 
@@ -98,12 +114,12 @@ export default abstract class SignalRService {
      * to ensure that the connection object is available and ready to accept event registrations.
      */
     private registerSignalEvents() {
-        const events = (this as any).__signalEvents
+        const events: SignalEventMeta[] = (this as any).__signalEvents
 
         if (events && Array.isArray(events)) {
-            for (const { signalEventName, method } of events) {
+            for (const { signalEventName, methodName } of events) {
                 // 'method' is the name of the method to call.
-                const methodFn = (this as any)[method].bind(this)
+                const methodFn = (this as any)[methodName].bind(this)
                 this.on(signalEventName, methodFn)
             }
         }

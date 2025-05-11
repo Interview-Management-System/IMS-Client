@@ -2,19 +2,19 @@ import { DepartmentEnum, RoleEnum } from '../../../shared/enums/entity-enums/mas
 import { PaginatedSearchRequest } from '../../../shared/models/pagination'
 import { BaseUserDTO, UserStatus } from './base-user.model'
 
-export interface UserForRetrieveDTO extends BaseUserDTO {
+export interface UserRetrieveDTO extends BaseUserDTO {
     id: string
     role?: string
     userStatus?: UserStatus
 }
 
-export interface UserForDetailRetrieveDTO extends UserForRetrieveDTO {
+export interface UserDetailRetrieveDTO extends UserRetrieveDTO {
     departmentId: DepartmentEnum
     department?: string
     gender?: string
 }
 
-export interface UserForPaginationRetrieveDTO {
+export interface UserPaginationRetrieveDTO {
     id: string
     role?: string
     email?: string
@@ -24,13 +24,13 @@ export interface UserForPaginationRetrieveDTO {
     userStatus?: UserStatus
 }
 
-export interface UserForCreateDTO extends BaseUserDTO {
+export interface UserCreateDTO extends BaseUserDTO {
     roleId: string
     isActive: boolean
     departmentId: DepartmentEnum
 }
 
-export interface UserForUpdateDTO extends BaseUserDTO {
+export interface UserUpdateDTO extends BaseUserDTO {
     id: string
     roleId: string
     isActive: boolean

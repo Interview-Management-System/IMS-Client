@@ -1,0 +1,11 @@
+.table-data-header {
+    position: sticky !important;
+    top: 0 !important;
+    background-color: #f0f0f0 !important;
+    z-index: 1 !important;
+}
+
+input[type='checkbox'] {
+    transform: scale(1.5);
+    margin: 10px;
+}

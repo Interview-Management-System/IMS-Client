@@ -1,9 +1,9 @@
 import { NavigateFunction } from 'react-router-dom'
 import userApiService from '../../../api/services/user-api.service'
-
+import { PaginationResult } from '../../../shared/models/pagination'
 import SignalRService from '../../../shared/services/signalR.service'
 import { SignalEvent } from '../../../shared/utils/signalR.util'
-import { UserForCreateDTO } from '../models/user.model'
+import { UserCreateDTO, UserPaginationRetrieveDTO } from '../models/user.model'
 import userStore from '../stores/user.store'
 
 class UserService extends SignalRService {
@@ -11,13 +11,20 @@ class UserService extends SignalRService {
         super('/user-hub')
     }
 
+    async autoInvokeOnConnect(): Promise<void> {
+        const responseData = await this.invoke<PaginationResult<UserPaginationRetrieveDTO>>('UserPagination')
+        userStore.setUserPageResult(responseData)
+    }
+
     async getUserById(id: string) {
         const response = await userApiService.getUserById(id)
         userStore.setUserDetail(response?.data)
     }
 
-    @SignalEvent('UserStatusChange')
+    @SignalEvent('UserChange')
     async getUserListPaging() {
+        console.log('getUserListPaging')
+
         const searchValue = userStore.userPaginationSearchValue
         const responseData = await userApiService.getUserListPaging(searchValue)
 
@@ -36,7 +43,7 @@ class UserService extends SignalRService {
         await userApiService.deActiveUserById(id)
     }
 
-    async createUser(data: UserForCreateDTO, navigate?: NavigateFunction) {
+    async createUser(data: UserCreateDTO, navigate?: NavigateFunction) {
         const createSuccessfull = await userApiService.createUser(data)
 
         if (createSuccessfull) {

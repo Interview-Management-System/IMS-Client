@@ -49,8 +49,8 @@ export interface TablePaginationProps<T, TSearch extends PaginatedSearchRequest 
 }
 
 export interface TableDataProps<T> {
-    items: T[]
     columns: TableColumn<T>[]
+    paginationResult?: PaginationResult<T>
     renderActions?: (item: T) => React.ReactNode
     onSortChange: (sortName: string, isAscending: boolean) => void
 }

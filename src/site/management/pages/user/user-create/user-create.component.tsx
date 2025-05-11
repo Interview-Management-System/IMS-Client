@@ -1,7 +1,7 @@
 import { Button } from 'react-bootstrap'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
-import { UserForCreateDTO } from '../../../../../modules/user/models/user.model'
+import { UserCreateDTO } from '../../../../../modules/user/models/user.model'
 import userService from '../../../../../modules/user/services/user.service'
 import ControlledDateInput from '../../../../../shared/components/form/form-date-input.component'
 import ControlledInput from '../../../../../shared/components/form/form-input.component'
@@ -16,7 +16,7 @@ function UserCreateComponent() {
     const modal = useModal()
     const navigate = useNavigate()
 
-    const userCreateForm = useForm<UserForCreateDTO>({
+    const userCreateForm = useForm<UserCreateDTO>({
         // resolver: yupResolver(UserSchemaValidation.userCreateSchemaValidation)
     })
 
@@ -29,7 +29,7 @@ function UserCreateComponent() {
         }
     }
 
-    function handleCreateUser(formData: UserForCreateDTO) {
+    function handleCreateUser(formData: UserCreateDTO) {
         // formData.createdBy = CookieService.getCurrentUserIdFromCookie()
         userService.createUser(formData, navigate)
         console.log(formData)
@@ -64,7 +64,7 @@ function UserCreateComponent() {
                                     </label>
 
                                     <div className='col-lg-6'>
-                                        <ControlledInput<UserForCreateDTO>
+                                        <ControlledInput<UserCreateDTO>
                                             name='personalInformation.username'
                                             type='text'
                                             form={userCreateForm}
@@ -80,7 +80,7 @@ function UserCreateComponent() {
                                     </label>
 
                                     <div className='col-lg-6'>
-                                        <ControlledDateInput<UserForCreateDTO>
+                                        <ControlledDateInput<UserCreateDTO>
                                             name='personalInformation.dob'
                                             form={userCreateForm}
                                         />
@@ -94,7 +94,7 @@ function UserCreateComponent() {
                                     </label>
 
                                     <div className='col-lg-6'>
-                                        <ControlledInput<UserForCreateDTO>
+                                        <ControlledInput<UserCreateDTO>
                                             name='personalInformation.phoneNumber'
                                             type='tel'
                                             form={userCreateForm}
@@ -110,7 +110,7 @@ function UserCreateComponent() {
                                     </label>
 
                                     <div className='col-lg-6'>
-                                        <ControlledSelection<UserForCreateDTO>
+                                        <ControlledSelection<UserCreateDTO>
                                             name='roleId'
                                             form={userCreateForm}
                                             options={EnumList.roleIdList}
@@ -125,7 +125,7 @@ function UserCreateComponent() {
                                     </label>
 
                                     <div className='col-lg-6'>
-                                        <ControlledSelection<UserForCreateDTO>
+                                        <ControlledSelection<UserCreateDTO>
                                             name='isActive'
                                             form={userCreateForm}
                                             options={EnumList.statusList}
@@ -142,7 +142,7 @@ function UserCreateComponent() {
                                     </label>
 
                                     <div className='col-lg-6'>
-                                        <ControlledInput<UserForCreateDTO>
+                                        <ControlledInput<UserCreateDTO>
                                             name='personalInformation.email'
                                             type='email'
                                             form={userCreateForm}
@@ -157,7 +157,7 @@ function UserCreateComponent() {
                                         Address <span className='text-danger'>*</span>
                                     </label>
                                     <div className='col-lg-6'>
-                                        <ControlledInput<UserForCreateDTO>
+                                        <ControlledInput<UserCreateDTO>
                                             name='personalInformation.address'
                                             type='text'
                                             form={userCreateForm}
@@ -173,7 +173,7 @@ function UserCreateComponent() {
                                     </label>
 
                                     <div className='col-lg-6'>
-                                        <ControlledSelection<UserForCreateDTO>
+                                        <ControlledSelection<UserCreateDTO>
                                             name='personalInformation.gender'
                                             form={userCreateForm}
                                             options={EnumList.genderList}
@@ -188,7 +188,7 @@ function UserCreateComponent() {
                                     </label>
 
                                     <div className='col-lg-6'>
-                                        <ControlledSelection<UserForCreateDTO>
+                                        <ControlledSelection<UserCreateDTO>
                                             name='departmentId'
                                             form={userCreateForm}
                                             options={EnumList.departmentList}
