@@ -20,12 +20,7 @@ class UserStore {
     candidateDetail = {} as CandidateForDetailRetrieveDTO
 
     // Pagination
-    userPageResult = {
-        items: [
-            { id: 'test', userStatus: { isActive: true } },
-            { id: 'sdafasdf', userStatus: { isActive: true } }
-        ]
-    } as PaginationResult<UserPaginationRetrieveDTO>
+    userPageResult = {} as PaginationResult<UserPaginationRetrieveDTO>
     candidatePageResult = {} as PaginationResult<CandidateForPaginationRetrieveDTO>
     userPaginationSearchValue: UserPaginatedSearchRequest | undefined = undefined
     candidatePaginationSearchValue: CandidatePaginatedSearchRequest | undefined = undefined
@@ -37,7 +32,7 @@ class UserStore {
     get recruiterlist() {
         return this.listRecruiter.map(recruiter => ({
             value: recruiter.id as any,
-            label: recruiter.personalInformation?.username!
+            label: recruiter.personalInformation?.username ?? ''
         }))
     }
 
@@ -66,11 +61,11 @@ class UserStore {
     */
 
     // User
-    setUserPaginationSearchValue = (searchValue: UserPaginatedSearchRequest) => {
+    setUserPaginationSearchValue(searchValue: UserPaginatedSearchRequest) {
         this.userPaginationSearchValue = searchValue
     }
 
-    resetUserPaginationSearchValue = () => {
+    resetUserPaginationSearchValue() {
         this.userPaginationSearchValue = undefined
     }
 

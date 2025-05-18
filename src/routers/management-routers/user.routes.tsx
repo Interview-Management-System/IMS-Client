@@ -2,20 +2,20 @@ import { RouteObject } from 'react-router-dom'
 import LazyRoute from '../lazy-route'
 
 const CandidateCreateComponent = import(
-    '../../site/management/pages/candidate/candidate-create/candidate-create.component'
+    'site/management/pages/candidate/candidate-create/candidate-create.component'
 )
 const CandidateDetailComponent = import(
-    '../../site/management/pages/candidate/candidate-detail/candidate-detail.component'
+    'site/management/pages/candidate/candidate-detail/candidate-detail.component'
 )
 const CandidateEditComponent = import(
-    '../../site/management/pages/candidate/candidate-edit/candidate-edit.component'
+    'site/management/pages/candidate/candidate-edit/candidate-edit.component'
 )
 const CandidateListComponent = import(
-    '../../site/management/pages/candidate/candidate-list/candidate-list.component'
+    'site/management/pages/candidate/candidate-list/candidate-list.component'
 )
-const UserCreateComponent = import('../../site/management/pages/user/user-create/user-create.component')
-const UserDetailComponent = import('../../site/management/pages/user/user-detail/user-detail.component')
-const UserListComponent = import('../../site/management/pages/user/user-list/user-list.component')
+const UserCreateComponent = import('site/management/pages/user/user-create.component')
+const UserDetailComponent = import('site/management/pages/user/user-detail.component')
+const UserListComponent = import('site/management/pages/user/user-list.component')
 
 const userRouters: RouteObject[] = [
     {

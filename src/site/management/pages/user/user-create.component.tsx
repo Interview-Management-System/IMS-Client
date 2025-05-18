@@ -1,20 +1,20 @@
+import { UserCreateDTO } from 'modules/user/models/user.model'
+import userService from 'modules/user/services/user.service'
 import { Button } from 'react-bootstrap'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
-import { UserCreateDTO } from '../../../../../modules/user/models/user.model'
-import userService from '../../../../../modules/user/services/user.service'
-import ControlledDateInput from '../../../../../shared/components/form/form-date-input.component'
-import ControlledInput from '../../../../../shared/components/form/form-input.component'
-import ControlledSelection from '../../../../../shared/components/form/form-selection.component'
-import ControlledTextArea from '../../../../../shared/components/form/form-text-area.component'
-import ModalConfirmComponent from '../../../../../shared/components/modals/modal-confirm/modal-confirm.component'
-import { ButtonColor } from '../../../../../shared/enums/button.enum'
-import { EnumList } from '../../../../../shared/helpers/enums/enum-list.helper'
-import useModal from '../../../../../shared/hooks/use-modal'
+import ControlledDateInput from 'shared/components/form/form-date-input.component'
+import ControlledInput from 'shared/components/form/form-input.component'
+import ControlledSelection from 'shared/components/form/form-selection.component'
+import ControlledTextArea from 'shared/components/form/form-text-area.component'
+import ModalConfirmComponent from 'shared/components/modals/modal-confirm/modal-confirm.component'
+import { EnumList } from 'shared/helpers/enums/enum-list.helper'
+import useModal from 'shared/hooks/use-modal'
 
 function UserCreateComponent() {
     const modal = useModal()
     const navigate = useNavigate()
+    // const userService = container.resolve<UserService>(TOKENS.UserService)
 
     const userCreateForm = useForm<UserCreateDTO>({
         // resolver: yupResolver(UserSchemaValidation.userCreateSchemaValidation)
@@ -31,8 +31,8 @@ function UserCreateComponent() {
 
     function handleCreateUser(formData: UserCreateDTO) {
         // formData.createdBy = CookieService.getCurrentUserIdFromCookie()
-        userService.createUser(formData, navigate)
         console.log(formData)
+        userService.createUser(formData)
     }
 
     return (
@@ -40,7 +40,7 @@ function UserCreateComponent() {
             <ModalConfirmComponent
                 show={modal.show}
                 modalTitle='Create confirm'
-                buttonColor={ButtonColor.Primary}
+                buttonColor='primary'
                 handleClose={modal.closeModal}
                 modalConfirmQuestion='Do you want to create new user ?'
                 handleConfirm={userCreateForm.handleSubmit(handleCreateUser)}

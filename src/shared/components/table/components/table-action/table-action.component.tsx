@@ -16,12 +16,10 @@ function TableActionComponent() {
                         <Button
                             key={index}
                             onClick={action.onClick}
-                            disabled={action.isDisable}
+                            disabled={!action.isDisable}
                             variant={action.variant ?? 'primary'}
                             className={
-                                buttonInfos.length === index + 1
-                                    ? 'rounded-5 px-xl-5'
-                                    : 'me-4 rounded-5 px-xl-5'
+                                buttonInfos.length === index + 1 ? 'rounded-5 px-4' : 'me-4 rounded-5 px-4'
                             }
                         >
                             {action.label}

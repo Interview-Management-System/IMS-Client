@@ -8,7 +8,6 @@ import ControlledInput from '../../../../../shared/components/form/form-input.co
 import ControlledSelection from '../../../../../shared/components/form/form-selection.component'
 import ControlledTextArea from '../../../../../shared/components/form/form-text-area.component'
 import ModalConfirmComponent from '../../../../../shared/components/modals/modal-confirm/modal-confirm.component'
-import { ButtonColor } from '../../../../../shared/enums/button.enum'
 import { EnumList } from '../../../../../shared/helpers/enums/enum-list.helper'
 import useModal from '../../../../../shared/hooks/use-modal'
 
@@ -44,7 +43,7 @@ function CandidateEditComponent() {
                 show={modal.show}
                 modalTitle='Edit confirm'
                 handleClose={modal.closeModal}
-                buttonColor={ButtonColor.Primary}
+                buttonColor='primary'
                 modalConfirmQuestion='Do you want to edit candidate ?'
                 handleConfirm={candidateUpdateForm.handleSubmit(handleEditCandidate)}
             />
@@ -226,7 +225,7 @@ function CandidateEditComponent() {
                                             options={userStore.recruiterlist}
                                         />
 
-                                        <Button size='sm' variant={ButtonColor.Success} onClick={assignToMe}>
+                                        <Button size='sm' variant='success' onClick={assignToMe}>
                                             Assign to me
                                         </Button>
                                     </div>

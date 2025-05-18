@@ -13,7 +13,6 @@ import candidateService from '../../../../../modules/user/services/candidate.ser
 import userService from '../../../../../modules/user/services/user.service'
 import userStore from '../../../../../modules/user/stores/user.store'
 import ModalConfirmComponent from '../../../../../shared/components/modals/modal-confirm/modal-confirm.component'
-import { ButtonColor } from '../../../../../shared/enums/button.enum'
 import { CandidateStatusEnum } from '../../../../../shared/enums/entity-enums/candidate.enum'
 import { EnumList } from '../../../../../shared/helpers/enums/enum-list.helper'
 import useModal from '../../../../../shared/hooks/use-modal'
@@ -68,7 +67,7 @@ function CandidateListComponent() {
         setUserIdToDelete(userId)
         setModalTitle('Delete confirmation')
         setModalConfirmQuestion('Are you sure you want to delete ?')
-        setModalConfirmHandler(() => () => userService.deleteUser(userId))
+        setModalConfirmHandler(() => () => userService.deleteUser())
     }
 
     // Activate
@@ -77,7 +76,7 @@ function CandidateListComponent() {
         setUserIdToActivate(userId)
         setModalTitle('Active confirmation')
         setModalConfirmQuestion('Are you sure you want to activate ?')
-        setModalConfirmHandler(() => () => userService.activateUser(userId))
+        setModalConfirmHandler(() => () => userService.activateUser())
     }
 
     // De-Activate
@@ -86,7 +85,7 @@ function CandidateListComponent() {
         setUserIdToDeActivate(userId)
         setModalTitle('De-activate confirmation')
         setModalConfirmQuestion('Are you sure you want to de-activate ?')
-        setModalConfirmHandler(() => () => userService.deActivateUser(userId))
+        setModalConfirmHandler(() => () => userService.deActivateUser())
     }
 
     function resetForm() {
@@ -134,7 +133,7 @@ function CandidateListComponent() {
                 show={modal.show}
                 modalTitle={modalTitle}
                 handleClose={modal.closeModal}
-                buttonColor={ButtonColor.Danger}
+                buttonColor='danger'
                 modalConfirmQuestion={modalConfirmQuestion}
                 handleConfirm={modalConfirmHandler}
             />

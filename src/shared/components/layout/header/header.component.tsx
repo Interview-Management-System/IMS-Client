@@ -1,7 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 
 import { Button, Navbar } from 'react-bootstrap'
-import { ButtonColor } from '../../../enums/button.enum'
 import useModal from '../../../hooks/use-modal'
 import ModalConfirmComponent from '../../modals/modal-confirm/modal-confirm.component'
 import NotificationComponent from './components/notifcation.component'
@@ -22,7 +21,7 @@ function HeaderComponent() {
                 show={show}
                 modalTitle={modalTitle}
                 handleClose={closeModal}
-                buttonColor={ButtonColor.Danger}
+                buttonColor='danger'
                 handleConfirm={modalConfirmHandler}
                 modalConfirmQuestion={modalConfirmQuestion}
             />

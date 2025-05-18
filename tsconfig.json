@@ -16,10 +16,11 @@
         "noEmit": true,
         "jsx": "react-jsx",
         "experimentalDecorators": true,
-        // "baseUrl": "./",
-        // "paths": {
-        //   "@/*": ["src/*"]
-        // }
+        "emitDecoratorMetadata": true,
+        "baseUrl": "./src",
+        "paths": {
+            "@/*": ["src/*"]
+        }
     },
     "include": ["src"]
 }

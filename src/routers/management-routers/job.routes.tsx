@@ -1,7 +1,7 @@
 import { RouteObject } from 'react-router-dom'
 import LazyRoute from '../lazy-route'
 
-const JobListComponent = import('../../site/management/pages/job/job-list/job-list.component')
+const JobListComponent = import('site/management/pages/job/job-list/job-list.component')
 
 const jobRouters: RouteObject[] = [
     {

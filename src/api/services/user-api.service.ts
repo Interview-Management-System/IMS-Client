@@ -6,38 +6,36 @@ import {
     UserRetrieveDTO
 } from '../../modules/user/models/user.model'
 import { PaginationResult } from '../../shared/models/pagination'
-import UserEndpoint from '../endpoints/user-endpoints'
 import { ApiResponse } from './../../shared/models/api-response'
 import { BaseApiService } from './base-api.service'
 
 class UserApiService extends BaseApiService {
     getUserById(userId: string) {
-        return this.get<ApiResponse<UserDetailRetrieveDTO>>(`${UserEndpoint.DetailEndpoint}/${userId}`)
+        return this.get<ApiResponse<UserDetailRetrieveDTO>>(`User/detail/${userId}`)
     }
 
     getUserListPaging(request?: UserPaginatedSearchRequest) {
-        const url = UserEndpoint.UserPagingEndpoint
-        return this.post<ApiResponse<PaginationResult<UserPaginationRetrieveDTO>>>(url, request)
+        return this.post<ApiResponse<PaginationResult<UserPaginationRetrieveDTO>>>('User/pagination', request)
     }
 
-    deleteUserById(userId: string) {
-        return this.delete(`${UserEndpoint.DeleteEndpoint}/${userId}`)
+    deleteUserById(userIdList: string[]) {
+        return this.patch(`User/delete`, userIdList)
     }
 
-    activeUserById(userId: string) {
-        return this.patch(`${UserEndpoint.ActivateEndpoint}/${userId}`)
+    activeUserById(userIdList: string[]) {
+        return this.patch(`User/activate`, userIdList)
     }
 
-    deActiveUserById(userId: string) {
-        return this.patch(`${UserEndpoint.DeActivateEndpoint}/${userId}`)
+    deActiveUserById(userIdList: string[]) {
+        return this.patch(`User/de-activate`, userIdList)
     }
 
     createUser(data: UserCreateDTO) {
-        return this.post(UserEndpoint.CreateUserEndpoint, data)
+        return this.post('User/create', data)
     }
 
     getListRecruiter() {
-        return this.get<ApiResponse<UserRetrieveDTO[]>>(UserEndpoint.ListRecruiterEndpoint)
+        return this.get<ApiResponse<UserRetrieveDTO[]>>('User/recruiters')
     }
 }
 

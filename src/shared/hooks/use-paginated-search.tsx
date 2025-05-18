@@ -1,22 +1,42 @@
 import { FieldValues, Path, PathValue, UseFormReturn } from 'react-hook-form'
+import tableActionStore from 'shared/stores/table-action.store'
 import { PaginatedSearchRequest } from '../models/pagination'
 
 interface UsePaginatedSearchProps<T extends PaginatedSearchRequest & FieldValues> {
     form: UseFormReturn<T>
-    resetSearch: () => void
+    onReset: () => void
     getListPaging: () => void
-    setSearchValue: (value: T) => void
+    onSearch: (value: T) => void
 }
 
+/**
+ * Custom hook to manage paginated search functionality with form integration.
+ *
+ * @template T - The type extending PaginatedSearchRequest and FieldValues.
+ * @param {Object} params - The hook parameters.
+ * @param {UseFormReturn<T>} params.form - The form instance from react-hook-form.
+ * @param {() => void} params.onReset - Callback invoked when the form is reset.
+ * @param {() => void} params.getListPaging - Callback to fetch the paginated list.
+ * @param {(values: T) => void} params.onSearch - Callback invoked when a search is performed.
+ * @returns An object containing handlers for resetting the form, changing page index, page size, and sorting.
+ *
+ * @example
+ * const { resetForm, onPageIndexChange, onPageSizeChange, onSortChange } = usePaginatedSearch({
+ *   form,
+ *   onReset: handleReset,
+ *   getListPaging: fetchList,
+ *   onSearch: handleSearch
+ * });
+ */
 export default function usePaginatedSearch<T extends PaginatedSearchRequest & FieldValues>({
     form,
-    resetSearch,
+    onReset,
     getListPaging,
-    setSearchValue
+    onSearch
 }: UsePaginatedSearchProps<T>) {
     function resetForm() {
         form.reset()
-        resetSearch()
+        onReset()
         getListPaging()
     }
 
@@ -28,11 +48,12 @@ export default function usePaginatedSearch<T extends PaginatedSearchRequest & Fi
         }
 
         setFormFieldValue('paginationRequest', updatedPagination)
-        setSearchValue({ ...currentValues, paginationRequest: updatedPagination })
+        onSearch({ ...currentValues, paginationRequest: updatedPagination })
         getListPaging()
     }
 
     function onPageIndexChange(newPageIndex: number) {
+        tableActionStore.removeSelectedRowKeys()
         onPaginationChange({ pageIndex: newPageIndex })
     }
 
@@ -46,7 +67,7 @@ export default function usePaginatedSearch<T extends PaginatedSearchRequest & Fi
         const sortCriteria = { sortProperty: propertyName, isAscending }
         setFormFieldValue('sortCriteria', sortCriteria)
 
-        setSearchValue({ ...currentValues, sortCriteria: sortCriteria })
+        onSearch({ ...currentValues, sortCriteria: sortCriteria })
         getListPaging()
     }
 

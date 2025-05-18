@@ -12,7 +12,6 @@ import {
 import jobService from '../../../../../modules/job/services/job.service'
 import jobStore from '../../../../../modules/user/stores/job.store'
 import ModalConfirmComponent from '../../../../../shared/components/modals/modal-confirm/modal-confirm.component'
-import { ButtonColor } from '../../../../../shared/enums/button.enum'
 import { EnumList } from '../../../../../shared/helpers/enums/enum-list.helper'
 import useModal from '../../../../../shared/hooks/use-modal'
 import { TableConfig } from '../../../../../shared/models/table-config'
@@ -98,7 +97,7 @@ function JobListComponent() {
                 show={modal.show}
                 modalTitle={modalTitle}
                 handleClose={modal.closeModal}
-                buttonColor={ButtonColor.Danger}
+                buttonColor='danger'
                 handleConfirm={modalConfirmHandler}
                 modalConfirmQuestion={modalConfirmQuestion}
             />

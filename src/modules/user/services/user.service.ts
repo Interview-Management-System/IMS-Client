@@ -1,12 +1,13 @@
-import { NavigateFunction } from 'react-router-dom'
-import userApiService from '../../../api/services/user-api.service'
-import { PaginationResult } from '../../../shared/models/pagination'
-import SignalRService from '../../../shared/services/signalR.service'
-import { SignalEvent } from '../../../shared/utils/signalR.util'
+import userApiService from 'api/services/user-api.service'
+import { PaginationResult } from 'shared/models/pagination'
+import SignalRService from 'shared/services/signalR.service'
+import tableActionStore from 'shared/stores/table-action.store'
+import NavigationUtil from 'shared/utils/navigation.utils'
+import { SignalEvent } from 'shared/utils/signalR.util'
 import { UserCreateDTO, UserPaginationRetrieveDTO } from '../models/user.model'
 import userStore from '../stores/user.store'
 
-class UserService extends SignalRService {
+export class UserService extends SignalRService {
     constructor() {
         super('/user-hub')
     }
@@ -23,32 +24,42 @@ class UserService extends SignalRService {
 
     @SignalEvent('UserChange')
     async getUserListPaging() {
-        console.log('getUserListPaging')
-
         const searchValue = userStore.userPaginationSearchValue
         const responseData = await userApiService.getUserListPaging(searchValue)
 
         userStore.setUserPageResult(responseData?.data)
     }
 
-    async deleteUser(id: string) {
-        await userApiService.deleteUserById(id)
+    async deleteUser() {
+        const userIds = tableActionStore.selectedRowKeys as string[]
+
+        if (userIds.length > 0) {
+            await userApiService.deleteUserById(userIds)
+        }
     }
 
-    async activateUser(id: string) {
-        await userApiService.activeUserById(id)
+    async activateUser() {
+        const userIds = tableActionStore.selectedRowKeys as string[]
+
+        if (userIds.length > 0) {
+            await userApiService.activeUserById(userIds)
+        }
     }
 
-    async deActivateUser(id: string) {
-        await userApiService.deActiveUserById(id)
+    async deActivateUser() {
+        const userIds = tableActionStore.selectedRowKeys as string[]
+
+        if (userIds.length > 0) {
+            await userApiService.deActiveUserById(userIds)
+        }
     }
 
-    async createUser(data: UserCreateDTO, navigate?: NavigateFunction) {
+    async createUser(data: UserCreateDTO) {
         const createSuccessfull = await userApiService.createUser(data)
 
         if (createSuccessfull) {
             setTimeout(() => {
-                navigate?.(-1)
+                NavigationUtil.goBack()
             }, 500)
         }
     }

@@ -10,17 +10,44 @@ export type ButtonInfo = {
 
 export class TableActionStore {
     buttonInfos = [] as ButtonInfo[]
+    selectedRowKeys: (string | number)[] = []
+
+    get isRowSelected() {
+        return this.selectedRowKeys.length > 0
+    }
 
     constructor() {
         makeAutoObservable(this)
     }
 
-    setButonInfos(buttonInfos: ButtonInfo[]) {
+    /******************************************************* Buttons *******************************/
+    setButtonInfos(buttonInfos: ButtonInfo[]) {
         this.buttonInfos = buttonInfos
     }
 
     clearButtons() {
         this.buttonInfos = []
+    }
+
+    /******************************************************* Select *******************************/
+    setSelectedRowKeys(keys: (string | number)[]) {
+        this.selectedRowKeys = keys
+    }
+
+    addSelectedRowKeys(keys: (string | number)[]) {
+        this.selectedRowKeys = Array.from(new Set([...this.selectedRowKeys, ...keys]))
+    }
+
+    removeSelectedRowKeys() {
+        this.selectedRowKeys = []
+    }
+
+    toggleRowKey(key: string | number) {
+        if (this.selectedRowKeys.includes(key)) {
+            this.selectedRowKeys = this.selectedRowKeys.filter(k => k !== key)
+        } else {
+            this.selectedRowKeys = [...this.selectedRowKeys, key]
+        }
     }
 }
 

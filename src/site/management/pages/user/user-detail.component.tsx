@@ -2,13 +2,11 @@ import { observer } from 'mobx-react-lite'
 import { useState } from 'react'
 import { Button } from 'react-bootstrap'
 import { useNavigate, useParams } from 'react-router-dom'
-import userService from '../../../../../modules/user/services/user.service'
-import userStore from '../../../../../modules/user/stores/user.store'
-import ModalConfirmComponent from '../../../../../shared/components/modals/modal-confirm/modal-confirm.component'
-import { ButtonColor } from '../../../../../shared/enums/button.enum'
-import useModal from '../../../../../shared/hooks/use-modal'
-import { DateUtility } from '../../../../../shared/utils/date.util'
-import './user-detail.scss'
+import userService from '../../../../modules/user/services/user.service'
+import userStore from '../../../../modules/user/stores/user.store'
+import ModalConfirmComponent from '../../../../shared/components/modals/modal-confirm/modal-confirm.component'
+import useModal from '../../../../shared/hooks/use-modal'
+import { DateUtility } from '../../../../shared/utils/date.util'
 
 function UserDetailComponent() {
     const modal = useModal()
@@ -32,7 +30,7 @@ function UserDetailComponent() {
         setUserIdToActivate(userId)
         setModalTitle('Active confirmation')
         setModalConfirmQuestion('Are you sure you want to activate ?')
-        setModalConfirmHandler(() => () => userService.activateUser(userId))
+        setModalConfirmHandler(() => () => userService.activateUser())
     }
 
     // De-Activate
@@ -41,14 +39,14 @@ function UserDetailComponent() {
         setUserIdToDeActivate(userId)
         setModalTitle('De-activate confirmation')
         setModalConfirmQuestion('Are you sure you want to de-activate ?')
-        setModalConfirmHandler(() => () => userService.deActivateUser(userId))
+        setModalConfirmHandler(() => () => userService.deActivateUser())
     }
 
     return (
         <>
             <ModalConfirmComponent
                 show={modal.show}
-                buttonColor={ButtonColor.Danger}
+                buttonColor='danger'
                 modalTitle={modalTitle}
                 handleClose={modal.closeModal}
                 modalConfirmQuestion={modalConfirmQuestion}
@@ -64,7 +62,7 @@ function UserDetailComponent() {
                     <h6 className='m-0'>
                         {userDetail.userStatus?.isActive && (
                             <Button
-                                variant={ButtonColor.Danger}
+                                variant='danger'
                                 type='button'
                                 size='sm'
                                 onClick={() => confirmDeActivateUser(userDetail.id)}
@@ -75,7 +73,7 @@ function UserDetailComponent() {
 
                         {!userDetail.userStatus?.isActive && (
                             <Button
-                                variant={ButtonColor.Success}
+                                variant='success'
                                 type='button'
                                 size='sm'
                                 onClick={() => confirmActivateUser(userDetail.id)}

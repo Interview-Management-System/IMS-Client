@@ -50,21 +50,6 @@ function PaginationComponent<T>({
 
             <div className='row justify-content-between mt-3'>
                 {/* Show entries */}
-                {/* <div className='col-sm-12 col-md-3 d-flex'>
-                    <div className='dataTables_length' id='dataTable_length'>
-                        <Button variant='primary' className='me-2'>
-                            Home
-                        </Button>
-
-                        <Button variant='outline-secondary' className='me-2'>
-                            Search
-                        </Button>
-
-                        <Button variant='outline-success'>Profile</Button>
-                    </div>
-                </div> */}
-
-                {/* Show entries */}
                 <div className='col-sm-12 col-md-4 d-flex'>
                     <div className='dataTables_length' id='dataTable_length'>
                         <select

@@ -2,10 +2,11 @@ import { IconDefinition } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { memo } from 'react'
 import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap'
+import { ButtonVariant } from 'react-bootstrap/esm/types'
 
 interface ActionButtonProps {
     action: () => void
-    buttonColor: string
+    buttonColor: ButtonVariant
     tooltipName: string
     icon: IconDefinition
 }
