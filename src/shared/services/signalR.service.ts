@@ -14,7 +14,7 @@ export default abstract class SignalRService {
     buildConnection() {
         if (this.hubUrl && !this.connection) {
             this.connection = new signalR.HubConnectionBuilder()
-                .withUrl(`https://localhost:7139${this.hubUrl}`, {
+                .withUrl(`${process.env.REACT_APP_API_BASE_URL?.split('/api')[0]}${this.hubUrl}`, {
                     skipNegotiation: true,
                     transport: signalR.HttpTransportType.WebSockets
                 })

@@ -8,6 +8,10 @@ import './App.scss'
 
 function App() {
     NavigationUtil.navigate = useNavigate()
+    console.log(
+        `%cRunning React App in ${process.env.NODE_ENV.toUpperCase()} mode`,
+        'color: #6adbb2; font-weight: bold;'
+    )
 
     return (
         <>
