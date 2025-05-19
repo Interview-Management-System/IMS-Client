@@ -3,10 +3,8 @@ import CookieService from '../../shared/services/cookie.service'
 import ToastUtility from '../../shared/utils/toast.util'
 import ApiHelper from '../helpers/api.helper'
 
-//https://jsonplaceholder.typicode.com/
-//https://localhost:7139/api'
 export const axiosClient = axios.create({
-    baseURL: 'https://localhost:7139/api',
+    baseURL: process.env.REACT_APP_API_BASE_URL,
     timeout: 100000,
     headers: {
         'Content-Type': 'application/json'
