@@ -4,7 +4,7 @@ import ToastUtility from '../../shared/utils/toast.util'
 import ApiHelper from '../helpers/api.helper'
 
 export const axiosClient = axios.create({
-    baseURL: process.env.REACT_APP_API_BASE_URL,
+    baseURL: `${process.env.REACT_APP_API_BASE_URL}/api`,
     timeout: 100000,
     headers: {
         'Content-Type': 'application/json'
