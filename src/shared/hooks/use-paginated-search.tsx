@@ -58,7 +58,7 @@ export default function usePaginatedSearch<T extends PaginatedSearchRequest & Fi
     }
 
     function onPageSizeChange(newPageSize: number) {
-        onPaginationChange({ pageSize: newPageSize })
+        onPaginationChange({ pageIndex: 1, pageSize: newPageSize })
     }
 
     function onSortChange(propertyName: string, isAscending: boolean) {

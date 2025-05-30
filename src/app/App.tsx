@@ -1,3 +1,4 @@
+import '@schedule-x/theme-default/dist/index.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap/dist/js/bootstrap.bundle.min'
 import { CookiesProvider } from 'react-cookie'

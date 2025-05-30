@@ -14,7 +14,6 @@ import useModal from 'shared/hooks/use-modal'
 function UserCreateComponent() {
     const modal = useModal()
     const navigate = useNavigate()
-    // const userService = container.resolve<UserService>(TOKENS.UserService)
 
     const userCreateForm = useForm<UserCreateDTO>({
         // resolver: yupResolver(UserSchemaValidation.userCreateSchemaValidation)
@@ -31,7 +30,6 @@ function UserCreateComponent() {
 
     function handleCreateUser(formData: UserCreateDTO) {
         // formData.createdBy = CookieService.getCurrentUserIdFromCookie()
-        console.log(formData)
         userService.createUser(formData)
     }
 

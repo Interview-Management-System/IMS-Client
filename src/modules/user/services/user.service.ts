@@ -1,9 +1,9 @@
 import userApiService from 'api/services/user-api.service'
-import { PaginationResult } from 'shared/models/pagination'
+import type { PaginationResult } from 'shared/models/pagination'
 import SignalRService from 'shared/services/signalR.service'
 import tableActionStore from 'shared/stores/table-action.store'
 import NavigationUtil from 'shared/utils/navigation.utils'
-import { SignalEvent } from 'shared/utils/signalR.util'
+import { AutoInvoke, SignalEvent } from 'shared/utils/signalR.util'
 import { UserCreateDTO, UserPaginationRetrieveDTO } from '../models/user.model'
 import userStore from '../stores/user.store'
 
@@ -12,9 +12,9 @@ export class UserService extends SignalRService {
         super('/user-hub')
     }
 
-    async autoInvokeOnConnect(): Promise<void> {
-        const responseData = await this.invoke<PaginationResult<UserPaginationRetrieveDTO>>('UserPagination')
-        userStore.setUserPageResult(responseData)
+    @AutoInvoke('UserPagination')
+    private handleUserPage(data: PaginationResult<UserPaginationRetrieveDTO>) {
+        userStore.setUserPageResult(data)
     }
 
     async getUserById(id: string) {

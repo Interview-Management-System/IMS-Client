@@ -5,6 +5,8 @@ import { TableDataProps } from '../../../../models/table-config'
 import './table-data.scss'
 
 function displayColumnValue<T>(obj: T, path?: any): any {
+    console.log(path)
+
     return path?.split('.').reduce((acc: any, key: string) => acc?.[key], obj) ?? ''
 }
 
@@ -102,15 +104,29 @@ function TableDataComponent<T extends { id: string | number }>({
                                     </td>
 
                                     {/* Item data */}
-                                    {columns.map((column, colIndex) => (
-                                        <td
-                                            key={colIndex}
-                                            className='text-gray-800 align-middle'
-                                            onClick={() => handleRowSelect(item)}
-                                        >
-                                            {displayColumnValue(item, column.accessor)}
-                                        </td>
-                                    ))}
+                                    {columns.map((column, colIndex) => {
+                                        if (column.render) {
+                                            return (
+                                                <td
+                                                    key={colIndex}
+                                                    className='text-gray-800 align-middle text-center'
+                                                    onClick={() => handleRowSelect(item)}
+                                                >
+                                                    {column.render(item)}
+                                                </td>
+                                            )
+                                        } else {
+                                            return (
+                                                <td
+                                                    key={colIndex}
+                                                    className='text-gray-800 align-middle'
+                                                    onClick={() => handleRowSelect(item)}
+                                                >
+                                                    {displayColumnValue(item, column.accessor)}
+                                                </td>
+                                            )
+                                        }
+                                    })}
 
                                     {/* Render custom column */}
                                     {renderActions && (

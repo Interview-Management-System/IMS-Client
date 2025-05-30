@@ -2,6 +2,22 @@ import { AxiosError, AxiosResponse } from 'axios'
 import { ApiResponse, ExceptionResponse } from '../../shared/models/api-response'
 import ToastUtility from '../../shared/utils/toast.util'
 
+/**
+ * A utility class for handling API responses and errors in a standardized way.
+ *
+ * Provides static methods to process successful and error responses from Axios requests,
+ * displaying appropriate toast notifications to the user.
+ *
+ * @remarks
+ * - Uses `ToastUtility` to show or hide loading indicators and display messages.
+ * - Utilizes `ApiTypeChecker` to determine the structure of API responses.
+ *
+ * @example
+ * ```typescript
+ * ApiHelper.handleSuccessResponse(response);
+ * ApiHelper.handleErrorResponse(error);
+ * ```
+ */
 export default class ApiHelper {
     static handleSuccessResponse(response: AxiosResponse) {
         const responseData = response.data
@@ -39,7 +55,13 @@ export default class ApiHelper {
     }
 }
 
-/** Use for checking type of response then handle appropriately */
+/**
+ * Utility class for type-checking API response objects.
+ *
+ * @remarks
+ * Provides static methods to determine if a given object matches the expected structure
+ * of API responses or exception responses.
+ */
 class ApiTypeChecker {
     static isExceptionResponse(obj: any): obj is ExceptionResponse {
         return (

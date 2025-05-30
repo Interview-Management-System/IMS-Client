@@ -1,5 +1,5 @@
+import axiosClient from 'api/axios-config'
 import { AxiosRequestConfig } from 'axios'
-import axiosClient from '../axios/axios-config'
 
 export class BaseApiService {
     protected get<T>(url: string, config?: AxiosRequestConfig) {

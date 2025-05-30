@@ -18,7 +18,6 @@ import './sidebar.scss'
 
 function SideBarComponent() {
     const location = useLocation()
-
     const isRouteMatched = (route: string) => location.pathname.startsWith(route)
 
     // Define navigation links
@@ -26,7 +25,12 @@ function SideBarComponent() {
         { to: 'dashboard', icon: faGauge, label: 'Dashboard', route: '/dashboard' },
         { to: 'candidate/list', icon: faPeopleGroup, label: 'Candidate Management', route: '/candidate' },
         { to: 'job/list', icon: faBriefcase, label: 'Job Management', route: '/job' },
-        { to: 'interview/list', icon: faRocket, label: 'Interview Management', route: '/interview' },
+        {
+            to: 'interview-schedule/list',
+            icon: faRocket,
+            label: 'Interview Management',
+            route: '/interview-schedule'
+        },
         { to: 'offer/list', icon: faFile, label: 'Offer Management', route: '/offer' },
         { to: 'user/list', icon: faUser, label: 'User Management', route: '/user' }
     ]

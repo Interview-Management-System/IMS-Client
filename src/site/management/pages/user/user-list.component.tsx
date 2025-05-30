@@ -4,6 +4,7 @@ import { UserPaginatedSearchRequest, UserPaginationRetrieveDTO } from 'modules/u
 import userService from 'modules/user/services/user.service'
 import userStore from 'modules/user/stores/user.store'
 import UserTableActionUtil from 'modules/user/utils/user-table-action.util'
+import { Badge } from 'react-bootstrap'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import ButtonActionComponent from 'shared/components/buttons/button-action.component'
@@ -60,7 +61,19 @@ function UserListComponent() {
         { header: 'Email', accessor: 'email', sortable: true },
         { header: 'Phone', accessor: 'phoneNumber', sortable: true },
         { header: 'Role', accessor: 'role', sortable: false },
-        { header: 'Status', accessor: 'userStatus.statusText', sortable: false }
+        {
+            header: 'Status',
+            accessor: 'userStatus.statusText',
+            sortable: false,
+            render: (user: UserPaginationRetrieveDTO) => {
+                const isActive = user.userStatus?.isActive
+                return (
+                    <Badge className='badge-text-font' bg={isActive ? 'success' : 'danger'}>
+                        {user.userStatus?.statusText}
+                    </Badge>
+                )
+            }
+        }
     ] satisfies TableColumn<UserPaginationRetrieveDTO>[]
 
     const { resetForm, onPageIndexChange, onPageSizeChange, onSortChange } = usePaginatedSearch({

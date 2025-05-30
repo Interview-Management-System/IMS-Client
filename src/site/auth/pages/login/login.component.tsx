@@ -1,14 +1,11 @@
 import { yupResolver } from '@hookform/resolvers/yup'
-import { useEffect } from 'react'
+import { UserLoginRequest } from 'modules/auth/models/authentication.model'
+import authService from 'modules/auth/services/auth.service'
 import { Button } from 'react-bootstrap'
 import { useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
-import { AbortSignalManager } from '../../../../api/abort-signal-manager'
-import { UserLoginRequest } from '../../../../modules/auth/models/authentication.model'
-import authService from '../../../../modules/auth/services/auth.service'
-import ControlledInput from '../../../../shared/components/form/form-input.component'
-import AuthSchemaValidation from '../../../../shared/helpers/form/validations/schemas/auth-schemas.validation'
-import './login.style.scss'
+import ControlledInput from 'shared/components/form/form-input.component'
+import AuthSchemaValidation from 'shared/helpers/form/validations/schemas/auth-schemas.validation'
 
 function onSubmit(formData: UserLoginRequest) {
     authService.login(formData)
@@ -18,11 +15,6 @@ function LoginComponent() {
     const loginForm = useForm<UserLoginRequest>({
         resolver: yupResolver(AuthSchemaValidation.loginSchemaValidation)
     })
-
-    useEffect(() => {
-        AbortSignalManager.initialize()
-        return () => AbortSignalManager.abort()
-    }, [])
 
     return (
         <>

@@ -1,18 +1,5 @@
+import axiosClient from 'api/axios-config'
 import React, { useEffect, useMemo } from 'react'
-import { AbortSignalManager } from '../../api/abort-signal-manager'
-import axiosClient from '../../api/axios/axios-config'
-
-export function useFetch() {
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    // const callBackApi = useCallback(callBack, [])
-
-    useEffect(() => {
-        AbortSignalManager.initialize()
-        // callBackApi()
-
-        return () => AbortSignalManager.abort()
-    }, [])
-}
 
 export function cancellable<P extends React.ComponentProps<C>, C extends React.ComponentType<any>>(
     WrappedComponent: C

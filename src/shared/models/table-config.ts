@@ -17,6 +17,9 @@ export interface TableColumn<T> {
 
     /** If true, the column is sortable */
     sortable?: boolean
+
+    /** Custom render for header */
+    render?: (item: T) => React.ReactNode
 }
 
 // To be removed

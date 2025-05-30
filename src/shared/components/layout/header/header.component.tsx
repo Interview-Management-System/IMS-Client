@@ -1,17 +1,23 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 
 import { Button, Navbar } from 'react-bootstrap'
+import { useNavigate } from 'react-router-dom'
 import useModal from '../../../hooks/use-modal'
 import ModalConfirmComponent from '../../modals/modal-confirm/modal-confirm.component'
 import NotificationComponent from './components/notifcation.component'
 
 function HeaderComponent() {
+    const navigate = useNavigate()
     const { show, closeModal, modalTitle, modalConfirmQuestion, modalConfirmHandler, confirm } = useModal()
 
     function logout() {
         confirm('Logout confirmation', 'Are you sure you want to logout ?', () => {
             // call logout api
         })
+    }
+
+    function toProfile() {
+        // navigate('/profile')
     }
 
     return (
@@ -71,10 +77,11 @@ function HeaderComponent() {
                         </a>
                         {/* <!-- Dropdown - User Information --> */}
                         <div className='dropdown-menu dropdown-menu-end shadow animated--grow-in'>
-                            {/* <a className='dropdown-item' href='/public/user/my-profile'>
-                                <i className='fas fa-user fa-sm fa-fw mr-2 text-gray-400'></i> Profile
-                            </a>
+                            <Button className='dropdown-item' onClick={toProfile}>
+                                <i className='fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400'></i> Profle
+                            </Button>
 
+                            {/* 
                             <a className='dropdown-item' href='/public/user/my-request'>
                                 <i className='fa-solid fa-book fa-sm fa-fw mr-2 text-gray-400'></i> My Request
                             </a> */}

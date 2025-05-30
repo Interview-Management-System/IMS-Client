@@ -1,4 +1,4 @@
-import { faAdd, faSearch } from '@fortawesome/free-solid-svg-icons'
+import { faAdd } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { memo } from 'react'
 import { Button } from 'react-bootstrap'
@@ -7,14 +7,25 @@ import { PaginatedSearchRequest } from '../../models/pagination'
 import { TablePaginationProps } from '../../models/table-config'
 import PaginationComponent from './components/pagination/pagination.component'
 import TableDataComponent from './components/table-data/table-data.component'
+import TableSearchForm from './components/table-search/table-search'
 
+/**
+ * Renders a paginated table component with optional search and filter functionality.
+ *
+ * @template T - The type of data displayed in the table rows.
+ * @param {TablePaginationProps<T>} props - The properties for configuring the table, actions, and search form.
+ * @param props.tableConfig - Configuration for the table, including columns, table name, and pagination result.
+ * @param props.tableActions - Actions for handling sorting, pagination, and rendering row actions.
+ * @param [props.tableSearchForm] - Optional search form configuration, including filter options and handlers.
+ *
+ * @returns The rendered table with pagination, search, and filter controls.
+ */
 function TablePaginationComponent<T>({
     tableConfig,
     tableActions,
     tableSearchForm
 }: TablePaginationProps<T>) {
     const navigate = useNavigate()
-    const searchForm = tableSearchForm?.searchForm
 
     return (
         <div className='card shadow'>
@@ -41,66 +52,7 @@ function TablePaginationComponent<T>({
 
                         {/* Search form */}
                         <div className='col-sm-10 col-md-7'>
-                            <div id='dataTable_filter' className='dataTables_filter text-right'>
-                                <form
-                                    className='user'
-                                    onSubmit={searchForm?.handleSubmit((data: any) =>
-                                        tableSearchForm?.handleSearch(data)
-                                    )}
-                                >
-                                    <div className=' row align-items-end'>
-                                        {/* To keep text search at the end of the line */}
-                                        {!tableSearchForm?.filterOptions && <div className='col-md-5'></div>}
-
-                                        {tableSearchForm?.filterOptions &&
-                                            tableSearchForm.filterOptions.map((filter, index) => (
-                                                <div key={index} className='col-md-5'>
-                                                    <select
-                                                        className='form-control'
-                                                        {...searchForm?.register(filter.filterOptionKey, {
-                                                            valueAsNumber: true
-                                                        })}
-                                                    >
-                                                        <option value={0}>Select to filter</option>
-                                                        {filter.options.map(opt => (
-                                                            <option
-                                                                key={opt.value.toString()}
-                                                                value={opt.value as number}
-                                                            >
-                                                                {opt.label}
-                                                            </option>
-                                                        ))}
-                                                    </select>
-                                                </div>
-                                            ))}
-
-                                        {/* Search field */}
-                                        <div className='input-group col-md-5'>
-                                            <input
-                                                type='text'
-                                                placeholder='Search...'
-                                                className='form-control bg-light border-0 small'
-                                                {...searchForm?.register('searchText')}
-                                            />
-
-                                            <div className='input-group-append'>
-                                                <Button className='btn-info' type='submit'>
-                                                    <FontAwesomeIcon icon={faSearch} size='1x' />
-                                                </Button>
-                                            </div>
-                                        </div>
-
-                                        <div className='col-md-1 p-0'>
-                                            <Button
-                                                className='btn-secondary'
-                                                onClick={() => tableSearchForm?.resetForm()}
-                                            >
-                                                Reset
-                                            </Button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
+                            <TableSearchForm tableSearchForm={tableSearchForm} />
                         </div>
                     </div>
 
